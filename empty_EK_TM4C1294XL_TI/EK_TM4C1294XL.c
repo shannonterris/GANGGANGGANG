@@ -432,6 +432,7 @@ const PWMTiva_HWAttrs pwmTivaHWAttrs[EK_TM4C1294XL_PWMCOUNT] = {
     }
 };
 
+/*
 const PWM_Config PWM_config[] = {
     {
         .fxnTablePtr = &PWMTiva_fxnTable,
@@ -440,6 +441,8 @@ const PWM_Config PWM_config[] = {
     },
     {NULL, NULL, NULL}
 };
+
+*/
 
 /*
  *  ======== EK_TM4C1294XL_initPWM ========
