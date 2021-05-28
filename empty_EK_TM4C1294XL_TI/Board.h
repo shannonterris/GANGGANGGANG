@@ -52,6 +52,12 @@ extern "C" {
 #define Board_initWatchdog          EK_TM4C1294XL_initWatchdog
 #define Board_initWiFi              EK_TM4C1294XL_initWiFi
 
+
+/* Define Motor Hall Effect Sensors */
+#define HALL_A                      GPIO_HALL_A
+#define HALL_B                      GPIO_HALL_B
+#define HALL_C                      GPIO_HALL_C
+
 #define Board_LED_ON                EK_TM4C1294XL_LED_ON
 #define Board_LED_OFF               EK_TM4C1294XL_LED_OFF
 #define Board_LED0                  EK_TM4C1294XL_D1
