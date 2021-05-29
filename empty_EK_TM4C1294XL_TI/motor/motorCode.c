@@ -83,8 +83,7 @@
 #include "inc/hw_ints.h"
 #include "driverlib/gpio.h"
 
-#define TASKSTACKSIZE   2048
-#define TASK2STACK      512
+//#define TASKSTACKSIZE   512
 #define TOTAL_POSITIONS 12
 #define SAMPLE_SIZE 100
 #define ACCEL_SIZE 100
@@ -126,9 +125,9 @@ GateHwi_Params gHwiprms;
 
 Timer_Handle myTimer;
 Timer_Params timerParams;
-Task_Struct task0Struct;
-Char task0Stack[TASKSTACKSIZE];
-Char task1Stack[TASK2STACK];
+
+//Task_Struct task0Struct;
+//Char task0Stack[TASKSTACKSIZE];
 
 Swi_Handle SwiHandle;
 
@@ -357,7 +356,7 @@ void motorFxn(UArg arg0, UArg arg1)
     }
 
     enableMotor();
-    setDuty(6);
+    setDuty(15);
     readABC();
     updateMotor(hA, hB, hC);
 
@@ -367,30 +366,19 @@ void motorFxn(UArg arg0, UArg arg1)
 
     while(1)
     {
-        //state = Event_pend(evtHandle, Event_Id_None, Event_Id_01, BIOS_WAIT_FOREVER);
-
-        //switch(state):
-        //                case(Event_Id_01):
-        //                    motor
-        //if (motorRunning == true)
-        //{
-             // first motor drive
-        //}
-
+        // Wait
+        Semaphore_pend(semHandle, BIOS_WAIT_FOREVER);
         if (print_from_clock == true)
         {
+            /*
+             * Motor state is controlled
+             */
             sprintf(speed_buf, "Test: %d\n\r", dummy);
             UART_write(uart, speed_buf, sizeof(speed_buf));
-
-
             //int32_t rpm_print = (int32_t)rpm_avg;
             //UART_write(uart, &rpm_avg, sizeof(rpm_avg));
             //int32_t rpm_print_act = (int32_t)rpm_actual;
-            //UART_write(uart, &rpm_actual, sizeof(rpm_actual));
-
-            //UART_write(uart, &acceleration, sizeof(acceleration));
-            //UART_write(uart, &acceleration_avg, sizeof(acceleration_avg));
-
+            //UART_write(uart, &rpm_actual, sizeof(rpm_actual))
             print_from_clock = false;
         }
 
@@ -468,6 +456,12 @@ void accelFxn(UArg arg0)
 
 }
 
+
+void waitFxn(UArg arg0)
+{
+    Semaphore_post(semHandle);
+}
+
 /**
  * ADC
  */
@@ -525,6 +519,8 @@ void ADC0_Init() //ADC0 on PE3
     ADCIntClear(ADC0_BASE, ADC_SEQ);
 }
 
+
+
 int getSpeed( void )
 {
     return (int) rpm_avg;
@@ -554,14 +550,16 @@ void initMotor( void )
        Board_initUART(); // initialise UART
 
        /* Setup TASK thread */
+       /*
        Task_Params taskParams;
        Task_Params_init(&taskParams);
        taskParams.stackSize = TASKSTACKSIZE;
        taskParams.arg0 = 1000;
        taskParams.stack = &task0Stack;
-       taskParams.instance->name = "task";
+       //taskParams.instance->name = "task";
        taskParams.priority = 1;
        Task_construct(&task0Struct, (Task_FuncPtr)motorFxn, &taskParams, NULL);
+        */
 
        Types_FreqHz cpuFreq;
        BIOS_getCpuFreq(&cpuFreq);
@@ -586,6 +584,10 @@ void initMotor( void )
        clkParams.period = 10;
        clkParams.startFlag = TRUE;
        Clock_create((Clock_FuncPtr)accelFxn, 10, &clkParams, NULL);
+
+       clkParams.period = 10;
+       clkParams.startFlag = TRUE;
+       Clock_create((Clock_FuncPtr)waitFxn, 10, &clkParams, NULL);
 
        //clkParams.period =
 
