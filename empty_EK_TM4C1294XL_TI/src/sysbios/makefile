@@ -16,7 +16,11 @@ BIOS_INC  = -I"C:/ti/tirtos_tivac_2_16_01_14/products/bios_6_45_02_31/packages/"
 
 TARGET_INC = -I"C:/ti/tirtos_tivac_2_16_01_14/products/bios_6_45_02_31/packages/"
 
+<<<<<<< Updated upstream
 INCS = $(BIOS_INC) $(TARGET_INC)  --include_path="C:/ti/tivaware_c_series_2_1_4_178" --include_path="C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1" --include_path="C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1" --include_path="D:/GitHub/GANGGANGGANG/empty_EK_TM4C1294XL_TI" --include_path="D:/GitHub/GANGGANGGANG/empty_EK_TM4C1294XL_TI" --include_path="C:/ti/tirtos_tivac_2_16_01_14/products/TivaWare_C_Series-2.1.1.71b" --include_path="C:/ti/tirtos_tivac_2_16_01_14/products/bios_6_45_01_29/packages/ti/sysbios/posix" --include_path="C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include" 
+=======
+INCS = $(BIOS_INC) $(TARGET_INC)  --include_path="C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1" --include_path="D:/Working/empty_EK_TM4C1294XL_TI" --include_path="D:/Working/empty_EK_TM4C1294XL_TI" --include_path="C:/ti/tirtos_tivac_2_16_01_14/products/TivaWare_C_Series-2.1.1.71b" --include_path="C:/ti/tirtos_tivac_2_16_01_14/products/bios_6_45_01_29/packages/ti/sysbios/posix" --include_path="C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include" 
+>>>>>>> Stashed changes
 
 CC = C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/bin/armcl -c $(CCOPTS) -I C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include
 ASM = C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/bin/armcl -c $(CCOPTS) -I C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include

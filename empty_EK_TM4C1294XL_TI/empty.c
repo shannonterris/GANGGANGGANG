@@ -85,6 +85,8 @@
 #include "ui/grlib_demo.h"
 #include "motorCode.h"
 
+#include "motor/motorCode.h"
+
 
 uint8_t motorStartStop = 1;
 
