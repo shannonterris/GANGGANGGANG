@@ -367,7 +367,7 @@ void motorFxn(UArg arg0, UArg arg1)
     while(1)
     {
         // Wait
-        Semaphore_pend(semHandle, BIOS_WAIT_FOREVER);
+        //Semaphore_pend(semHandle, BIOS_WAIT_FOREVER);
         if (print_from_clock == true)
         {
             /*
@@ -459,7 +459,7 @@ void accelFxn(UArg arg0)
 
 void waitFxn(UArg arg0)
 {
-    Semaphore_post(semHandle);
+    //Semaphore_post(semHandle);
 }
 
 /**
