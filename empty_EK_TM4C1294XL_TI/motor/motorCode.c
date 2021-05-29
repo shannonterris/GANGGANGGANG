@@ -233,8 +233,7 @@ void  HallFxn()
 
 void ADCFxn()
 {
-    GPIO_clearInt(ADC_0);
-    dummy++;
+
 }
 
 /**
@@ -258,8 +257,6 @@ void initHallABC()
     {
         System_abort("Hall HWI creation failed...");
     }
-
-
 
     /* GPIO_enableInt(Board_LED0); */
     /* Enable GPIO interrupts for each GPIO line */
@@ -382,8 +379,8 @@ void motorFxn(UArg arg0, UArg arg1)
 
         if (print_from_clock == true)
         {
-            //sprintf(speed_buf, "Test: %d\n\r", dummy);
-            //UART_write(uart, speed_buf, sizeof(speed_buf));
+            sprintf(speed_buf, "Test: %d\n\r", dummy);
+            UART_write(uart, speed_buf, sizeof(speed_buf));
 
 
             //int32_t rpm_print = (int32_t)rpm_avg;
@@ -500,7 +497,7 @@ void ADC0_Init() //ADC0 on PE3
      *  4. priority - relative priority of the sample sequence
      *                with other sample sequences
      */
-    ADCSequenceConfigure(ADC0_BASE, ADC_SEQ, ADC_TRIGGER_PROCESSOR, 0);
+    ADCSequenceConfigure(ADC0_BASE, ADC_SEQ, ADC_TRIGGER_ALWAYS, 0);
 
 
     /*
