@@ -136,7 +136,6 @@ uint32_t g_ui32SysClock;
 UART_Handle uart;
 
 bool success, print_from_HWI, print_from_motor, print_from_clock;
-bool motorRunning = false;
 
 volatile int motor = 0;
 volatile int prevMotor = 0;
@@ -189,6 +188,8 @@ volatile float rotation_c, rpm_actual_c, rpm_avg_c;
 volatile float rpm_sum_c = 0;
 
 volatile float rpm_buf[5];
+
+volatile bool motorRunning;
 
 
 /**
@@ -353,14 +354,6 @@ void motorFxn(UArg arg0, UArg arg1)
             //UART_write(uart, &acceleration, sizeof(acceleration));
             UART_write(uart, &acceleration_avg, sizeof(acceleration_avg));
 
-
-            //UART_write(uart, &acceleration, sizeof(acceleration));
-            //UART_write(uart, &rpm_avg_c, sizeof(rpm_avg_c));
-            //UART_write(uart, &rpm_actual_c, sizeof(rpm_actual_c));
-            //sprintf(speed_buf, "RPM Actual: %f  RPM Avg: %f\n\r", rpm_actual, rpm_avg);
-            //UART_write(uart, &speed_buf, sizeof(speed_buf));
-              //sprintf(speed_buf, "Delta RPM: %f\n\r", delta_rpm);
-              //UART_write(uart, &speed_buf, sizeof(speed_buf));
             print_from_clock = false;
         }
     }
@@ -379,44 +372,6 @@ void motorFxn(UArg arg0, UArg arg1)
 Void clk0Fxn(UArg arg0)
 {
     clock_count++;
-    // fill the buffer
-    //rpm_buf[clock_count] = rpm_actual;
-
-    // buffer is full
-    /*
-    if (clock_count < 5)
-    {
-        rpm_buf[clock_count] = rpm_actual;
-    }
-    else //(clock_count > 5)
-    {
-        int i;
-
-        // shift every element to the right by 1
-        for(i = 1; i < 5; i++)
-        {
-            rpm_buf[i] = rpm_buf[i - 1];
-        }
-
-        // set the first element to current rpm
-        rpm_buf[0] = rpm_actual;
-
-
-        int j;
-
-        // add the elements of the buffer
-        for(j = 0; j < 5; j++)
-        {
-            rpm_sum = rpm_buf[j] + rpm_sum;
-        }
-
-        // find average rpm
-        rpm_avg = rpm_sum/5;
-        rpm_sum = 0;
-    }
-    */
-
-    //rpm_actual = rotation/delta_time;
 
     rpm_sum = rpm_actual + rpm_sum;
     acceleration_sum = acceleration + acceleration_sum;
@@ -487,7 +442,23 @@ void ADC0_Init()
 
 }
 
-void initMotorCode( void )
+int getSpeed( void )
+{
+    return (int) rpm_avg;
+}
+
+void setSpeed( int rpm_ui )
+{
+    rpm_desired = rpm_ui;
+}
+
+void startMotor( bool UI_motorRun )
+{
+    motorRunning = UI_motorRun;
+}
+
+
+void initMotor( void )
 {
     Error_init(&eb);
 
@@ -569,120 +540,3 @@ void initMotorCode( void )
            System_abort("Gate failed");
        }
 }
-
-
-/*
- *  ======== main ========
- */
-
-/*
-int main(void)
-{
-    //Error_Block eb;
-    Error_init(&eb);
-
-    Board_initGeneral(); // calls SysCtlPeripheralEnable for all GPIO ports
-    Board_initGPIO();    // calls the GPIO_init function -> initialises
-
-    Board_initUART(); // initialise UART
-
-    // Setup TASK thread
-    Task_Params taskParams;
-    Task_Params_init(&taskParams);
-    taskParams.stackSize = TASKSTACKSIZE;
-    taskParams.arg0 = 1000;
-    taskParams.stack = &task0Stack;
-    taskParams.instance->name = "task";
-    taskParams.priority = 2;
-    Task_construct(&task0Struct, (Task_FuncPtr)motorFxn, &taskParams, NULL);
-
-
-
-    Types_FreqHz cpuFreq;
-    BIOS_getCpuFreq(&cpuFreq);
-
-    // Setup Clock SWI
-    Clock_Params clkParams;
-    Clock_Params_init(&clkParams);
-    clkParams.period = 10;
-    clkParams.startFlag = TRUE;
-
-
-    // Construct a periodic Clock Instance with period = 5 system time units
-    Clock_create((Clock_FuncPtr)clk0Fxn, 10, &clkParams, NULL);
-
-    clkParams.period = 10;
-    clkParams.startFlag = TRUE;
-    Clock_create((Clock_FuncPtr)clk1Fxn, 10, &clkParams, NULL);
-
-    clkParams.period = 5000;
-    clkParams.startFlag = TRUE;
-    Clock_create((Clock_FuncPtr)speedFxn, 5000, &clkParams, NULL);
-
-    clkParams.period = 10;
-    clkParams.startFlag = TRUE;
-    Clock_create((Clock_FuncPtr)accelFxn, 10, &clkParams, NULL);
-
-
-    //Mailbox_Params mbxParams;
-    MsgObj *msg = msg_mem;
-
-    int i;
-    queue = Queue_create(NULL, NULL);
-
-    // increment the pointer (memory region)
-    // increment the counter
-    for(i = 0; i < NUMSGS; msg++, i++) {
-        Queue_put(queue, &(msg->elem));
-    }
-
-
-    // Setup Semaphore
-    Semaphore_Params semParams;
-    Semaphore_Params_init(&semParams);
-    semParams.mode = Semaphore_Mode_BINARY;
-    Semaphore_construct(&semStruct, 0, &semParams);
-
-    semHandle = Semaphore_handle(&semStruct);
-
-
-
-    System_printf("Run------------------------------\n");
-
-    // Create GateHwi for critical section
-    GateHwi_Params_init(&gHwiprms);
-    gateHwi = GateHwi_create(&gHwiprms, NULL);
-
-    if (gateHwi == NULL)
-    {
-        System_abort("Gate failed");
-    }
-
-    BIOS_start();
-    return (0);
-}
-*/
-
-/* Add RPM into Message Queue */
-/*
-MsgObj *msg;
-int i;
-
-for(i = 0; i < NUMSGS; i++)
-{
-    msg = Queue_get(queue);
-    msg->rpm = rpm_actual;
-    Queue_put(queue, &msg);
-    Semaphore_post(semHandle);
-}
-*/
-
-//msg = Queue_get(queue);
-//msg->rpm = rpm_actual;
-//Queue_put(queue, &msg);
-//Semaphore_post(semHandle);
-/* end */
-
-//-------------------- PI controller
-//error = rpm_desired - rpm_actual;
-//GateHwi_leave(gateHwi, gateKey);

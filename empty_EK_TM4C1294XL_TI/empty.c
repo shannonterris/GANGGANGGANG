@@ -83,7 +83,6 @@
 #include <time.h>
 
 #include "ui/grlib_demo.h"
-#include "motorCode.h"
 
 #include "motor/motorCode.h"
 
@@ -232,7 +231,7 @@ int main(void)
 
     /* Start BIOS */
 
-    initMotorCode();
+    initMotor();
     BIOS_start();
 
     return (0);
