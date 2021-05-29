@@ -95,6 +95,8 @@ uint8_t motorStartStop = 1;
 Task_Struct task0Struct;
 Char task0Stack[TASKSTACKSIZE];
 
+Clock_Struct clockUpdateGraph;
+
 
 tCanvasWidget     g_sBackground;
 tPushButtonWidget g_sStartStopBttn;
@@ -143,48 +145,18 @@ void StartStopBttnPress(tWidget *psWidget)
     }
 }
 
+Void updateGraphUI()
+{
+    // INSERT CALL TO UI CODE HERE TO UPDATE THE GRAPH
+}
 
-
-//void ADC3_Init() //ADC0 on PE3
-//{
-//    //SysCtlPeripheralEnable( SYSCTL_PERIPH_ADC0 );
-//    //SysCtlPeripheralEnable( SYSCTL_PERIPH_GPIOE );
-//
-//    //Makes GPIO an INPUT and sets them to be ANALOG
-//    GPIOPinTypeADC( GPIO_PORTE_BASE, GPIO_PIN_3 );
-//
-//    //uint32_t ui32Base, uint32_t ui32SequenceNum, uint32_t ui32Trigger, uint32_t ui32Priority
-//    ADCSequenceConfigure(ADC0_BASE, 0, ADC_TRIGGER_ALWAYS, 0);
-//
-//    //uint32_t ui32Base, uint32_t ui32SequenceNum, uint32_t ui32Step, uint32_t ui32Config
-//    ADCSequenceStepConfigure( ADC0_BASE, 0, 0, ADC_CTL_IE | ADC_CTL_CH0 | ADC_CTL_END );
-//
-//    // Set oversampling
-////    ADCHardwareOversampleConfigure(ADC0_BASE, 64);
-//
-//    ADCSequenceEnable( ADC0_BASE, 0 );
-//
-//    ADCIntClear( ADC0_BASE, 0 );
-//
-//    current = (Current*) malloc(sizeof(Current));
-//}
-
-
-/*
- *  ======== heartBeatFxn ========
- *  Toggle the Board_LED0. The Task_sleep is determined by arg0 which
- *  is configured for the heartBeat Task instance.
- */
 Void heartBeatFxn(UArg arg0, UArg arg1)
 {
     initWidgets(&sContext);
     while (1) {
         SysCtlDelay(100);
         GPIO_toggle(Board_LED0);
-
         WidgetMessageQueueProcess();
-
-//        TouchScreenIntHandler
     }
 }
 
@@ -194,6 +166,7 @@ Void heartBeatFxn(UArg arg0, UArg arg1)
 int main(void)
 {
     Task_Params taskParams;
+    Clock_Params clockParams;
 
     /* Call board init functions */
     Board_initGeneral();
@@ -201,8 +174,15 @@ int main(void)
     Board_initI2C();
     PinoutSet(false, false);
 
+    /* Construct Clock for Updating of Graph Periodically (2Hz) */
+    Clock_Params_init(&clockParams);
+    clockParams.period = 500; // 2Hz
+    clockParams.startFlag = TRUE;
+    Clock_construct(&clockUpdateGraph, (Clock_FuncPtr)updateGraphUI, 1, &clockParams);
 
-    /* Construct heartBeat Task  thread */
+
+
+    /* Construct UI Task thread */
     Task_Params_init(&taskParams);
     taskParams.arg0 = 1000;
     taskParams.stackSize = TASKSTACKSIZE;
