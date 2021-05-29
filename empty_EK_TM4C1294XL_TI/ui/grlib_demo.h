@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "inc/hw_memmap.h"
 #include "inc/hw_nvic.h"
 #include "inc/hw_sysctl.h"
@@ -67,7 +69,7 @@ void OnGraphLight();
 //functions
 void initWidgets(tContext * sContext);
 void initUI(uint32_t systemClock, tContext * Context);
-
+void drawGraphPoint();
 
 uint32_t g_ui32SysClock;
 tContext sContext;
@@ -84,6 +86,12 @@ int g_numPlotPoints;
 int g_numPlotOverflow;
 // Global to be periodically set to update the graph
 bool updateGraph;
+// Global to indicate if the motor has been requested to run on UI side
+bool motorStartedUI;
+// Global to set the previous point
+float previousPoint;
+// Current data used for graphing
+float data_Graph;
 
 
 #endif /* GRLIB_DEMO_H_ */
