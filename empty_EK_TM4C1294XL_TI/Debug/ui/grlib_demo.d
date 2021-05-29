@@ -14,35 +14,35 @@ ui/grlib_demo.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/includ
 ui/grlib_demo.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/sys/_stdint.h
 ui/grlib_demo.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdbool.h
 ui/grlib_demo.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/string.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_memmap.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_nvic.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_sysctl.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_types.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/fpu.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/gpio.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/flash.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/sysctl.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/systick.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/uart.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/udma.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/rom.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/rom_map.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/grlib.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/widget.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/canvas.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/checkbox.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/container.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/pushbutton.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/radiobutton.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/slider.h
-ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/utils/ustdlib.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/inc/hw_memmap.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/inc/hw_nvic.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/inc/hw_sysctl.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/inc/hw_types.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/fpu.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/gpio.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/flash.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/sysctl.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/systick.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/uart.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/udma.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/rom.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/rom_map.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/grlib.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/widget.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/canvas.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/checkbox.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/container.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/pushbutton.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/radiobutton.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/slider.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/utils/ustdlib.h
 ui/grlib_demo.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdarg.h
 ui/grlib_demo.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/time.h
 ui/grlib_demo.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/abi_prefix.h
 ui/grlib_demo.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/xlocale/_time.h
 ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1/drivers/Kentec320x240x16_ssd2119_spi.h
 ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1/drivers/touch.h
-ui/grlib_demo.obj: C:/Users/shann/Documents/2021/GANGGANGGANG/empty_EK_TM4C1294XL_TI/images.h
+ui/grlib_demo.obj: D:/Working/empty_EK_TM4C1294XL_TI/images.h
 
 ../ui/grlib_demo.c:
 
@@ -72,49 +72,49 @@ C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdbool.h:
 
 C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/string.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_memmap.h:
+C:/ti/tivaware_c_series_2_1_4_178/inc/hw_memmap.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_nvic.h:
+C:/ti/tivaware_c_series_2_1_4_178/inc/hw_nvic.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_sysctl.h:
+C:/ti/tivaware_c_series_2_1_4_178/inc/hw_sysctl.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_types.h:
+C:/ti/tivaware_c_series_2_1_4_178/inc/hw_types.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/fpu.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/fpu.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/gpio.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/gpio.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/flash.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/flash.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/sysctl.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/sysctl.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/systick.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/systick.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/uart.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/uart.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/udma.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/udma.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/rom.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/rom.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/rom_map.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/rom_map.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/grlib.h:
+C:/ti/tivaware_c_series_2_1_4_178/grlib/grlib.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/widget.h:
+C:/ti/tivaware_c_series_2_1_4_178/grlib/widget.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/canvas.h:
+C:/ti/tivaware_c_series_2_1_4_178/grlib/canvas.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/checkbox.h:
+C:/ti/tivaware_c_series_2_1_4_178/grlib/checkbox.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/container.h:
+C:/ti/tivaware_c_series_2_1_4_178/grlib/container.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/pushbutton.h:
+C:/ti/tivaware_c_series_2_1_4_178/grlib/pushbutton.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/radiobutton.h:
+C:/ti/tivaware_c_series_2_1_4_178/grlib/radiobutton.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/slider.h:
+C:/ti/tivaware_c_series_2_1_4_178/grlib/slider.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/utils/ustdlib.h:
+C:/ti/tivaware_c_series_2_1_4_178/utils/ustdlib.h:
 
 C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdarg.h:
 
@@ -128,5 +128,5 @@ C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s
 
 C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1/drivers/touch.h:
 
-C:/Users/shann/Documents/2021/GANGGANGGANG/empty_EK_TM4C1294XL_TI/images.h:
+D:/Working/empty_EK_TM4C1294XL_TI/images.h:
 

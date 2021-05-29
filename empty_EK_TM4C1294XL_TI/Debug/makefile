@@ -13,18 +13,21 @@ ORDERED_OBJS += \
 "./EK_TM4C1294XL.obj" \
 "./empty.obj" \
 "./images.obj" \
-"./motorCode.obj" \
 "./drivers/Kentec320x240x16_ssd2119_spi.obj" \
 "./drivers/pinout.obj" \
 "./drivers/touch.obj" \
+"./motor/motorCode.obj" \
 "./ui/grlib_demo.obj" \
 "../EK_TM4C1294XL.cmd" \
 "../MotorLib.lib" \
 $(GEN_CMDS__FLAG) \
+-l"D:/Motor/MotorLib.lib" \
 -l"C:/ti/tivaware_c_series_2_1_4_178/grlib/ccs/Debug/grlib.lib" \
--l"C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/ccs/Debug/grlib.lib" \
--l"C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/usblib/ccs/Debug/usblib.lib" \
--l"C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/ccs/Debug/driverlib.lib" \
+-l"C:/ti/tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib" \
+-l"C:/ti/tivaware_c_series_2_1_4_178/grlib/ccs/Debug/grlib.lib" \
+-l"C:/ti/tirtos_tivac_2_16_01_14/products/TivaWare_C_Series-2.1.1.71b/grlib/ccs/Debug/grlib.lib" \
+-l"C:/ti/tirtos_tivac_2_16_01_14/products/TivaWare_C_Series-2.1.1.71b/usblib/ccs/Debug/usblib.lib" \
+-l"C:/ti/tirtos_tivac_2_16_01_14/products/TivaWare_C_Series-2.1.1.71b/driverlib/ccs/Debug/driverlib.lib" \
 -llibc.a \
 
 -include ../makefile.init
@@ -36,9 +39,11 @@ RMDIR := RMDIR /S/Q
 -include sources.mk
 -include subdir_vars.mk
 -include drivers/subdir_vars.mk
+-include motor/subdir_vars.mk
 -include ui/subdir_vars.mk
 -include subdir_rules.mk
 -include drivers/subdir_rules.mk
+-include motor/subdir_rules.mk
 -include ui/subdir_rules.mk
 -include objects.mk
 
@@ -170,8 +175,8 @@ empty_EK_TM4C1294XL_TI.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "EK_TM4C1294XL.obj" "empty.obj" "images.obj" "motorCode.obj" "drivers\Kentec320x240x16_ssd2119_spi.obj" "drivers\pinout.obj" "drivers\touch.obj" "ui\grlib_demo.obj" 
-	-$(RM) "EK_TM4C1294XL.d" "empty.d" "images.d" "motorCode.d" "drivers\Kentec320x240x16_ssd2119_spi.d" "drivers\pinout.d" "drivers\touch.d" "ui\grlib_demo.d" 
+	-$(RM) "EK_TM4C1294XL.obj" "empty.obj" "images.obj" "drivers\Kentec320x240x16_ssd2119_spi.obj" "drivers\pinout.obj" "drivers\touch.obj" "motor\motorCode.obj" "ui\grlib_demo.obj" 
+	-$(RM) "EK_TM4C1294XL.d" "empty.d" "images.d" "drivers\Kentec320x240x16_ssd2119_spi.d" "drivers\pinout.d" "drivers\touch.d" "motor\motorCode.d" "ui\grlib_demo.d" 
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
 	-@echo 'Finished clean'
 	-@echo ' '

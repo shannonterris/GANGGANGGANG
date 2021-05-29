@@ -125,5 +125,6 @@ GEN_OPTS__QUOTED :=
 SUBDIRS := \
 . \
 drivers \
+motor \
 ui \
 

@@ -17,8 +17,7 @@ LIB_SRCS += \
 C_SRCS += \
 ../EK_TM4C1294XL.c \
 ../empty.c \
-../images.c \
-../motorCode.c 
+../images.c 
 
 GEN_CMDS += \
 ./configPkg/linker.cmd 
@@ -33,8 +32,7 @@ GEN_MISC_DIRS += \
 C_DEPS += \
 ./EK_TM4C1294XL.d \
 ./empty.d \
-./images.d \
-./motorCode.d 
+./images.d 
 
 GEN_OPTS += \
 ./configPkg/compiler.opt 
@@ -42,8 +40,7 @@ GEN_OPTS += \
 OBJS += \
 ./EK_TM4C1294XL.obj \
 ./empty.obj \
-./images.obj \
-./motorCode.obj 
+./images.obj 
 
 GEN_MISC_DIRS__QUOTED += \
 "configPkg\" 
@@ -51,14 +48,12 @@ GEN_MISC_DIRS__QUOTED += \
 OBJS__QUOTED += \
 "EK_TM4C1294XL.obj" \
 "empty.obj" \
-"images.obj" \
-"motorCode.obj" 
+"images.obj" 
 
 C_DEPS__QUOTED += \
 "EK_TM4C1294XL.d" \
 "empty.d" \
-"images.d" \
-"motorCode.d" 
+"images.d" 
 
 GEN_FILES__QUOTED += \
 "configPkg\linker.cmd" \
@@ -67,7 +62,6 @@ GEN_FILES__QUOTED += \
 C_SRCS__QUOTED += \
 "../EK_TM4C1294XL.c" \
 "../empty.c" \
-"../images.c" \
-"../motorCode.c" 
+"../images.c" 
 
 

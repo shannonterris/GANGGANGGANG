@@ -12,18 +12,18 @@ drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cg
 drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/machine/_stdint.h
 drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/sys/_stdint.h
 drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdbool.h
-drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_gpio.h
-drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_ints.h
-drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_memmap.h
-drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_types.h
-drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/ssi.h
-drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/gpio.h
-drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/interrupt.h
-drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/sysctl.h
-drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/timer.h
-drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/rom.h
-drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/pin_map.h
-drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/grlib.h
+drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tivaware_c_series_2_1_4_178/inc/hw_gpio.h
+drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tivaware_c_series_2_1_4_178/inc/hw_ints.h
+drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tivaware_c_series_2_1_4_178/inc/hw_memmap.h
+drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tivaware_c_series_2_1_4_178/inc/hw_types.h
+drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/ssi.h
+drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/gpio.h
+drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/interrupt.h
+drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/sysctl.h
+drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/timer.h
+drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/rom.h
+drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tivaware_c_series_2_1_4_178/driverlib/pin_map.h
+drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/grlib.h
 drivers/Kentec320x240x16_ssd2119_spi.obj: C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1/drivers/Kentec320x240x16_ssd2119_spi.h
 
 ../drivers/Kentec320x240x16_ssd2119_spi.c:
@@ -50,29 +50,29 @@ C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/sys/_stdint.h:
 
 C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdbool.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_gpio.h:
+C:/ti/tivaware_c_series_2_1_4_178/inc/hw_gpio.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_ints.h:
+C:/ti/tivaware_c_series_2_1_4_178/inc/hw_ints.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_memmap.h:
+C:/ti/tivaware_c_series_2_1_4_178/inc/hw_memmap.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/inc/hw_types.h:
+C:/ti/tivaware_c_series_2_1_4_178/inc/hw_types.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/ssi.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/ssi.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/gpio.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/gpio.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/interrupt.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/interrupt.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/sysctl.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/sysctl.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/timer.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/timer.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/rom.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/rom.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/pin_map.h:
+C:/ti/tivaware_c_series_2_1_4_178/driverlib/pin_map.h:
 
-C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/grlib.h:
+C:/ti/tivaware_c_series_2_1_4_178/grlib/grlib.h:
 
 C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1/drivers/Kentec320x240x16_ssd2119_spi.h:
 
