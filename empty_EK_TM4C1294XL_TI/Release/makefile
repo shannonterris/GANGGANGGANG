@@ -13,16 +13,17 @@ ORDERED_OBJS += \
 "./EK_TM4C1294XL.obj" \
 "./empty.obj" \
 "./images.obj" \
+"./motorCode.obj" \
 "./drivers/Kentec320x240x16_ssd2119_spi.obj" \
-"./drivers/frame.obj" \
 "./drivers/pinout.obj" \
 "./drivers/touch.obj" \
 "./ui/grlib_demo.obj" \
 "../EK_TM4C1294XL.cmd" \
+"../MotorLib.lib" \
 $(GEN_CMDS__FLAG) \
--l"C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/grlib/ccs/Debug/grlib.lib" \
--l"C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/usblib/ccs/Debug/usblib.lib" \
--l"C:/ti/tirtos_tivac_2_16_00_08/products/TivaWare_C_Series-2.1.1.71b/driverlib/ccs/Debug/driverlib.lib" \
+-l"C:/ti/tirtos_tivac_2_16_01_14/products/TivaWare_C_Series-2.1.1.71b/grlib/ccs/Debug/grlib.lib" \
+-l"C:/ti/tirtos_tivac_2_16_01_14/products/TivaWare_C_Series-2.1.1.71b/usblib/ccs/Debug/usblib.lib" \
+-l"C:/ti/tirtos_tivac_2_16_01_14/products/TivaWare_C_Series-2.1.1.71b/driverlib/ccs/Debug/driverlib.lib" \
 -llibc.a \
 
 -include ../makefile.init
@@ -147,11 +148,11 @@ BIN_OUTPUTS__QUOTED += \
 
 
 # All Target
-all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+all: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 	@$(MAKE) --no-print-directory -Onone "empty_EK_TM4C1294XL_TI.out"
 
 # Tool invocations
-empty_EK_TM4C1294XL_TI.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+empty_EK_TM4C1294XL_TI.out: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
 	"C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me -O2 --define=ccs="ccs" --define=PART_TM4C1294NCPDT --define=ccs --define=TIVAWARE -g --gcc --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi -z -m"empty_EK_TM4C1294XL_TI.map" --heap_size=0 --stack_size=512 -i"C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/lib" -i"C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="empty_EK_TM4C1294XL_TI_linkInfo.xml" --rom_model -o "empty_EK_TM4C1294XL_TI.out" $(ORDERED_OBJS)
@@ -168,8 +169,8 @@ empty_EK_TM4C1294XL_TI.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "EK_TM4C1294XL.obj" "empty.obj" "images.obj" "drivers\Kentec320x240x16_ssd2119_spi.obj" "drivers\frame.obj" "drivers\pinout.obj" "drivers\touch.obj" "ui\grlib_demo.obj" 
-	-$(RM) "EK_TM4C1294XL.d" "empty.d" "images.d" "drivers\Kentec320x240x16_ssd2119_spi.d" "drivers\frame.d" "drivers\pinout.d" "drivers\touch.d" "ui\grlib_demo.d" 
+	-$(RM) "EK_TM4C1294XL.obj" "empty.obj" "images.obj" "motorCode.obj" "drivers\Kentec320x240x16_ssd2119_spi.obj" "drivers\pinout.obj" "drivers\touch.obj" "ui\grlib_demo.obj" 
+	-$(RM) "EK_TM4C1294XL.d" "empty.d" "images.d" "motorCode.d" "drivers\Kentec320x240x16_ssd2119_spi.d" "drivers\pinout.d" "drivers\touch.d" "ui\grlib_demo.d" 
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
 	-@echo 'Finished clean'
 	-@echo ' '

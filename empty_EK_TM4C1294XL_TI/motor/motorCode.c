@@ -83,8 +83,7 @@
 #include "inc/hw_ints.h"
 #include "driverlib/gpio.h"
 
-#define TASKSTACKSIZE   2048
-#define TASK2STACK      512
+//#define TASKSTACKSIZE   512
 #define TOTAL_POSITIONS 12
 #define SAMPLE_SIZE 100
 #define ACCEL_SIZE 100
@@ -112,6 +111,9 @@ Clock_Struct clkStruct;
 Clock_Handle clkHandle;
 
 Hwi_Handle hallA, hallB, hallC;
+
+Hwi_Handle adc0, adc1;
+
 Error_Block eb;
 Event_Struct evtStruct;
 Event_Handle evtHandle;
@@ -123,9 +125,9 @@ GateHwi_Params gHwiprms;
 
 Timer_Handle myTimer;
 Timer_Params timerParams;
-Task_Struct task0Struct;
-Char task0Stack[TASKSTACKSIZE];
-Char task1Stack[TASK2STACK];
+
+//Task_Struct task0Struct;
+//Char task0Stack[TASKSTACKSIZE];
 
 Swi_Handle SwiHandle;
 
@@ -136,7 +138,6 @@ uint32_t g_ui32SysClock;
 UART_Handle uart;
 
 bool success, print_from_HWI, print_from_motor, print_from_clock;
-bool motorRunning = false;
 
 volatile int motor = 0;
 volatile int prevMotor = 0;
@@ -190,6 +191,10 @@ volatile float rpm_sum_c = 0;
 
 volatile float rpm_buf[5];
 
+volatile bool motorRunning;
+
+volatile int dummy = 0;
+
 
 /**
  * !! HWI THREAD !!
@@ -225,6 +230,11 @@ void  HallFxn()
     //print_from_motor = true;
 }
 
+void ADCFxn()
+{
+
+}
+
 /**
  * Setup GPIO interrupts (HWI) on hall effect sensor lines
  */
@@ -242,10 +252,9 @@ void initHallABC()
     // ISR vector number 89 for port N -> Hall_C is port N pin 2
     hallC = Hwi_create(INT_GPION_TM4C129, (Hwi_FuncPtr)HallFxn, &hwiParams, NULL);
 
-
     if(hallA == NULL || hallB == NULL || hallC == NULL)
     {
-        System_abort("Hwi creation failed...");
+        System_abort("Hall HWI creation failed...");
     }
 
     /* GPIO_enableInt(Board_LED0); */
@@ -263,6 +272,18 @@ void initHallABC()
     GPIODirModeSet(GPIO_PORTH_BASE, GPIO_PIN_2, GPIO_DIR_MODE_IN);
     GPIODirModeSet(GPIO_PORTN_BASE, GPIO_PIN_2, GPIO_DIR_MODE_IN);
 
+    //------- ADC! //
+    // ISR vector number 20 for Port E -> AIN0 (channel 0) is port E3
+    adc0 = Hwi_create(INT_GPIOE_TM4C123, (Hwi_FuncPtr)ADCFxn, &hwiParams, NULL);
+
+    if (adc0 == NULL)
+    {
+        System_abort("ADC HWI creation failed...");
+    }
+
+    GPIO_enableInt(ADC_0);
+    GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_3, GPIO_RISING_EDGE);
+    GPIODirModeSet(GPIO_PORTE_BASE, GPIO_PIN_3, GPIO_DIR_MODE_IN);
 
     System_printf("Done initHallABC\n");
     System_flush();
@@ -281,6 +302,8 @@ void readABC()
 
 
 UInt32 time;
+
+
 
 /*
  * !! TASK THREAD !!
@@ -333,36 +356,32 @@ void motorFxn(UArg arg0, UArg arg1)
     }
 
     enableMotor();
-    setDuty(6);
+    setDuty(15);
     readABC();
-    updateMotor(hA, hB, hC); // first motor drive
+    updateMotor(hA, hB, hC);
+
+    UInt state;
+
+    motorRunning = true;
 
     while(1)
     {
+        // Wait
+        //Semaphore_pend(semHandle, BIOS_WAIT_FOREVER);
         if (print_from_clock == true)
         {
-            //sprintf(speed_buf, "Output: %f\n\r", acceleration);
-            //UART_write(uart, speed_buf, sizeof(speed_buf));
-
-
+            /*
+             * Motor state is controlled
+             */
+            sprintf(speed_buf, "Test: %d\n\r", dummy);
+            UART_write(uart, speed_buf, sizeof(speed_buf));
             //int32_t rpm_print = (int32_t)rpm_avg;
-            UART_write(uart, &rpm_avg, sizeof(rpm_avg));
+            //UART_write(uart, &rpm_avg, sizeof(rpm_avg));
             //int32_t rpm_print_act = (int32_t)rpm_actual;
-            //UART_write(uart, &rpm_actual, sizeof(rpm_actual));
-
-            //UART_write(uart, &acceleration, sizeof(acceleration));
-            UART_write(uart, &acceleration_avg, sizeof(acceleration_avg));
-
-
-            //UART_write(uart, &acceleration, sizeof(acceleration));
-            //UART_write(uart, &rpm_avg_c, sizeof(rpm_avg_c));
-            //UART_write(uart, &rpm_actual_c, sizeof(rpm_actual_c));
-            //sprintf(speed_buf, "RPM Actual: %f  RPM Avg: %f\n\r", rpm_actual, rpm_avg);
-            //UART_write(uart, &speed_buf, sizeof(speed_buf));
-              //sprintf(speed_buf, "Delta RPM: %f\n\r", delta_rpm);
-              //UART_write(uart, &speed_buf, sizeof(speed_buf));
+            //UART_write(uart, &rpm_actual, sizeof(rpm_actual))
             print_from_clock = false;
         }
+
     }
 }
 
@@ -379,44 +398,6 @@ void motorFxn(UArg arg0, UArg arg1)
 Void clk0Fxn(UArg arg0)
 {
     clock_count++;
-    // fill the buffer
-    //rpm_buf[clock_count] = rpm_actual;
-
-    // buffer is full
-    /*
-    if (clock_count < 5)
-    {
-        rpm_buf[clock_count] = rpm_actual;
-    }
-    else //(clock_count > 5)
-    {
-        int i;
-
-        // shift every element to the right by 1
-        for(i = 1; i < 5; i++)
-        {
-            rpm_buf[i] = rpm_buf[i - 1];
-        }
-
-        // set the first element to current rpm
-        rpm_buf[0] = rpm_actual;
-
-
-        int j;
-
-        // add the elements of the buffer
-        for(j = 0; j < 5; j++)
-        {
-            rpm_sum = rpm_buf[j] + rpm_sum;
-        }
-
-        // find average rpm
-        rpm_avg = rpm_sum/5;
-        rpm_sum = 0;
-    }
-    */
-
-    //rpm_actual = rotation/delta_time;
 
     rpm_sum = rpm_actual + rpm_sum;
     acceleration_sum = acceleration + acceleration_sum;
@@ -475,20 +456,92 @@ void accelFxn(UArg arg0)
 
 }
 
+
+void waitFxn(UArg arg0)
+{
+    //Semaphore_post(semHandle);
+}
+
 /**
  * ADC
  */
 
-void ADC0_Init()
+#define ADC_SEQ 1 // sequencer 1 -> 4 samples
+#define ADC_STEP 0
+
+void ADC0_Init() //ADC0 on PE3
 {
-    //SysCtlPeripheralEnable( SYSCTL_PERIPH_ACD0 );
-    //SysCtlPeripheralEnable( SYSCTL_PERIPH_GPIOE );
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+
+     /*
+     *  GPIOPinTypeADC configures Port E Pin 3 for use as an
+     *  ADC converter input.
+     *
+     *  Lecture - Makes GPIO an input and sets them to analog
+     */
+    GPIOPinTypeADC(GPIO_PORTE_BASE, GPIO_PIN_3);
+
+    /*
+     *  Configures the trigger source and priority of a sample
+     *  sequence.
+     *  1. base: base address of the ADC module
+     *  2. sequenceNum: the sample sequence number
+     *  3. trigger source that initiates sample sequence
+     *  4. priority - relative priority of the sample sequence
+     *                with other sample sequences
+     */
+    ADCSequenceConfigure(ADC0_BASE, ADC_SEQ, ADC_TRIGGER_ALWAYS, 0);
 
 
+    /*
+     * Configure a step of the sample sequencer
+     * 1. Base address of the ADC module
+     * 2. Sample sequence number
+     * 3. Step to be configured
+     * 4. Configuration of this step:
+     *      - Select channel 0 (AIN0)
+     *      - Defined as the last in the sequence (ADC_CTL_END)
+     *      - cause an interrupt when complete (ADC_CTL_IE)
+     */
+    ADCSequenceStepConfigure(ADC0_BASE, ADC_SEQ, ADC_STEP, ADC_CTL_IE |
+                             ADC_CTL_CH0 | ADC_CTL_END);
+
+    /*
+     * Enable a sample sequence. Allow specified sample sequence
+     * to be captured when trigger is detected.
+     */
+    ADCSequenceEnable(ADC0_BASE, ADC_SEQ);
+
+    /*
+     * Clears sample sequence interrupt source.
+     */
+    ADCIntClear(ADC0_BASE, ADC_SEQ);
 }
 
-void initMotorCode( void )
+
+
+int getSpeed( void )
 {
+    return (int) rpm_avg;
+}
+
+void setSpeed( int rpm_ui )
+{
+    rpm_desired = rpm_ui;
+}
+
+void startMotor( bool UI_motorRun )
+{
+    motorRunning = UI_motorRun;
+}
+
+
+void initMotor( void )
+{
+
+    ADC0_Init();
+
     Error_init(&eb);
 
        Board_initGeneral(); // calls SysCtlPeripheralEnable for all GPIO ports
@@ -497,16 +550,16 @@ void initMotorCode( void )
        Board_initUART(); // initialise UART
 
        /* Setup TASK thread */
+       /*
        Task_Params taskParams;
        Task_Params_init(&taskParams);
        taskParams.stackSize = TASKSTACKSIZE;
        taskParams.arg0 = 1000;
        taskParams.stack = &task0Stack;
-       taskParams.instance->name = "task";
-       taskParams.priority = 2;
+       //taskParams.instance->name = "task";
+       taskParams.priority = 1;
        Task_construct(&task0Struct, (Task_FuncPtr)motorFxn, &taskParams, NULL);
-
-
+        */
 
        Types_FreqHz cpuFreq;
        BIOS_getCpuFreq(&cpuFreq);
@@ -531,6 +584,12 @@ void initMotorCode( void )
        clkParams.period = 10;
        clkParams.startFlag = TRUE;
        Clock_create((Clock_FuncPtr)accelFxn, 10, &clkParams, NULL);
+
+       clkParams.period = 10;
+       clkParams.startFlag = TRUE;
+       Clock_create((Clock_FuncPtr)waitFxn, 10, &clkParams, NULL);
+
+       //clkParams.period =
 
        /* Setup mailbox buffer for filtering */
 
@@ -557,6 +616,13 @@ void initMotorCode( void )
        semHandle = Semaphore_handle(&semStruct);
        /* End Sem code */
 
+       Event_construct(&evtStruct, NULL);
+       evtHandle = Event_handle(&evtStruct);
+
+       if (evtHandle == NULL)
+       {
+           System_abort("Event creation failed");
+       }
 
        System_printf("Run------------------------------\n");
 
@@ -569,120 +635,3 @@ void initMotorCode( void )
            System_abort("Gate failed");
        }
 }
-
-
-/*
- *  ======== main ========
- */
-
-/*
-int main(void)
-{
-    //Error_Block eb;
-    Error_init(&eb);
-
-    Board_initGeneral(); // calls SysCtlPeripheralEnable for all GPIO ports
-    Board_initGPIO();    // calls the GPIO_init function -> initialises
-
-    Board_initUART(); // initialise UART
-
-    // Setup TASK thread
-    Task_Params taskParams;
-    Task_Params_init(&taskParams);
-    taskParams.stackSize = TASKSTACKSIZE;
-    taskParams.arg0 = 1000;
-    taskParams.stack = &task0Stack;
-    taskParams.instance->name = "task";
-    taskParams.priority = 2;
-    Task_construct(&task0Struct, (Task_FuncPtr)motorFxn, &taskParams, NULL);
-
-
-
-    Types_FreqHz cpuFreq;
-    BIOS_getCpuFreq(&cpuFreq);
-
-    // Setup Clock SWI
-    Clock_Params clkParams;
-    Clock_Params_init(&clkParams);
-    clkParams.period = 10;
-    clkParams.startFlag = TRUE;
-
-
-    // Construct a periodic Clock Instance with period = 5 system time units
-    Clock_create((Clock_FuncPtr)clk0Fxn, 10, &clkParams, NULL);
-
-    clkParams.period = 10;
-    clkParams.startFlag = TRUE;
-    Clock_create((Clock_FuncPtr)clk1Fxn, 10, &clkParams, NULL);
-
-    clkParams.period = 5000;
-    clkParams.startFlag = TRUE;
-    Clock_create((Clock_FuncPtr)speedFxn, 5000, &clkParams, NULL);
-
-    clkParams.period = 10;
-    clkParams.startFlag = TRUE;
-    Clock_create((Clock_FuncPtr)accelFxn, 10, &clkParams, NULL);
-
-
-    //Mailbox_Params mbxParams;
-    MsgObj *msg = msg_mem;
-
-    int i;
-    queue = Queue_create(NULL, NULL);
-
-    // increment the pointer (memory region)
-    // increment the counter
-    for(i = 0; i < NUMSGS; msg++, i++) {
-        Queue_put(queue, &(msg->elem));
-    }
-
-
-    // Setup Semaphore
-    Semaphore_Params semParams;
-    Semaphore_Params_init(&semParams);
-    semParams.mode = Semaphore_Mode_BINARY;
-    Semaphore_construct(&semStruct, 0, &semParams);
-
-    semHandle = Semaphore_handle(&semStruct);
-
-
-
-    System_printf("Run------------------------------\n");
-
-    // Create GateHwi for critical section
-    GateHwi_Params_init(&gHwiprms);
-    gateHwi = GateHwi_create(&gHwiprms, NULL);
-
-    if (gateHwi == NULL)
-    {
-        System_abort("Gate failed");
-    }
-
-    BIOS_start();
-    return (0);
-}
-*/
-
-/* Add RPM into Message Queue */
-/*
-MsgObj *msg;
-int i;
-
-for(i = 0; i < NUMSGS; i++)
-{
-    msg = Queue_get(queue);
-    msg->rpm = rpm_actual;
-    Queue_put(queue, &msg);
-    Semaphore_post(semHandle);
-}
-*/
-
-//msg = Queue_get(queue);
-//msg->rpm = rpm_actual;
-//Queue_put(queue, &msg);
-//Semaphore_post(semHandle);
-/* end */
-
-//-------------------- PI controller
-//error = rpm_desired - rpm_actual;
-//GateHwi_leave(gateHwi, gateKey);

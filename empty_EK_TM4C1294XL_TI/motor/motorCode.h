@@ -17,6 +17,9 @@ void clk1Fxn(UArg arg0);
 void speedFxn(UArg arg0);
 void accelFxn(UArg arg0);
 void ADC0_Init();
-void initMotorCode(void);
+int getSpeed(void);
+void setSpeed(void);
+void startMotor(bool motorRun);
+void initMotor(void);
 
 #endif /* MOTORCODE_H_ */

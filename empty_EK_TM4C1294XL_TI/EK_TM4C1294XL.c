@@ -302,7 +302,14 @@ GPIO_PinConfig gpioPinConfigs[] = {
     /* GPIO_HALL_B */
     GPIOTiva_PH_2 | GPIO_CFG_INPUT,
     /* GPIO_HALL_C */
-    GPIOTiva_PN_2 | GPIO_CFG_INPUT
+    GPIOTiva_PN_2 | GPIO_CFG_INPUT,
+
+
+    //--------- ADC //
+    /* GPIO AIN 0 (channel 0) for ADC 0 */
+    GPIOTiva_PE_3 | GPIO_CFG_INPUT
+
+
 };
 
 /*
@@ -441,6 +448,7 @@ const PWM_Config PWM_config[] = {
     },
     {NULL, NULL, NULL}
 };
+*/
 
 */
 

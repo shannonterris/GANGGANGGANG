@@ -7,7 +7,7 @@
         <srcFile name="package/cfg/empty_pem4f.c"/>
     </sources>
     <configscripts>
-        <srcFile name="C:/ti/rtos_ws/empty_EK_TM4C1294XL_TI/empty.cfg"/>
+        <srcFile name="D:/Working/empty_EK_TM4C1294XL_TI/empty.cfg"/>
     </configscripts>
     <makefiles>
         <srcFile name="package.mak" src="package.bld"/>
@@ -20,12 +20,12 @@
     </makefiles>
     <targets>
         <target name="ti.targets.arm.elf.M4F"
-            version="ti.targets.arm.elf.M4F{1,0,18.12,2"
-            rawVersion="18.12.2"
+            version="ti.targets.arm.elf.M4F{1,0,20.2,4"
+            rawVersion="20.2.4"
             platform="ti.platforms.tiva:TM4C1294NCPDT:1"
             isa="v7M4"
             suffix="em4f"
-            rootDir="C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.12.2.LTS"
+            rootDir="C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS"
             os="undefined"
             rts="ti.targets.arm.rtsarm">
             <model endian="little"
@@ -44,7 +44,7 @@
         isPartial="false"
         xCfgScript="package/cfg/empty_pem4f.cfg"
         xCfgPrefix="package/cfg/empty_pem4f"
-        cfgScript="C:/ti/rtos_ws/empty_EK_TM4C1294XL_TI/empty.cfg"
+        cfgScript="D:/Working/empty_EK_TM4C1294XL_TI/empty.cfg"
         cfgArgs="null"
         />
     </configurations>
@@ -56,7 +56,7 @@
         profile="release"
         xCfgScript="package/cfg/empty_pem4f.cfg"
         xCfgPrefix="package/cfg/empty_pem4f"
-        cfgScript="C:/ti/rtos_ws/empty_EK_TM4C1294XL_TI/empty.cfg"
+        cfgScript="D:/Working/empty_EK_TM4C1294XL_TI/empty.cfg"
         cfgArgs="null"
         />
     </executables>

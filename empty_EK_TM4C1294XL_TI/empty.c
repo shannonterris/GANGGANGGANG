@@ -84,16 +84,18 @@
 
 #include "ui/grlib_demo.h"
 
+#include "motor/motorCode.h"
+
 
 uint8_t motorStartStop = 1;
 
 /* Board Header file */
 #include "Board.h"
 
-#define TASKSTACKSIZE   1024
+//#define TASKSTACKSIZE   512
 
-Task_Struct task0Struct;
-Char task0Stack[TASKSTACKSIZE];
+//Task_Struct task0Struct;
+//Char task0Stack[TASKSTACKSIZE];
 
 
 tCanvasWidget     g_sBackground;
@@ -193,6 +195,7 @@ Void heartBeatFxn(UArg arg0, UArg arg1)
  */
 int main(void)
 {
+    initMotor();
     Task_Params taskParams;
 
     /* Call board init functions */
@@ -203,12 +206,14 @@ int main(void)
 
 
     /* Construct heartBeat Task  thread */
+    /*
     Task_Params_init(&taskParams);
     taskParams.arg0 = 1000;
     taskParams.stackSize = TASKSTACKSIZE;
     taskParams.stack = &task0Stack;
+    //taskParams.priority = 0;
     Task_construct(&task0Struct, (Task_FuncPtr)heartBeatFxn, &taskParams, NULL);
-
+    */
     // Turn on user LED
     GPIO_write(Board_LED0, Board_LED_ON);
 
@@ -228,6 +233,7 @@ int main(void)
     System_flush();
 
     /* Start BIOS */
+
     BIOS_start();
 
     return (0);
