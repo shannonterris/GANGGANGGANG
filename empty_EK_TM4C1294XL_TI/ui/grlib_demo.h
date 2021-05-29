@@ -67,7 +67,7 @@ void OnGraphLight();
 //functions
 void initWidgets(tContext * sContext);
 void initUI(uint32_t systemClock, tContext * Context);
-
+void drawGraphPoint();
 
 uint32_t g_ui32SysClock;
 tContext sContext;
@@ -86,6 +86,8 @@ int g_numPlotOverflow;
 bool updateGraph;
 // Global to indicate if the motor has been requested to run on UI side
 bool motorStartedUI;
+// Global to set the previous point
+float previousPoint;
 
 
 #endif /* GRLIB_DEMO_H_ */

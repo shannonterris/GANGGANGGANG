@@ -99,18 +99,14 @@ Clock_Struct clockUpdateGraph;
 
 Void updateGraphUI()
 {
-    // check if currently drawing graph
-    if (g_drawingGraph) {
-        // INSERT CALL TO UI CODE HERE TO UPDATE THE GRAPH
-    }
+    // TODO potentially change this to trigger events instead of using a bool?????
+    updateGraph = true;
 }
 
 Void heartBeatFxn(UArg arg0, UArg arg1)
 {
     initWidgets(&sContext);
     while (1) {
-        SysCtlDelay(100);
-        GPIO_toggle(Board_LED0);
         WidgetMessageQueueProcess();
     }
 }
@@ -129,9 +125,9 @@ int main(void)
     Board_initI2C();
     PinoutSet(false, false);
 
-    /* Construct Clock for Updating of Graph Periodically (2Hz) */
+    /* Construct Clock for Updating of Graph Periodically (10Hz) */
     Clock_Params_init(&clockParams);
-    clockParams.period = 500; // 2Hz
+    clockParams.period = 100; // 10Hz
     clockParams.startFlag = TRUE;
     Clock_construct(&clockUpdateGraph, (Clock_FuncPtr)updateGraphUI, 1, &clockParams);
 

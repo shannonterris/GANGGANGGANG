@@ -32,11 +32,19 @@
 # define LIGHT 5
 
 // Graph bounds
-#define X_GRAPH 20
+#define X_GRAPH 0
 #define Y_GRAPH 35
-#define WIDTH_GRAPH 280
+#define WIDTH_GRAPH 320
 #define HEIGHT_GRAPH 140
-#define MAX_PLOT_SAMPLES 60 // If sampling at 2Hz (max of 30sec)
+#define MAX_PLOT_SAMPLES 300 // If sampling at 10Hz (max of 30sec)
+
+int graphIntMax;
+int graphIntMin;
+
+int32_t x_graph_step = 1;
+int32_t x_graph_start = 10;
+int32_t y_graph_step;
+int32_t y_graph_max = 50;
 
 //*****************************************************************************
 //
@@ -441,20 +449,61 @@ void OnSettingCurrent() {
 
 char graphMin[5];
 char graphMax[5];
+
+
 void drawGraphPoint() {
     // Reset graph when maximum plot samples has been reached
     if (g_numPlotPoints == MAX_PLOT_SAMPLES) {
         g_numPlotPoints = 0;
         g_numPlotOverflow++;
+        // Redraw Graph
         WidgetPaint((tWidget *) &g_sGraph);
         WidgetMessageQueueProcess();
-        sprintf(graphMin, "%d", g_numPlotOverflow*30); // Times by 30 (plot max)
+
+        // Draw Graph
+        GrStringDraw(&sContext, "Time", -1, 140, 181, false);
+        GrLineDrawV(&sContext, 10, 45, 180);
+        GrLineDrawH(&sContext, 10, 305, 180);
+        GrLineDraw(&sContext, 10, 45, 8,50);
+        GrLineDraw(&sContext, 10, 45, 12, 50);
+        GrLineDraw(&sContext, 305, 180, 303, 178);
+        GrLineDraw(&sContext, 305, 180, 303, 182);
+
         GrStringDraw(&sContext, graphMin, -1, 10, 181, false);
         GrStringDraw(&sContext, graphMax, -1, 5, 30, false);
+        GrFlush(&sContext);
         return;
     }
-}
 
+    // somehow need to get the currentPoint to plot
+    // float currentPoint = something_here
+
+    // graphMax - graphMin is the space between
+    // the physical space between is 135
+
+
+    int32_t x1_max = 10;
+    int32_t x2_max = 305;
+    int32_t y1_max = 50;
+
+    int32_t x1 = (g_numPlotPoints * x_graph_step) + x_graph_start;
+    int32_t x2 = (g_numPlotPoints + 1) * x_graph_step + x_graph_start;
+
+    // Draw Current Value
+    static char currentValue[30];
+    sprintf(currentValue, "%d", x2);
+    GrStringDrawCentered(&sContext, "Value:", -1, 210, 15, true);
+    GrStringDrawCentered(&sContext, currentValue, -1, 270, 15, true);
+    // Draw line
+    GrLineDrawH(&sContext, x1, x2, y1_max);
+    g_numPlotPoints++;
+
+    // Save position of previous sample
+    // previousPoint = currentPoint;
+    // Set to false so you can continue to process the exit button
+    updateGraph = false;
+
+}
 
 //*****************************************************************************
 // Function to create generic graphs page
@@ -463,7 +512,6 @@ void drawGraphPoint() {
 void OnGraphsPage(char * title, int yMin, int yMax) {
     // Remove Graph Main Menu
     WidgetRemove((tWidget *) &g_sGraphsMainPage);
-
     //
     // Add and draw the new panel. Draw the title of the graph
     //
@@ -471,6 +519,15 @@ void OnGraphsPage(char * title, int yMin, int yMax) {
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sGraphPage);
     PushButtonTextSet((tPushButtonWidget *)&g_sGraphTitle, title);
     WidgetMessageQueueProcess();
+
+    graphIntMax = yMax;
+    graphIntMin = yMin;
+
+    // Draw the y-axis limits
+    sprintf(graphMin, "%d", yMin);
+    sprintf(graphMax, "%d", yMax);
+    // Set step scale for y-axis
+    y_graph_step = (HEIGHT_GRAPH - 5) / (graphIntMax - graphIntMin);
 
     // Draw the graph
     GrStringDraw(&sContext, "Time", -1, 140, 181, false);
@@ -480,18 +537,18 @@ void OnGraphsPage(char * title, int yMin, int yMax) {
     GrLineDraw(&sContext, 10, 45, 12, 50);
     GrLineDraw(&sContext, 305, 180, 303, 178);
     GrLineDraw(&sContext, 305, 180, 303, 182);
-
-
-    // Draw the y-axis limits
-    sprintf(graphMin, "%d", yMin);
-    sprintf(graphMax, "%d", yMax);
     GrStringDraw(&sContext, graphMin, -1, 10, 181, false);
-    GrStringDraw(&sContext, graphMax, -1, 5, 28, false);
-
-    // Set global pointer to data
+    GrStringDraw(&sContext, graphMax, -1, 5, 30, false);
+    // Set global pointer to data TODO
 
     // Set global to start drawing graph
     g_drawingGraph = 1;
+    while (g_drawingGraph) {
+        if(updateGraph) { // Update graph at 10Hz
+            drawGraphPoint();
+        }
+        WidgetMessageQueueProcess();
+    }
 }
 
 void OnGraphSpeed() {
@@ -546,6 +603,8 @@ void initUI(uint32_t systemClock, tContext * Context) {
     updateGraph = false;
     // Start motor on start up
     motorStartedUI = false;
+    previousPoint = 0;
+    // currentPoint = 0;
 }
 
 //*****************************************************************************
