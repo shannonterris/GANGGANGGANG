@@ -214,7 +214,7 @@ RectangularButton(g_sGraphTitle, &g_sGraphPage, 0, 0,
                     ClrBlack, ClrBlack, ClrWhite, ClrWhite,
                    g_psFontCmss18b, "Graphing", 0, 0, 0, 0, 0);
 RectangularButton(g_sGraphExit, &g_sGraphPage, 0, 0,
-                  &g_sKentec320x240x16_SSD2119, 10, 200, 300, 40,
+                  &g_sKentec320x240x16_SSD2119, 10, 200, 300, 30,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                     PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                     ClrPowderBlue, ClrBlack, ClrWhite, ClrWhite,
@@ -294,7 +294,7 @@ OnGraphsMain(tWidget *psWidget)
     if (g_drawingGraph) {
         g_drawingGraph = 0;
         g_numPlotPoints = 0;
-        g_numPlotOverflow = 0;
+        g_numPlotOverflow = 1;
     }
 
     //
@@ -457,11 +457,12 @@ float float_rand( float min, float max )
     return min + scale * ( max - min );      /* [min, max] */
 }
 
+char maxTime[30];
+char minTime[30];
 void drawGraphPoint() {
     // Reset graph when maximum plot samples has been reached
     if (g_numPlotPoints == MAX_PLOT_SAMPLES) {
         g_numPlotPoints = 0;
-        g_numPlotOverflow++;
         // Redraw Graph
         WidgetPaint((tWidget *) &g_sGraph);
         WidgetMessageQueueProcess();
@@ -475,8 +476,16 @@ void drawGraphPoint() {
         GrLineDraw(&sContext, 305, 180, 303, 178);
         GrLineDraw(&sContext, 305, 180, 303, 182);
 
-        GrStringDraw(&sContext, graphMin, -1, 10, 181, false);
+        GrStringDraw(&sContext, minTime, -1, 10, 181, false);
         GrStringDraw(&sContext, graphMax, -1, 5, 30, false);
+        sprintf(minTime, "%ds", g_numPlotOverflow*30); // Times by 30 as the overflow occurs at 30 seconds
+        g_numPlotOverflow++;
+        sprintf(maxTime, "%ds", g_numPlotOverflow*30); // Times by 30 as the overflow occurs at 30 seconds
+
+        GrStringDraw(&sContext, "           ", -1, 10, 181, true);
+        GrStringDraw(&sContext, "           ", -1, 290, 181, true);
+        GrStringDraw(&sContext, minTime, -1, 10, 181, false);
+        GrStringDraw(&sContext, maxTime, -1, 290, 181, false);
         GrFlush(&sContext);
         return;
     }
@@ -497,7 +506,7 @@ void drawGraphPoint() {
     static char currentValue[30];
     sprintf(currentValue, "%5.2f", currentPoint);
     GrStringDrawCentered(&sContext, "Value:", -1, 210, 15, true);
-    GrStringDrawCentered(&sContext, "            ", -1, 270, 15, true);
+    GrStringDrawCentered(&sContext, "          ", -1, 270, 15, true);
     GrStringDrawCentered(&sContext, currentValue, -1, 270, 15, true);
     // Draw line
     GrLineDraw(&sContext, x1, y1, x2, y2);
@@ -542,11 +551,14 @@ void OnGraphsPage(char * title, int yMin, int yMax) {
     GrLineDraw(&sContext, 10, 45, 12, 50);
     GrLineDraw(&sContext, 305, 180, 303, 178);
     GrLineDraw(&sContext, 305, 180, 303, 182);
-    GrStringDraw(&sContext, graphMin, -1, 10, 181, false);
     GrStringDraw(&sContext, graphMax, -1, 5, 30, false);
+
+    GrStringDraw(&sContext, "0s", -1, 10, 181, false);
+    GrStringDraw(&sContext, "30s", -1, 290, 181, false);
     // Set global pointer to data TODO
     data_Graph = 10.000;
     previousPoint = 0;
+    g_numPlotOverflow = 1;
 
     // Set global to start drawing graph
     g_drawingGraph = 1;
