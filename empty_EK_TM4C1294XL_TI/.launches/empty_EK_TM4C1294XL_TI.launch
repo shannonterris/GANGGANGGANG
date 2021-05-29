@@ -4,7 +4,7 @@
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROGRAM.target_config.ccxml.Stellaris In-Circuit Debug Interface_0/CORTEX_M4_0" value="${build_artifact:empty_EK_TM4C1294XL_TI}"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROJECT.target_config.ccxml.Stellaris In-Circuit Debug Interface_0/CORTEX_M4_0" value="empty_EK_TM4C1294XL_TI"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_TARGET_CONFIG" value="${target_config_active_default:empty_EK_TM4C1294XL_TI}"/>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.target_config.ccxml.Stellaris In-Circuit Debug Interface_0/CORTEX_M4_0" value="D:\GitHub\GANGGANGGANG\empty_EK_TM4C1294XL_TI\Debug\empty_EK_TM4C1294XL_TI.out"/>
+<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.target_config.ccxml.Stellaris In-Circuit Debug Interface_0/CORTEX_M4_0" value="D:\Working\empty_EK_TM4C1294XL_TI\Debug\empty_EK_TM4C1294XL_TI.out"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/empty_EK_TM4C1294XL_TI"/>
 </listAttribute>

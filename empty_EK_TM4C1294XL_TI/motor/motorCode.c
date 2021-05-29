@@ -283,6 +283,8 @@ void readABC()
 
 UInt32 time;
 
+
+
 /*
  * !! TASK THREAD !!
  * Sets up UART for testing and printing purposes
@@ -336,10 +338,26 @@ void motorFxn(UArg arg0, UArg arg1)
     enableMotor();
     setDuty(6);
     readABC();
-    updateMotor(hA, hB, hC); // first motor drive
+    updateMotor(hA, hB, hC);
+
+    UInt state;
+
+    motorRunning = true;
 
     while(1)
     {
+        //state = Event_pend(evtHandle, Event_Id_None, Event_Id_01, BIOS_WAIT_FOREVER);
+
+        //switch(state):
+        //                case(Event_Id_01):
+        //                    motor
+        //if (motorRunning == true)
+        //{
+             // first motor drive
+        //}
+
+
+        /*
         if (print_from_clock == true)
         {
             //sprintf(speed_buf, "Output: %f\n\r", acceleration);
@@ -356,6 +374,7 @@ void motorFxn(UArg arg0, UArg arg1)
 
             print_from_clock = false;
         }
+        */
     }
 }
 
@@ -434,12 +453,57 @@ void accelFxn(UArg arg0)
  * ADC
  */
 
-void ADC0_Init()
+#define ADC_SEQ 1
+#define ADC_STEP 0
+
+void ADC0_Init() //ADC0 on PE3
 {
-    //SysCtlPeripheralEnable( SYSCTL_PERIPH_ACD0 );
-    //SysCtlPeripheralEnable( SYSCTL_PERIPH_GPIOE );
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+
+     /*
+     *  GPIOPinTypeADC configures Port E Pin 3 for use as an
+     *  ADC converter input.
+     *
+     *  Lecture - Makes GPIO an input and sets them to analog
+     */
+    GPIOPinTypeADC(GPIO_PORTE_BASE, GPIO_PIN_3);
+
+    /*
+     *  Configures the trigger source and priority of a sample
+     *  sequence.
+     *  1. base: base address of the ADC module
+     *  2. sequenceNum: the sample sequence number
+     *  3. trigger source that initiates sample sequence
+     *  4. priority - relative priority of the sample sequence
+     *                with other sample sequences
+     */
+    ADCSequenceConfigure(ADC0_BASE, ADC_SEQ, ADC_TRIGGER_PROCESSOR, 0);
 
 
+    /*
+     * Configure a step of the sample sequencer
+     * 1. Base address of the ADC module
+     * 2. Sample sequence number
+     * 3. Step to be configured
+     * 4. Configuration of this step:
+     *      - Select channel 0 (AIN0)
+     *      - Defined as the last in the sequenc (ADC_CTL_END)
+     *      - cause an interrupt when complete (ADC_CTL_IE)
+     */
+    ADCSequenceStepConfigure(ADC0_BASE, ADC_SEQ, ADC_STEP, ADC_CTL_IE |
+                             ADC_CTL_CH0 | ADC_CTL_END);
+
+    /*
+     * Enable a sample sequence. Allow specified sample sequence
+     * to be captured when trigger is detected.
+     */
+    ADCSequenceEnable(ADC0_BASE, ADC_SEQ);
+
+    /*
+     * Clears sample sequence interrupt source.
+     */
+    ADCIntClear(ADC0_BASE, ADC_SEQ);
 }
 
 int getSpeed( void )
@@ -474,10 +538,8 @@ void initMotor( void )
        taskParams.arg0 = 1000;
        taskParams.stack = &task0Stack;
        taskParams.instance->name = "task";
-       taskParams.priority = 2;
+       taskParams.priority = 1;
        Task_construct(&task0Struct, (Task_FuncPtr)motorFxn, &taskParams, NULL);
-
-
 
        Types_FreqHz cpuFreq;
        BIOS_getCpuFreq(&cpuFreq);
@@ -528,6 +590,13 @@ void initMotor( void )
        semHandle = Semaphore_handle(&semStruct);
        /* End Sem code */
 
+       Event_construct(&evtStruct, NULL);
+       evtHandle = Event_handle(&evtStruct);
+
+       if (evtHandle == NULL)
+       {
+           System_abort("Event creation failed");
+       }
 
        System_printf("Run------------------------------\n");
 

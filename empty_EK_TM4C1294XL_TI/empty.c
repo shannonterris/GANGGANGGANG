@@ -209,6 +209,7 @@ int main(void)
     taskParams.arg0 = 1000;
     taskParams.stackSize = TASKSTACKSIZE;
     taskParams.stack = &task0Stack;
+    taskParams.priority = 5;
     Task_construct(&task0Struct, (Task_FuncPtr)heartBeatFxn, &taskParams, NULL);
 
     // Turn on user LED
