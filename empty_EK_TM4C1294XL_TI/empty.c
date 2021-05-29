@@ -97,54 +97,6 @@ Char task0Stack[TASKSTACKSIZE];
 
 Clock_Struct clockUpdateGraph;
 
-
-tCanvasWidget     g_sBackground;
-tPushButtonWidget g_sStartStopBttn;
-
-void StartStopBttnPress(tWidget *psWidget);
-
-// The canvas widget acting as the background to the display.
-Canvas(g_sBackground, WIDGET_ROOT, 0, &g_sStartStopBttn,
-       &g_sKentec320x240x16_SSD2119, 10, 25, 300, (240 - 25 -10),
-       CANVAS_STYLE_FILL, ClrBlack, 0, 0, 0, 0, 0, 0);
-
-RectangularButton(g_sStartStopBttn, &g_sBackground, 0, 0,
-                  &g_sKentec320x240x16_SSD2119, 50, 200, 100, 25,
-                  (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
-                   PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
-                   ClrDarkBlue, ClrBlue, ClrWhite, ClrWhite,
-                   g_psFontCmss16b, "Start", 0, 0, 0, 0, StartStopBttnPress);
-
-
-
-void StartStopBttnPress(tWidget *psWidget)
-{
-    motorStartStop = !motorStartStop;
-
-    if(motorStartStop)
-    {
-        //
-        // Change the button text to indicate the new function.
-        //
-        PushButtonTextSet(&g_sStartStopBttn, "Stop");
-
-        //
-        // Repaint the pushbutton and all widgets beneath it (in this case,
-        // the welcome message).
-        //
-        WidgetPaint((tWidget *)&g_sStartStopBttn);
-    }
-    else
-    {
-        //
-        // Change the button text to indicate the new function.
-        //
-        PushButtonTextSet(&g_sStartStopBttn, "Start");
-
-        WidgetPaint((tWidget *)&g_sStartStopBttn);
-    }
-}
-
 Void updateGraphUI()
 {
     // INSERT CALL TO UI CODE HERE TO UPDATE THE GRAPH
