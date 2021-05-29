@@ -112,6 +112,9 @@ Clock_Struct clkStruct;
 Clock_Handle clkHandle;
 
 Hwi_Handle hallA, hallB, hallC;
+
+Hwi_Handle adc0, adc1;
+
 Error_Block eb;
 Event_Struct evtStruct;
 Event_Handle evtHandle;
@@ -191,6 +194,8 @@ volatile float rpm_buf[5];
 
 volatile bool motorRunning;
 
+volatile int dummy = 0;
+
 
 /**
  * !! HWI THREAD !!
@@ -226,6 +231,12 @@ void  HallFxn()
     //print_from_motor = true;
 }
 
+void ADCFxn()
+{
+    GPIO_clearInt(ADC_0);
+    dummy++;
+}
+
 /**
  * Setup GPIO interrupts (HWI) on hall effect sensor lines
  */
@@ -243,11 +254,12 @@ void initHallABC()
     // ISR vector number 89 for port N -> Hall_C is port N pin 2
     hallC = Hwi_create(INT_GPION_TM4C129, (Hwi_FuncPtr)HallFxn, &hwiParams, NULL);
 
-
     if(hallA == NULL || hallB == NULL || hallC == NULL)
     {
-        System_abort("Hwi creation failed...");
+        System_abort("Hall HWI creation failed...");
     }
+
+
 
     /* GPIO_enableInt(Board_LED0); */
     /* Enable GPIO interrupts for each GPIO line */
@@ -264,6 +276,18 @@ void initHallABC()
     GPIODirModeSet(GPIO_PORTH_BASE, GPIO_PIN_2, GPIO_DIR_MODE_IN);
     GPIODirModeSet(GPIO_PORTN_BASE, GPIO_PIN_2, GPIO_DIR_MODE_IN);
 
+    //------- ADC! //
+    // ISR vector number 20 for Port E -> AIN0 (channel 0) is port E3
+    adc0 = Hwi_create(INT_GPIOE_TM4C123, (Hwi_FuncPtr)ADCFxn, &hwiParams, NULL);
+
+    if (adc0 == NULL)
+    {
+        System_abort("ADC HWI creation failed...");
+    }
+
+    GPIO_enableInt(ADC_0);
+    GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_3, GPIO_RISING_EDGE);
+    GPIODirModeSet(GPIO_PORTE_BASE, GPIO_PIN_3, GPIO_DIR_MODE_IN);
 
     System_printf("Done initHallABC\n");
     System_flush();
@@ -356,25 +380,23 @@ void motorFxn(UArg arg0, UArg arg1)
              // first motor drive
         //}
 
-
-        /*
         if (print_from_clock == true)
         {
-            //sprintf(speed_buf, "Output: %f\n\r", acceleration);
+            //sprintf(speed_buf, "Test: %d\n\r", dummy);
             //UART_write(uart, speed_buf, sizeof(speed_buf));
 
 
             //int32_t rpm_print = (int32_t)rpm_avg;
-            UART_write(uart, &rpm_avg, sizeof(rpm_avg));
+            //UART_write(uart, &rpm_avg, sizeof(rpm_avg));
             //int32_t rpm_print_act = (int32_t)rpm_actual;
             //UART_write(uart, &rpm_actual, sizeof(rpm_actual));
 
             //UART_write(uart, &acceleration, sizeof(acceleration));
-            UART_write(uart, &acceleration_avg, sizeof(acceleration_avg));
+            //UART_write(uart, &acceleration_avg, sizeof(acceleration_avg));
 
             print_from_clock = false;
         }
-        */
+
     }
 }
 
@@ -453,7 +475,7 @@ void accelFxn(UArg arg0)
  * ADC
  */
 
-#define ADC_SEQ 1
+#define ADC_SEQ 1 // sequencer 1 -> 4 samples
 #define ADC_STEP 0
 
 void ADC0_Init() //ADC0 on PE3
@@ -488,7 +510,7 @@ void ADC0_Init() //ADC0 on PE3
      * 3. Step to be configured
      * 4. Configuration of this step:
      *      - Select channel 0 (AIN0)
-     *      - Defined as the last in the sequenc (ADC_CTL_END)
+     *      - Defined as the last in the sequence (ADC_CTL_END)
      *      - cause an interrupt when complete (ADC_CTL_IE)
      */
     ADCSequenceStepConfigure(ADC0_BASE, ADC_SEQ, ADC_STEP, ADC_CTL_IE |
@@ -524,6 +546,9 @@ void startMotor( bool UI_motorRun )
 
 void initMotor( void )
 {
+
+    ADC0_Init();
+
     Error_init(&eb);
 
        Board_initGeneral(); // calls SysCtlPeripheralEnable for all GPIO ports
@@ -564,6 +589,8 @@ void initMotor( void )
        clkParams.period = 10;
        clkParams.startFlag = TRUE;
        Clock_create((Clock_FuncPtr)accelFxn, 10, &clkParams, NULL);
+
+       //clkParams.period =
 
        /* Setup mailbox buffer for filtering */
 

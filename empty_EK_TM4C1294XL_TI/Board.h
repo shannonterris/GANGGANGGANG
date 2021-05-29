@@ -65,6 +65,8 @@ extern "C" {
 #define HALL_B                      GPIO_HALL_B
 #define HALL_C                      GPIO_HALL_C
 
+#define ADC_0                       GPIO_ADC0
+
 #define Board_I2C0                  EK_TM4C1294XL_I2C7
 #define Board_I2C1                  EK_TM4C1294XL_I2C8
 #define Board_I2C_TMP               EK_TM4C1294XL_I2C7
