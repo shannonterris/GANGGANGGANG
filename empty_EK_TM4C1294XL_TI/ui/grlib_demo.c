@@ -21,7 +21,6 @@
 // This is part of revision 2.1.4.178 of the EK-TM4C1294XL Firmware Package.
 //
 //*****************************************************************************
-
 #include "grlib_demo.h"
 
 // Macros for different setting / graph pages
@@ -35,7 +34,7 @@
 #define X_GRAPH 0
 #define Y_GRAPH 35
 #define WIDTH_GRAPH 320
-#define HEIGHT_GRAPH 140
+#define HEIGHT_GRAPH 135
 #define MAX_PLOT_SAMPLES 300 // If sampling at 10Hz (max of 30sec)
 
 int graphIntMax;
@@ -43,8 +42,10 @@ int graphIntMin;
 
 int32_t x_graph_step = 1;
 int32_t x_graph_start = 10;
-int32_t y_graph_step;
+float y_graph_step;
+int32_t y_graph_start = 45;
 int32_t y_graph_max = 50;
+int32_t y_graph_end = 180;
 
 //*****************************************************************************
 //
@@ -449,7 +450,12 @@ void OnSettingCurrent() {
 
 char graphMin[5];
 char graphMax[5];
-
+// TODO remove just for testing
+float float_rand( float min, float max )
+{
+    float scale = rand() / (float) RAND_MAX; /* [0, 1.0] */
+    return min + scale * ( max - min );      /* [min, max] */
+}
 
 void drawGraphPoint() {
     // Reset graph when maximum plot samples has been reached
@@ -476,30 +482,29 @@ void drawGraphPoint() {
     }
 
     // somehow need to get the currentPoint to plot
-    // float currentPoint = something_here
+    // TODO using random float for testing remove later on
+    float currentPoint = float_rand(graphIntMin, graphIntMax);
 
     // graphMax - graphMin is the space between
     // the physical space between is 135
-
-
-    int32_t x1_max = 10;
-    int32_t x2_max = 305;
-    int32_t y1_max = 50;
-
+    // graphMin should be 10 and graphMax should be 45
     int32_t x1 = (g_numPlotPoints * x_graph_step) + x_graph_start;
     int32_t x2 = (g_numPlotPoints + 1) * x_graph_step + x_graph_start;
+    int32_t y1 = (y_graph_start + HEIGHT_GRAPH) - (previousPoint - graphIntMin)*y_graph_step;
+    int32_t y2 = (y_graph_start + HEIGHT_GRAPH) - (currentPoint - graphIntMin)*y_graph_step;
 
     // Draw Current Value
     static char currentValue[30];
-    sprintf(currentValue, "%d", x2);
+    sprintf(currentValue, "%5.2f", currentPoint);
     GrStringDrawCentered(&sContext, "Value:", -1, 210, 15, true);
+    GrStringDrawCentered(&sContext, "            ", -1, 270, 15, true);
     GrStringDrawCentered(&sContext, currentValue, -1, 270, 15, true);
     // Draw line
-    GrLineDrawH(&sContext, x1, x2, y1_max);
+    GrLineDraw(&sContext, x1, y1, x2, y2);
     g_numPlotPoints++;
 
     // Save position of previous sample
-    // previousPoint = currentPoint;
+    previousPoint = currentPoint;
     // Set to false so you can continue to process the exit button
     updateGraph = false;
 
@@ -527,7 +532,7 @@ void OnGraphsPage(char * title, int yMin, int yMax) {
     sprintf(graphMin, "%d", yMin);
     sprintf(graphMax, "%d", yMax);
     // Set step scale for y-axis
-    y_graph_step = (HEIGHT_GRAPH - 5) / (graphIntMax - graphIntMin);
+    y_graph_step = (float)HEIGHT_GRAPH/(float)(graphIntMax - graphIntMin);
 
     // Draw the graph
     GrStringDraw(&sContext, "Time", -1, 140, 181, false);
@@ -540,6 +545,8 @@ void OnGraphsPage(char * title, int yMin, int yMax) {
     GrStringDraw(&sContext, graphMin, -1, 10, 181, false);
     GrStringDraw(&sContext, graphMax, -1, 5, 30, false);
     // Set global pointer to data TODO
+    data_Graph = 10.000;
+    previousPoint = 0;
 
     // Set global to start drawing graph
     g_drawingGraph = 1;

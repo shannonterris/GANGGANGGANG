@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "inc/hw_memmap.h"
 #include "inc/hw_nvic.h"
 #include "inc/hw_sysctl.h"
@@ -88,6 +90,8 @@ bool updateGraph;
 bool motorStartedUI;
 // Global to set the previous point
 float previousPoint;
+// Current data used for graphing
+float data_Graph;
 
 
 #endif /* GRLIB_DEMO_H_ */
