@@ -57,8 +57,8 @@
 #define MAXOUTPUT 24
 #define NUMSGS 50
 
-//Semaphore_Struct semStruct;
-//Semaphore_Handle semHandle;
+Semaphore_Struct semStruct;
+Semaphore_Handle semHandle;
 
 
 Clock_Struct clkStruct;
@@ -105,7 +105,7 @@ volatile rpm_prev = 0;
 volatile int error;
 volatile float integral_error = 0;
 
-volatile float rpm_desired = 800;
+volatile float rpm_desired = 200;
 volatile float rpm_int = 0;
 volatile float jump = 5;
 
@@ -305,7 +305,7 @@ void motorFxn(UArg arg0, UArg arg1)
     }
 
     enableMotor();
-    setDuty(15);
+    setDuty(10);
     readABC();
     updateMotor(hA, hB, hC);
 
@@ -315,13 +315,27 @@ void motorFxn(UArg arg0, UArg arg1)
 
     while(1)
     {
-        // Wait
-        //Semaphore_pend(semHandle, BIOS_WAIT_FOREVER);
+        /* START PHASE MOTOR */
+        Semaphore_pend(semHandle, BIOS_WAIT_FOREVER);
+       /*
+       if (motorRunning == true)
+       {
+            enableMotor();
+            setDuty(25);
+            readABC();
+            updateMotor(hA, hB, hC);
+            //motorRunning = false;
+        }
+
+        if (motorRunning == false)
+        {
+            stopMotor(true);
+        }
+        */
+
+        /*
         if (print_from_clock == true)
         {
-            /*
-             * Motor state is controlled
-             */
             sprintf(speed_buf, "Test: %d\n\r", dummy);
             UART_write(uart, speed_buf, sizeof(speed_buf));
             //int32_t rpm_print = (int32_t)rpm_avg;
@@ -330,6 +344,7 @@ void motorFxn(UArg arg0, UArg arg1)
             //UART_write(uart, &rpm_actual, sizeof(rpm_actual))
             print_from_clock = false;
         }
+        */
 
     }
 }
@@ -386,6 +401,7 @@ Void PIControlFxn(UArg arg0)
  *
  *  @params arg0
  */
+/*
 void speedFxn(UArg arg0)
 {
     rpm_int = rpm_avg;
@@ -395,6 +411,7 @@ void speedFxn(UArg arg0)
         rpm_desired = 300;
     }
 }
+*/
 
 /*!
  *  @brief Limits the acceleration of the motor to 500RPM/s. This Clock runs has a
@@ -421,7 +438,7 @@ void accelLimitFxn(UArg arg0)
 
 void waitFxn(UArg arg0)
 {
-    //Semaphore_post(semHandle);
+    Semaphore_post(semHandle);
 }
 
 /**
@@ -494,7 +511,7 @@ int getSpeed( void )
  *
  *  @params rpm_ui  the UI selected RPM
  */
-void setSpeed( int rpm_ui )
+void setSpeed(uint32_t rpm_ui)
 {
     rpm_desired = (float) rpm_ui;
 }
@@ -521,64 +538,64 @@ void initMotor( void )
 
     Error_init(&eb);
 
-       Board_initGeneral(); // calls SysCtlPeripheralEnable for all GPIO ports
-       Board_initGPIO();    // calls the GPIO_init function -> initialises
+    Board_initGeneral(); // calls SysCtlPeripheralEnable for all GPIO ports
+    Board_initGPIO();    // calls the GPIO_init function -> initialises
 
-       Board_initUART(); // initialise UART
+    Board_initUART(); // initialise UART
 
-       Types_FreqHz cpuFreq;
-       BIOS_getCpuFreq(&cpuFreq);
+    Types_FreqHz cpuFreq;
+    BIOS_getCpuFreq(&cpuFreq);
 
-       /* Setup Clock SWI */
-       Clock_Params clkParams;
-       Clock_Params_init(&clkParams);
-       clkParams.period = 10;
-       clkParams.startFlag = TRUE;
+    /* Setup Clock SWI */
+    Clock_Params clkParams;
+    Clock_Params_init(&clkParams);
+    clkParams.period = 10;
+    clkParams.startFlag = TRUE;
 
-       /* Construct a periodic Clock Instance with period = 5 system time units */
-       Clock_create((Clock_FuncPtr)filterFxn, 10, &clkParams, NULL);
+    /* Construct a periodic Clock Instance with period = 5 system time units */
+    Clock_create((Clock_FuncPtr)filterFxn, 10, &clkParams, NULL);
 
-       clkParams.period = 10;
-       clkParams.startFlag = TRUE;
-       Clock_create((Clock_FuncPtr)PIControlFxn, 10, &clkParams, NULL);
+    clkParams.period = 10;
+    clkParams.startFlag = TRUE;
+    Clock_create((Clock_FuncPtr)PIControlFxn, 10, &clkParams, NULL);
 
-       clkParams.period = 5000;
-       clkParams.startFlag = TRUE;
-       Clock_create((Clock_FuncPtr)speedFxn, 5000, &clkParams, NULL);
+    //clkParams.period = 5000;
+    //clkParams.startFlag = TRUE;
+    //Clock_create((Clock_FuncPtr)speedFxn, 5000, &clkParams, NULL);
 
-       clkParams.period = 10;
-       clkParams.startFlag = TRUE;
-       Clock_create((Clock_FuncPtr)accelLimitFxn, 10, &clkParams, NULL);
+    clkParams.period = 10;
+    clkParams.startFlag = TRUE;
+    Clock_create((Clock_FuncPtr)accelLimitFxn, 10, &clkParams, NULL);
 
-       clkParams.period = 10;
-       clkParams.startFlag = TRUE;
-       Clock_create((Clock_FuncPtr)waitFxn, 10, &clkParams, NULL);
+    clkParams.period = 10;
+    clkParams.startFlag = TRUE;
+    Clock_create((Clock_FuncPtr)waitFxn, 10, &clkParams, NULL);
 
-       /* Setup Semaphore */
-       //Semaphore_Params semParams;
-       //Semaphore_Params_init(&semParams);
-       //semParams.mode = Semaphore_Mode_BINARY;
-       //Semaphore_construct(&semStruct, 0, &semParams);
+    /* Setup Semaphore */
+    Semaphore_Params semParams;
+    Semaphore_Params_init(&semParams);
+    semParams.mode = Semaphore_Mode_BINARY;
+    Semaphore_construct(&semStruct, 0, &semParams);
 
-       //semHandle = Semaphore_handle(&semStruct);
-       /* End Sem code */
+    semHandle = Semaphore_handle(&semStruct);
+    /* End Sem code */
 
-       Event_construct(&evtStruct, NULL);
-       evtHandle = Event_handle(&evtStruct);
+    Event_construct(&evtStruct, NULL);
+    evtHandle = Event_handle(&evtStruct);
 
-       if (evtHandle == NULL)
-       {
-           System_abort("Event creation failed");
-       }
+    if (evtHandle == NULL)
+    {
+       System_abort("Event creation failed");
+    }
 
-       System_printf("Run------------------------------\n");
+    System_printf("Run------------------------------\n");
 
-       /* Create GateHwi for critical section */
-       GateHwi_Params_init(&gHwiprms);
-       gateHwi = GateHwi_create(&gHwiprms, NULL);
+    /* Create GateHwi for critical section */
+    GateHwi_Params_init(&gHwiprms);
+    gateHwi = GateHwi_create(&gHwiprms, NULL);
 
-       if (gateHwi == NULL)
-       {
-           System_abort("Gate failed");
-       }
+    if (gateHwi == NULL)
+    {
+       System_abort("Gate failed");
+    }
 }

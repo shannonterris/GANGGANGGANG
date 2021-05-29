@@ -22,6 +22,7 @@
 //
 //*****************************************************************************
 #include "grlib_demo.h"
+#include "motor/motorCode.h"
 
 // Macros for different setting / graph pages
 # define ACCELERATION 1
@@ -314,6 +315,9 @@ void
 OnStartMotor(tWidget *psWidget)
 {
     motorStartedUI = !motorStartedUI;
+
+    startMotor(motorStartedUI);
+
     if(motorStartedUI)
     {
         PushButtonTextSet(&g_sMotorOption, "Stop Motor");
@@ -386,6 +390,7 @@ void OnIncrease() {
         if (g_motorSpeed <= 4400) { // Speed has a max limit of 4500
             g_motorSpeed = g_motorSpeed + 100;
             drawSettingValue("RPM", g_motorSpeed);
+            setSpeed(g_motorSpeed);
         }
         // TODO api call to set new value
     }
@@ -492,8 +497,8 @@ void drawGraphPoint() {
 
     // somehow need to get the currentPoint to plot
     // TODO using random float for testing remove later on
-    float currentPoint = float_rand(graphIntMin, graphIntMax);
-
+    //float currentPoint = float_rand(graphIntMin, graphIntMax);
+      float currentPoint = (float) getSpeed();
     // graphMax - graphMin is the space between
     // the physical space between is 135
     // graphMin should be 10 and graphMax should be 45

@@ -5,6 +5,8 @@
  *      Author: rajsi
  */
 
+#include <xdc/std.h>
+
 #ifndef MOTORCODE_H_
 #define MOTORCODE_H_
 
@@ -85,7 +87,7 @@ int getSpeed(void);
  *
  *  @params rpm_ui  the UI selected RPM
  */
-void setSpeed(void);
+void setSpeed(uint32_t rpm_UI);
 
 
 /*!
