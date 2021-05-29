@@ -24,36 +24,6 @@
 
 #include "grlib_demo.h"
 
-//
-//*****************************************************************************
-//
-// The error routine that is called if the driver library encounters an error.
-//
-//*****************************************************************************
-#ifdef DEBUG
-void
-__error__(char *pcFilename, uint32_t ui32Line)
-{
-}
-#endif
-
-
-//*****************************************************************************
-//
-// The DMA control structure table.
-//
-//*****************************************************************************
-#ifdef ewarm
-#pragma data_alignment=1024
-tDMAControlTable psDMAControlTable[64];
-#elif defined(ccs)
-#pragma DATA_ALIGN(psDMAControlTable, 1024)
-tDMAControlTable psDMAControlTable[64];
-#else
-tDMAControlTable psDMAControlTable[64] __attribute__ ((aligned(1024)));
-#endif
-
-
 // Macros for different setting / graph pages
 # define ACCELERATION 1
 # define SPEED 2
@@ -333,9 +303,17 @@ OnGraphsMain(tWidget *psWidget)
 void
 OnStartMotor(tWidget *psWidget)
 {
-
-   // insert api functions here
-
+    motorStartedUI = !motorStartedUI;
+    if(motorStartedUI)
+    {
+        PushButtonTextSet(&g_sMotorOption, "Stop Motor");
+        WidgetPaint((tWidget *)&g_sMotorOption);
+    }
+    else
+    {
+        PushButtonTextSet(&g_sMotorOption, "Start Motor");
+        WidgetPaint((tWidget *)&g_sMotorOption);
+    }
 }
 
 
@@ -576,6 +554,8 @@ void initUI(uint32_t systemClock, tContext * Context) {
     g_numPlotOverflow = 0;
     // Global to be periodically set to update the graph
     updateGraph = false;
+    // Start motor on start up
+    motorStartedUI = false;
 }
 
 //*****************************************************************************

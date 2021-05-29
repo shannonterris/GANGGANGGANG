@@ -84,6 +84,8 @@ int g_numPlotPoints;
 int g_numPlotOverflow;
 // Global to be periodically set to update the graph
 bool updateGraph;
+// Global to indicate if the motor has been requested to run on UI side
+bool motorStartedUI;
 
 
 #endif /* GRLIB_DEMO_H_ */
