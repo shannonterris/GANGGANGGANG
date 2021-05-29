@@ -160,19 +160,19 @@ RectangularButton(g_sGraphBack, &g_sSettingsMainPage, 0, 0,
 //
 //*****************************************************************************
 RectangularButton(g_sSettingIncrease, &g_sSettingPage, 0, 0,
-                  &g_sKentec320x240x16_SSD2119, 250, 80, 60, 70,
+                  &g_sKentec320x240x16_SSD2119, 220, 80, 90, 70,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                     PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                     ClrGreen, ClrBlack, ClrWhite, ClrWhite,
                    g_psFontCmss18b, "+", 0, 0, 0, 0, OnIncrease);
 RectangularButton(g_sSettingDecrease, &g_sSettingPage, 0, 0,
-                  &g_sKentec320x240x16_SSD2119, 10, 80, 60, 70,
+                  &g_sKentec320x240x16_SSD2119, 10, 80, 90, 70,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                     PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                     ClrRed, ClrBlack, ClrWhite, ClrWhite,
                    g_psFontCmss18b, "-", 0, 0, 0, 0, OnDecrease);
 RectangularButton(g_sSettingValue, &g_sSettingPage, 0, 0,
-                  &g_sKentec320x240x16_SSD2119, 75, 80, 170, 70,
+                  &g_sKentec320x240x16_SSD2119, 105, 80, 110, 70,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                     PB_STYLE_FILL),
                     ClrBlack, ClrBlack, ClrWhite, ClrWhite,
@@ -285,6 +285,7 @@ OnGraphsMain(tWidget *psWidget)
     if (g_drawingGraph) {
         g_drawingGraph = 0;
         g_numPlotPoints = 0;
+        g_numPlotOverflow = 0;
     }
 
     //
@@ -440,8 +441,7 @@ void OnSettingCurrent() {
 
 char graphMin[5];
 char graphMax[5];
-void drawGraph() {
-    // TODO
+void drawGraphPoint() {
     // Reset graph when maximum plot samples has been reached
     if (g_numPlotPoints == MAX_PLOT_SAMPLES) {
         g_numPlotPoints = 0;
@@ -453,10 +453,6 @@ void drawGraph() {
         GrStringDraw(&sContext, graphMax, -1, 5, 30, false);
         return;
     }
-
-    // draw new plot
-    updateGraph = false;
-
 }
 
 
@@ -492,16 +488,10 @@ void OnGraphsPage(char * title, int yMin, int yMax) {
     GrStringDraw(&sContext, graphMin, -1, 10, 181, false);
     GrStringDraw(&sContext, graphMax, -1, 5, 28, false);
 
-    // Start drawing graph
+    // Set global pointer to data
+
+    // Set global to start drawing graph
     g_drawingGraph = 1;
-    while(g_drawingGraph) {
-        // Would it be better to do this a different wayyy?
-        if (updateGraph) { // update graph periodically every 2Hz
-            drawGraph();
-        }
-        // Process Messages
-        WidgetMessageQueueProcess();
-    }
 }
 
 void OnGraphSpeed() {

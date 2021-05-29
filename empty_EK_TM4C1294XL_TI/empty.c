@@ -99,7 +99,10 @@ Clock_Struct clockUpdateGraph;
 
 Void updateGraphUI()
 {
-    // INSERT CALL TO UI CODE HERE TO UPDATE THE GRAPH
+    // check if currently drawing graph
+    if (g_drawingGraph) {
+        // INSERT CALL TO UI CODE HERE TO UPDATE THE GRAPH
+    }
 }
 
 Void heartBeatFxn(UArg arg0, UArg arg1)
@@ -131,8 +134,6 @@ int main(void)
     clockParams.period = 500; // 2Hz
     clockParams.startFlag = TRUE;
     Clock_construct(&clockUpdateGraph, (Clock_FuncPtr)updateGraphUI, 1, &clockParams);
-
-
 
     /* Construct UI Task thread */
     Task_Params_init(&taskParams);
