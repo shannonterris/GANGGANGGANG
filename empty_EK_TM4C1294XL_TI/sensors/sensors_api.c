@@ -7,7 +7,6 @@
 #define TASKSTACKSIZE       512
 
 volatile int8_t ThresholdAccel;
-float accel_mag;
 Semaphore_Struct semAccelStruct;
 Semaphore_Handle semAccelHandle;
 
@@ -17,6 +16,7 @@ Clock_Struct clockAccelerationStruct;
 Char taskAccelStack[512];
 I2C_Handle sensori2c;
 float accelerationBuffer[ACCEL_BUFFERSIZE];
+float accel_mag;
 accel_vector av;
 UART_Handle uart;
 UART_Params uartParams;
@@ -92,7 +92,7 @@ int triggerThreshold = 0;
 void accelEStopIntterupt(unsigned int index) {
     triggerThreshold++;
     System_printf("THRESHOLD TRIGGER\n");
-    System_Flush();
+    System_flush();
 }
 
 /*
