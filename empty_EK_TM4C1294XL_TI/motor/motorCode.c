@@ -56,7 +56,7 @@
 #define ACCEL_SIZE 100
 #define MAXOUTPUT 24
 #define NUMSGS 50
-#define ADC_SEQ 1 // sequencer 1 -> 4 samples
+#define ADC_SEQ 0 // sequencer 1 -> 4 samples
 #define ADC_STEP 0
 
 Semaphore_Struct semStruct;
@@ -108,7 +108,7 @@ volatile rpm_prev = 0;
 volatile int error;
 volatile float integral_error = 0;
 
-volatile float rpm_desired = 200;
+volatile float rpm_desired = 400;
 volatile float rpm_int = 0;
 volatile float jump = 5;
 
@@ -146,6 +146,15 @@ volatile bool e_stop; // scope limited to motorCode API
 volatile int dummy = 0;
 
 volatile int adc_test = 0;
+
+uint32_t pui32ADC0Value[3];
+
+volatile float vref = 3.3;
+volatile float voltage;
+volatile float stepVoltage = 0.00089586;
+volatile float current;
+volatile float shunt = 0.007;
+volatile float gain = 10;
 
 /*!
  *  @brief  ISR to read the Hall Effect lines, calculate RPM and update the motor
@@ -192,12 +201,13 @@ void  HallFxn()
  */
 void ADCFxn()
 {
-    uint32_t pui32ADC0Value[1];
 
     //ADCProcessorTrigger(ADC0_BASE, ADC_SEQ);
     //ADC
     ADCIntClear(ADC0_BASE, ADC_SEQ);
-    adc_test++;
+    ADCSequenceDataGet(ADC0_BASE, ADC_SEQ, pui32ADC0Value);
+    //adc_test++;
+    //System_printf("Hello");
 }
 
 /*!
@@ -248,6 +258,7 @@ void initHallABC()
     }
 
     ADCIntEnable(ADC0_BASE, ADC_SEQ);
+
 
     //GPIO_enableInt(ADC0_BASE);
     //GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_3, GPIO_RISING_EDGE);
@@ -361,7 +372,7 @@ void motorFxn(UArg arg0, UArg arg1)
     }
 
     enableMotor();
-    setDuty(15);
+    setDuty(24);
     readABC();
     updateMotor(hA, hB, hC);
 
@@ -424,7 +435,7 @@ void motorFxn(UArg arg0, UArg arg1)
         if (print_from_clock == true)
         {
             //System_printf("%d\n", adc_test);
-            sprintf(speed_buf, "Test: %d\n\r", adc_test);
+            sprintf(speed_buf, "Voltage: %f  Current: %f\n\r", voltage, current);
             UART_write(uart, speed_buf, sizeof(speed_buf));
             //int32_t rpm_print = (int32_t)rpm_avg;
             //UART_write(uart, &rpm_avg, sizeof(rpm_avg));
@@ -532,9 +543,12 @@ void accelLimitFxn(UArg arg0)
 }
 
 
-void waitFxn(UArg arg0)
+void ADCTriggerFxn(UArg arg0)
 {
-    Semaphore_post(semHandle);
+    //Semaphore_post(semHandle);
+    ADCProcessorTrigger(ADC0_BASE, ADC_SEQ);
+    voltage = stepVoltage * pui32ADC0Value[0];
+    current = ((vref/2) - voltage)/(gain * shunt);
 }
 
 
@@ -580,7 +594,7 @@ void ADC0_Init() //ADC0 on PE3
      *      - cause an interrupt when complete (ADC_CTL_IE)
      */
     ADCSequenceStepConfigure(ADC0_BASE, ADC_SEQ, ADC_STEP, ADC_CTL_IE |
-                             ADC_CTL_CH4 | ADC_CTL_END);
+                             ADC_CTL_CH0 | ADC_CTL_END);
 
     /*
      * Enable a sample sequence. Allow specified sample sequence
@@ -593,6 +607,8 @@ void ADC0_Init() //ADC0 on PE3
      */
     ADCIntClear(ADC0_BASE, ADC_SEQ);
 }
+
+
 
 /*!
  *  @brief Gets the current speed of the motor
@@ -683,9 +699,9 @@ void initMotor( void )
     clkParams.startFlag = TRUE;
     Clock_create((Clock_FuncPtr)accelLimitFxn, 10, &clkParams, NULL);
 
-    clkParams.period = 10;
+    clkParams.period = 6;
     clkParams.startFlag = TRUE;
-    Clock_create((Clock_FuncPtr)waitFxn, 10, &clkParams, NULL);
+    Clock_create((Clock_FuncPtr)ADCTriggerFxn, 6, &clkParams, NULL);
 
     clkParams.period = 10;
     clkParams.startFlag = TRUE;
