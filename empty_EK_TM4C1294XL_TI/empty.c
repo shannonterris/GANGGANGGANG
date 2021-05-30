@@ -83,6 +83,8 @@
 #include <time.h>
 
 #include "ui/grlib_demo.h"
+#include "sensors/BMI160/bmi160.h"
+#include "sensors/sensors_api.h"
 
 #include "motor/motorCode.h"
 
@@ -92,10 +94,12 @@ uint8_t motorStartStop = 1;
 /* Board Header file */
 #include "Board.h"
 
-//#define TASKSTACKSIZE   512
+#define TASKSTACKSIZE   1024
 
-//Task_Struct task0Struct;
-//Char task0Stack[TASKSTACKSIZE];
+Task_Struct task1Struct;
+
+Char task1Stack[TASKSTACKSIZE];
+
 
 Clock_Struct clockUpdateGraph;
 
@@ -111,6 +115,13 @@ Void heartBeatFxn(UArg arg0, UArg arg1)
     while (1) {
         WidgetMessageQueueProcess();
     }
+}
+
+
+
+void bmiHeartBeatFxn(UArg arg0, UArg arg1) {
+    initSensors(arg0);
+    System_flush();
 }
 
 /*
@@ -134,23 +145,22 @@ int main(void)
     clockParams.startFlag = TRUE;
     Clock_construct(&clockUpdateGraph, (Clock_FuncPtr)updateGraphUI, 1, &clockParams);
 
-    /* Construct UI Task thread */
-    //Task_Params_init(&taskParams);
-    //taskParams.arg0 = 1000;
-    //taskParams.stackSize = TASKSTACKSIZE;
-    //taskParams.stack = &task0Stack;
-    //taskParams.priority = 0;
-    //Task_construct(&task0Struct, (Task_FuncPtr)heartBeatFxn, &taskParams, NULL);
-    // Turn on user LED
-    GPIO_write(Board_LED0, Board_LED_ON);
+   
+    /* Construct bmiHeartBeat Task  thread */
+    Task_Params bmiTaskParams;
+    Task_Params_init(&bmiTaskParams);
+    taskParams.arg0 = 20;
+    taskParams.stackSize = TASKSTACKSIZE;
+    taskParams.stack = &task1Stack;
+    Task_construct(&task1Struct, (Task_FuncPtr)bmiHeartBeatFxn, &bmiTaskParams, NULL);
+
 
     //
     // Run from the PLL at 120 MHz.
     //
     g_ui32SysClock = MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
-                                             SYSCTL_OSC_MAIN |
-                                             SYSCTL_USE_PLL |
-                                             SYSCTL_CFG_VCO_480), 120000000);
+            SYSCTL_OSC_MAIN | SYSCTL_USE_PLL |
+            SYSCTL_CFG_VCO_480), 120000000);
 
     initUI(g_ui32SysClock, &sContext);
 
