@@ -251,6 +251,9 @@ OnMainMenu(tWidget *psWidget)
     //
     WidgetPaint((tWidget *) &g_sMainPage);
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sMainPage);
+
+    WidgetMessageQueueProcess();
+    DrawDayNight();
 }
 
 
@@ -274,6 +277,9 @@ OnSettingsMain(tWidget *psWidget)
     //
     WidgetPaint((tWidget *) &g_sSettingsMainPage);
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sSettingsMainPage);
+
+    WidgetMessageQueueProcess();
+    DrawDayNight();
 }
 
 //*****************************************************************************
@@ -304,7 +310,24 @@ OnGraphsMain(tWidget *psWidget)
     WidgetPaint((tWidget *) &g_sGraphsMainPage);
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sGraphsMainPage);
 
+    WidgetMessageQueueProcess();
+    DrawDayNight();
+
 }
+
+
+//*****************************************************************************
+//
+// Handles presses of the start motor.
+//
+//*****************************************************************************
+void
+DrawDayNight()
+{
+    // TODO add logic for night vs day
+    GrStringDraw(&sContext, "Day", -1, 10, 5, false);
+}
+
 
 //*****************************************************************************
 //
@@ -372,6 +395,9 @@ void OnSettingsPage() {
         drawSettingValue("mA", g_currentLimit);
     }
     WidgetPaint((tWidget *) &g_sSettingTitle);
+
+    WidgetMessageQueueProcess();
+    DrawDayNight();
 }
 
 
@@ -689,6 +715,9 @@ void initWidgets(tContext * sContext) {
     // Issue the initial paint request to the widgets.
     //
     WidgetPaint(WIDGET_ROOT);
+
+    WidgetMessageQueueProcess();
+    DrawDayNight();
 }
 
 

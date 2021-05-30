@@ -71,6 +71,7 @@ void OnGraphLight();
 void initWidgets(tContext * sContext);
 void initUI(uint32_t systemClock, tContext * Context);
 void drawGraphPoint();
+void DrawDayNight();
 
 uint32_t g_ui32SysClock;
 tContext sContext;
