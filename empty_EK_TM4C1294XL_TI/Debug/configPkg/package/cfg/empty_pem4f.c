@@ -1150,13 +1150,13 @@ ti_sysbios_hal_Hwi_Object__ ti_sysbios_hal_Hwi_Object__table__V[1];
     #pragma data_alignment=8
 #endif
 /* --> ti_sysbios_heaps_HeapMem_Instance_State_0_buf__A */
-__T1_ti_sysbios_heaps_HeapMem_Instance_State__buf ti_sysbios_heaps_HeapMem_Instance_State_0_buf__A[1024];
+__T1_ti_sysbios_heaps_HeapMem_Instance_State__buf ti_sysbios_heaps_HeapMem_Instance_State_0_buf__A[2048];
 #ifdef __ti__align
     #pragma DATA_ALIGN(ti_sysbios_heaps_HeapMem_Instance_State_0_buf__A, 8);
 #endif
 #ifdef __GNUC__
 #ifndef __TI_COMPILER_VERSION__
-__T1_ti_sysbios_heaps_HeapMem_Instance_State__buf ti_sysbios_heaps_HeapMem_Instance_State_0_buf__A[1024] __attribute__ ((aligned(8)));
+__T1_ti_sysbios_heaps_HeapMem_Instance_State__buf ti_sysbios_heaps_HeapMem_Instance_State_0_buf__A[2048] __attribute__ ((aligned(8)));
 #endif
 #endif
 
@@ -2703,7 +2703,7 @@ __FAR__ const CT__ti_sysbios_BIOS_clockEnabled ti_sysbios_BIOS_clockEnabled__C =
 
 /* heapSize__C */
 #pragma DATA_SECTION(ti_sysbios_BIOS_heapSize__C, ".const:ti_sysbios_BIOS_heapSize__C");
-__FAR__ const CT__ti_sysbios_BIOS_heapSize ti_sysbios_BIOS_heapSize__C = (xdc_SizeT)0x400;
+__FAR__ const CT__ti_sysbios_BIOS_heapSize ti_sysbios_BIOS_heapSize__C = (xdc_SizeT)0x800;
 
 /* heapSection__C */
 #pragma DATA_SECTION(ti_sysbios_BIOS_heapSection__C, ".const:ti_sysbios_BIOS_heapSection__C");
@@ -3055,7 +3055,7 @@ ti_sysbios_family_arm_m3_Hwi_Module_State__ ti_sysbios_family_arm_m3_Hwi_Module_
     ((void*)ti_sysbios_family_arm_m3_Hwi_Module_State_0_excStack__A),  /* excStack */
     ((xdc_Ptr)0),  /* isrStack */
     ((xdc_Ptr)((void*)&__TI_STACK_BASE)),  /* isrStackBase */
-    (xdc_SizeT)0x300,  /* isrStackSize */
+    (xdc_SizeT)0x800,  /* isrStackSize */
     ((xdc_Ptr)(0x20000000)),  /* vectorTableBase */
     (xdc_UInt)0x101,  /* swiTaskKeys */
     ((xdc_Ptr)((void*)&ti_sysbios_family_arm_m3_Hwi_dispatchTable[0])),  /* dispatchTable */
@@ -3848,7 +3848,7 @@ __FAR__ const ti_sysbios_heaps_HeapMem_Params ti_sysbios_heaps_HeapMem_Object__P
 };
 
 /* --> ti_sysbios_heaps_HeapMem_Instance_State_0_buf__A */
-__T1_ti_sysbios_heaps_HeapMem_Instance_State__buf ti_sysbios_heaps_HeapMem_Instance_State_0_buf__A[1024];
+__T1_ti_sysbios_heaps_HeapMem_Instance_State__buf ti_sysbios_heaps_HeapMem_Instance_State_0_buf__A[2048];
 
 /* Module__root__V */
 ti_sysbios_heaps_HeapMem_Module__ ti_sysbios_heaps_HeapMem_Module__root__V = {
@@ -3864,7 +3864,7 @@ ti_sysbios_heaps_HeapMem_Object__ ti_sysbios_heaps_HeapMem_Object__table__V[1] =
         ((void*)ti_sysbios_heaps_HeapMem_Instance_State_0_buf__A),  /* buf */
         {
             ((ti_sysbios_heaps_HeapMem_Header*)0),  /* next */
-            ((xdc_UArg)(0x400)),  /* size */
+            ((xdc_UArg)(0x800)),  /* size */
         },  /* head */
         (xdc_SizeT)0x8,  /* minBlockAlign */
     },

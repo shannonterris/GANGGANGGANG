@@ -4,7 +4,7 @@
 #include <ti/drivers/GPIO.h>
 
 #define ACCEL_BUFFERSIZE    5
-#define TASKSTACKSIZE       512
+#define TASKSTACKSIZE       2048
 
 volatile int8_t ThresholdAccel;
 Semaphore_Struct semAccelStruct;
@@ -132,10 +132,10 @@ bool initAcceleration(uint16_t thresholdAccel) {
     taskParams.stackSize = TASKSTACKSIZE;
     taskParams.priority = 1;
     taskParams.stack = &taskAccelStack;
-     //Task_Handle accelTask = Task_create((Task_FuncPtr)taskAcceleration, &taskParams, NULL);
-     //if (accelTask == NULL) {
-       // System_printf("Task - ACCEL FAILED SETUP");
-    //}
+     Task_Handle accelTask = Task_create((Task_FuncPtr)taskAcceleration, &taskParams, NULL);
+     if (accelTask == NULL) {
+        System_printf("Task - ACCEL FAILED SETUP");
+    }
 
     System_printf("Acceleration setup\n");
     return true;
