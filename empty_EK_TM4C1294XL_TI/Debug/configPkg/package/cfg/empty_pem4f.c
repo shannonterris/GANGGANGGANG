@@ -1346,8 +1346,8 @@ __T1_ti_sysbios_knl_Task_Instance_State__stack ti_sysbios_knl_Task_Instance_Stat
 #endif
 #endif
 
-/* --> taskAcceleration */
-extern xdc_Void taskAcceleration(xdc_UArg,xdc_UArg);
+/* --> bmiHeartBeatFxn */
+extern xdc_Void bmiHeartBeatFxn(xdc_UArg,xdc_UArg);
 #ifdef __IAR_SYSTEMS_ICC__
     #pragma data_alignment=8
 #endif
@@ -5073,8 +5073,8 @@ ti_sysbios_knl_Task_Object__ ti_sysbios_knl_Task_Object__table__V[4] = {
             ((ti_sysbios_knl_Queue_Elem*)((void*)&ti_sysbios_knl_Task_Object__table__V[1].qElem)),  /* next */
             ((ti_sysbios_knl_Queue_Elem*)((void*)&ti_sysbios_knl_Task_Object__table__V[1].qElem)),  /* prev */
         },  /* qElem */
-        (xdc_Int)0x1,  /* priority */
-        (xdc_UInt)0x2,  /* mask */
+        (xdc_Int)0x2,  /* priority */
+        (xdc_UInt)0x4,  /* mask */
         ((xdc_Ptr)0),  /* context */
         ti_sysbios_knl_Task_Mode_INACTIVE,  /* mode */
         ((ti_sysbios_knl_Task_PendElem*)0),  /* pendElem */
@@ -5104,7 +5104,7 @@ ti_sysbios_knl_Task_Object__ ti_sysbios_knl_Task_Object__table__V[4] = {
         (xdc_SizeT)0x800,  /* stackSize */
         ((void*)ti_sysbios_knl_Task_Instance_State_2_stack__A),  /* stack */
         0,  /* stackHeap */
-        ((xdc_Void(*)(xdc_UArg,xdc_UArg))((xdc_Fxn)taskAcceleration)),  /* fxn */
+        ((xdc_Void(*)(xdc_UArg,xdc_UArg))((xdc_Fxn)bmiHeartBeatFxn)),  /* fxn */
         ((xdc_UArg)((void*)"&arg0")),  /* arg0 */
         ((xdc_UArg)((void*)"&arg1")),  /* arg1 */
         ((xdc_Ptr)0),  /* env */

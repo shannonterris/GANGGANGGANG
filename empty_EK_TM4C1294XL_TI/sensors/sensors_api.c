@@ -130,12 +130,12 @@ bool initAcceleration(uint16_t thresholdAccel) {
     Task_Params taskParams;
     Task_Params_init(&taskParams);
     taskParams.stackSize = TASKSTACKSIZE;
-    taskParams.priority = 11;
+    taskParams.priority = 1;
     taskParams.stack = &taskAccelStack;
-    Task_Handle accelTask = Task_create((Task_FuncPtr)taskAcceleration, &taskParams, NULL);
-    if (accelTask == NULL) {
-        System_printf("Task - ACCEL FAILED SETUP");
-    }
+     //Task_Handle accelTask = Task_create((Task_FuncPtr)taskAcceleration, &taskParams, NULL);
+     //if (accelTask == NULL) {
+       // System_printf("Task - ACCEL FAILED SETUP");
+    //}
 
     System_printf("Acceleration setup\n");
     return true;
