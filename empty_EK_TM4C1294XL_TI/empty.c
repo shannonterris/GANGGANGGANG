@@ -83,6 +83,8 @@
 #include <time.h>
 
 #include "ui/grlib_demo.h"
+#include "sensors/BMI160/bmi160.h"
+#include "sensors/sensors_api.h"
 
 
 uint8_t motorStartStop = 1;
@@ -93,7 +95,10 @@ uint8_t motorStartStop = 1;
 #define TASKSTACKSIZE   1024
 
 Task_Struct task0Struct;
+Task_Struct task1Struct;
+
 Char task0Stack[TASKSTACKSIZE];
+Char task1Stack[TASKSTACKSIZE];
 
 
 tCanvasWidget     g_sBackground;
@@ -188,6 +193,13 @@ Void heartBeatFxn(UArg arg0, UArg arg1)
     }
 }
 
+
+
+void bmiHeartBeatFxn(UArg arg0, UArg arg1) {
+    initSensors(arg0);
+    System_flush();
+}
+
 /*
  *  ======== main ========
  */
@@ -208,6 +220,14 @@ int main(void)
     taskParams.stackSize = TASKSTACKSIZE;
     taskParams.stack = &task0Stack;
     Task_construct(&task0Struct, (Task_FuncPtr)heartBeatFxn, &taskParams, NULL);
+
+    /* Construct bmiHeartBeat Task  thread */
+    Task_Params bmiTaskParams;
+    Task_Params_init(&bmiTaskParams);
+    taskParams.arg0 = 20;
+    taskParams.stackSize = TASKSTACKSIZE;
+    taskParams.stack = &task1Stack;
+    Task_construct(&task1Struct, (Task_FuncPtr)bmiHeartBeatFxn, &bmiTaskParams, NULL);
 
     // Turn on user LED
     GPIO_write(Board_LED0, Board_LED_ON);
