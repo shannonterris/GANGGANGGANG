@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "inc/hw_memmap.h"
 #include "inc/hw_nvic.h"
 #include "inc/hw_sysctl.h"
@@ -72,6 +73,7 @@ void initWidgets(tContext * sContext);
 void initUI(uint32_t systemClock, tContext * Context);
 void drawGraphPoint();
 void DrawDayNight();
+void DrawTime();
 
 uint32_t g_ui32SysClock;
 tContext sContext;

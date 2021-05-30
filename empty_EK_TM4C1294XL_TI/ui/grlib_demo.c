@@ -326,8 +326,22 @@ DrawDayNight()
 {
     // TODO add logic for night vs day
     GrStringDraw(&sContext, "Day", -1, 10, 5, false);
+    // TODO if it has changed toggle led light
 }
 
+//*****************************************************************************
+//
+// Handles updating of the clock every 1 second
+//
+//*****************************************************************************
+void
+DrawTime()
+{
+    if (!g_drawingGraph) {
+        GrStringDraw(&sContext, "Date and Time", -1, 50, 5, false);
+        // TODO if it has changed toggle led light
+    }
+}
 
 //*****************************************************************************
 //

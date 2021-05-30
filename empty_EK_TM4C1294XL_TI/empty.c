@@ -98,6 +98,7 @@ uint8_t motorStartStop = 1;
 //Char task0Stack[TASKSTACKSIZE];
 
 Clock_Struct clockUpdateGraph;
+Clock_Struct clockUpdateTime;
 
 Void updateGraphUI()
 {
@@ -121,6 +122,7 @@ int main(void)
     initMotor();
     Task_Params taskParams;
     Clock_Params clockParams;
+    Clock_Params clockParams1;
 
     /* Call board init functions */
     Board_initGeneral();
@@ -133,6 +135,12 @@ int main(void)
     clockParams.period = 100; // 10Hz
     clockParams.startFlag = TRUE;
     Clock_construct(&clockUpdateGraph, (Clock_FuncPtr)updateGraphUI, 1, &clockParams);
+
+    /* Construct Clock for Updating of the Time Periodically (1Hz) */
+    Clock_Params_init(&clockParams1);
+    clockParams1.period = 1000; // 1Hz
+    clockParams1.startFlag = TRUE;
+    Clock_construct(&clockUpdateTime, (Clock_FuncPtr)DrawTime, 1, &clockParams1);
 
     /* Construct UI Task thread */
     //Task_Params_init(&taskParams);
