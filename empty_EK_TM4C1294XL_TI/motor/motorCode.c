@@ -56,7 +56,8 @@
 #define ACCEL_SIZE 100
 #define MAXOUTPUT 24
 #define NUMSGS 50
-#define ADC_SEQ 0 // sequencer 1 -> 4 samples
+#define ADC0_SEQ 0 // sequencer 1 -> 4 samples
+#define ADC1_SEQ 1
 #define ADC_STEP 0
 
 Semaphore_Struct semStruct;
@@ -108,7 +109,7 @@ volatile rpm_prev = 0;
 volatile int error;
 volatile float integral_error = 0;
 
-volatile float rpm_desired = 400;
+volatile float rpm_desired = 300;
 volatile float rpm_int = 0;
 volatile float jump = 5;
 
@@ -147,12 +148,14 @@ volatile int dummy = 0;
 
 volatile int adc_test = 0;
 
-uint32_t pui32ADC0Value[3];
+uint32_t pui32ADC0Value[1];
+uint32_t pui32ADC1Value[1];
+
 
 volatile float vref = 3.3;
-volatile float voltage;
+volatile float voltageC, voltageB;
 volatile float stepVoltage = 0.00089586;
-volatile float current;
+volatile float currentC, currentB;
 volatile float shunt = 0.007;
 volatile float gain = 10;
 
@@ -204,8 +207,11 @@ void ADCFxn()
 
     //ADCProcessorTrigger(ADC0_BASE, ADC_SEQ);
     //ADC
-    ADCIntClear(ADC0_BASE, ADC_SEQ);
-    ADCSequenceDataGet(ADC0_BASE, ADC_SEQ, pui32ADC0Value);
+    ADCIntClear(ADC0_BASE, ADC0_SEQ);
+    ADCSequenceDataGet(ADC0_BASE, ADC0_SEQ, pui32ADC0Value);
+
+    ADCIntClear(ADC1_BASE, ADC1_SEQ);
+    ADCSequenceDataGet(ADC1_BASE, ADC1_SEQ, pui32ADC1Value);
     //adc_test++;
     //System_printf("Hello");
 }
@@ -251,14 +257,15 @@ void initHallABC()
     //------- ADC! //
     // ISR vector number 20 for Port E -> AIN0 (channel 0) is port E3
     adc0 = Hwi_create(INT_ADC0SS0_TM4C123, (Hwi_FuncPtr)ADCFxn, &hwiParams, NULL);
+    adc1 = Hwi_create(INT_ADC0SS1_TM4C123, (Hwi_FuncPtr)ADCFxn, &hwiParams, NULL);
 
-    if (adc0 == NULL)
+    if (adc0 == NULL || adc1 == NULL)
     {
         System_abort("ADC HWI creation failed...");
     }
 
-    ADCIntEnable(ADC0_BASE, ADC_SEQ);
-
+    ADCIntEnable(ADC0_BASE, ADC0_SEQ);
+    ADCIntEnable(ADC1_BASE, ADC1_SEQ);
 
     //GPIO_enableInt(ADC0_BASE);
     //GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_3, GPIO_RISING_EDGE);
@@ -435,7 +442,9 @@ void motorFxn(UArg arg0, UArg arg1)
         if (print_from_clock == true)
         {
             //System_printf("%d\n", adc_test);
-            sprintf(speed_buf, "Voltage: %f  Current: %f\n\r", voltage, current);
+            //sprintf(speed_buf, "Voltage: %f  Current: %f\n\r", voltage, current);
+
+            sprintf(speed_buf, "Current C: %f  Current B: %f\n\r", currentC, currentB);
             UART_write(uart, speed_buf, sizeof(speed_buf));
             //int32_t rpm_print = (int32_t)rpm_avg;
             //UART_write(uart, &rpm_avg, sizeof(rpm_avg));
@@ -546,9 +555,14 @@ void accelLimitFxn(UArg arg0)
 void ADCTriggerFxn(UArg arg0)
 {
     //Semaphore_post(semHandle);
-    ADCProcessorTrigger(ADC0_BASE, ADC_SEQ);
-    voltage = stepVoltage * pui32ADC0Value[0];
-    current = ((vref/2) - voltage)/(gain * shunt);
+    ADCProcessorTrigger(ADC0_BASE, ADC0_SEQ);
+    ADCProcessorTrigger(ADC1_BASE, ADC1_SEQ);
+
+    voltageC = stepVoltage * pui32ADC0Value[0];
+    currentC = ((vref/2) - voltageC)/(gain * shunt);
+
+    voltageB = stepVoltage * pui32ADC1Value[0];
+    currentB = ((vref/2) - voltageB)/(gain * shunt);
 }
 
 
@@ -580,7 +594,7 @@ void ADC0_Init() //ADC0 on PE3
      *  4. priority - relative priority of the sample sequence
      *                with other sample sequences
      */
-    ADCSequenceConfigure(ADC0_BASE, ADC_SEQ, ADC_TRIGGER_PROCESSOR, 0);
+    ADCSequenceConfigure(ADC0_BASE, ADC0_SEQ, ADC_TRIGGER_PROCESSOR, 0);
 
 
     /*
@@ -593,21 +607,36 @@ void ADC0_Init() //ADC0 on PE3
      *      - Defined as the last in the sequence (ADC_CTL_END)
      *      - cause an interrupt when complete (ADC_CTL_IE)
      */
-    ADCSequenceStepConfigure(ADC0_BASE, ADC_SEQ, ADC_STEP, ADC_CTL_IE |
-                             ADC_CTL_CH0 | ADC_CTL_END);
+    ADCSequenceStepConfigure(ADC0_BASE, ADC0_SEQ, ADC_STEP, ADC_CTL_IE |
+                             ADC_CTL_CH3 | ADC_CTL_END);
 
     /*
      * Enable a sample sequence. Allow specified sample sequence
      * to be captured when trigger is detected.
      */
-    ADCSequenceEnable(ADC0_BASE, ADC_SEQ);
+    ADCSequenceEnable(ADC0_BASE, ADC0_SEQ);
 
     /*
      * Clears sample sequence interrupt source.
      */
-    ADCIntClear(ADC0_BASE, ADC_SEQ);
+    ADCIntClear(ADC0_BASE, ADC0_SEQ);
 }
 
+
+void ADC1_Init() //ADC0 on PE3
+{
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC1);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+
+    GPIOPinTypeADC(GPIO_PORTD_BASE, GPIO_PIN_7);
+
+    ADCSequenceConfigure(ADC1_BASE, ADC1_SEQ, ADC_TRIGGER_PROCESSOR, 0); //--- priority may need to change //
+    ADCSequenceStepConfigure(ADC1_BASE, ADC1_SEQ, ADC_STEP, ADC_CTL_IE |
+                               ADC_CTL_CH4 | ADC_CTL_END);
+
+    ADCSequenceEnable(ADC1_BASE, ADC1_SEQ);
+    ADCIntClear(ADC1_BASE, ADC1_SEQ);
+}
 
 
 /*!
@@ -667,6 +696,7 @@ void initMotor( void )
 {
 
     ADC0_Init();
+    ADC1_Init();
 
     Error_init(&eb);
 
