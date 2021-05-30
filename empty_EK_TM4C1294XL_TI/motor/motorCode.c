@@ -130,10 +130,13 @@ volatile float rotation = (float) 1/TOTAL_POSITIONS;
 volatile int deltaPos_c;
 volatile float rotation_c, rpm_actual_c, rpm_avg_c;
 volatile float rpm_sum_c = 0;
+volatile float rpm_from_UI;
 
 volatile float rpm_buf[5];
 
-volatile bool motorRunning;
+volatile bool motorState;
+
+volatile bool running;
 
 volatile int dummy = 0;
 
@@ -279,21 +282,22 @@ void initUART(void)
 void statesFxn(UARg, arg0)
 {
     /* User has started the motor */
-    if(motorRunning == true)
+    if(motorState == true)
     {
         Event_post(evtHandle, Event_Id_00);
         //motorRunning = false;
     }
 
-    if(motorRunning == false)
+    if(motorState == false)
     {
         Event_post(evtHandle, Event_Id_01);
     }
 
-    //if(motorRunning == false )
-    //{
-    //    Event_post(evtHandle, Event_Id_01);
-    //}
+    if(running == true)
+    {
+        Event_post(evtHandle, Event_Id_02);
+    }
+
 }
 
 
@@ -340,19 +344,23 @@ void motorFxn(UArg arg0, UArg arg1)
 
     while(1)
     {
-        state = Event_pend(evtHandle, Event_Id_NONE, (Event_Id_00 + Event_Id_01), BIOS_WAIT_FOREVER);
+        state = Event_pend(evtHandle, Event_Id_NONE, (Event_Id_00 + Event_Id_01 + Event_Id_02), BIOS_WAIT_FOREVER);
 
-        /* Start the motor */
+        /* IDLE - Start the motor */
         if (state & Event_Id_00)
         {
             enableMotor();
             //setDuty(5);
-            rpm_desired = 400;
+            //rpm_desired = 1;
             readABC();
+            running = true;
             updateMotor(hA, hB, hC);
+            //error = 0;
+            //integral_error = 0;
+            //System_printf("START");
         }
 
-        /* Stop the motor */
+        /* STOP - Speed = 0 */
         if (state & Event_Id_01)
         {
             rpm_desired = 0;
@@ -362,8 +370,16 @@ void motorFxn(UArg arg0, UArg arg1)
                 error = 0;
                 integral_error = 0;
             }
+            running = false;
+            //System_printf("STOP");
         }
 
+        /* STARTING AND RUNNING - Speed > 0 */
+        if (state & Event_Id_02)
+        {
+            //updateMotor(hA, hB, hC);
+            rpm_desired = rpm_from_UI;
+        }
 
         /* START PHASE MOTOR */
         //Semaphore_pend(semHandle, BIOS_WAIT_FOREVER);
@@ -557,6 +573,16 @@ int getSpeed( void )
     return (int) rpm_avg;
 }
 
+bool getState(void)
+{
+    return running;
+}
+
+/*
+ * @brief Once the motor has started, if user changes the speed then
+ *
+ */
+
 /*!
  *  @brief Sets the desired RPM from the UI.
  *
@@ -564,7 +590,7 @@ int getSpeed( void )
  */
 void setSpeed(uint32_t rpm_ui)
 {
-    rpm_desired = (float) rpm_ui;
+    rpm_from_UI = (float) rpm_ui;
 }
 
 /*!
@@ -574,7 +600,7 @@ void setSpeed(uint32_t rpm_ui)
  */
 void startMotor( bool UI_motorRun )
 {
-    motorRunning = UI_motorRun;
+    motorState = UI_motorRun;
 }
 
 /*!
