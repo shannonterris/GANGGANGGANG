@@ -67,6 +67,7 @@ Clock_Handle clkHandle;
 Hwi_Handle hallA, hallB, hallC;
 Hwi_Handle adc0, adc1;
 
+
 Error_Block eb;
 Event_Struct evtStruct;
 Event_Handle evtHandle;
@@ -271,6 +272,22 @@ void initUART(void)
 }
 
 /*!
+ *  @brief Clock SWI to check the states of the motor. Uses events
+ *         to post the current state to the task thread.
+ *  @params arg0
+ */
+void statesFxn(UARg, arg0)
+{
+    /* User has started the motor */
+    if(motorRunning == true)
+    {
+        Event_post(evtHandle, Event_Id_00);
+        motorRunning == false;
+    }
+}
+
+
+/*!
  *  @brief  Task thread for the motor. Responsible for calling the HWI setup and driving the
  *          initial updateMotor. A while loop is used to control the states of the system
  *          (speed up, speed down, e-stop). UART was used during testing and is not required
@@ -304,10 +321,10 @@ void motorFxn(UArg arg0, UArg arg1)
         System_flush();
     }
 
-    enableMotor();
-    setDuty(10);
-    readABC();
-    updateMotor(hA, hB, hC);
+    //enableMotor();
+    //setDuty(10);
+    //readABC();
+    //updateMotor(hA, hB, hC);
 
     UInt state;
 
@@ -315,8 +332,19 @@ void motorFxn(UArg arg0, UArg arg1)
 
     while(1)
     {
+
+        state = Event_pend(evtHandle, Event_Id_NONE, Event_Id_00, BIOS_WAIT_FOREVER);
+
+        if (state & Event_Id_00)
+        {
+            enableMotor();
+            setDuty(10);
+            readABC();
+            updateMotor(hA, hB, hC);
+        }
+
         /* START PHASE MOTOR */
-        Semaphore_pend(semHandle, BIOS_WAIT_FOREVER);
+        //Semaphore_pend(semHandle, BIOS_WAIT_FOREVER);
        /*
        if (motorRunning == true)
        {
@@ -440,6 +468,7 @@ void waitFxn(UArg arg0)
 {
     Semaphore_post(semHandle);
 }
+
 
 /**
  * ADC
@@ -570,6 +599,10 @@ void initMotor( void )
     clkParams.period = 10;
     clkParams.startFlag = TRUE;
     Clock_create((Clock_FuncPtr)waitFxn, 10, &clkParams, NULL);
+
+    clkParams.period = 10;
+    clkParams.startFlag = TRUE;
+    Clock_create((Clock_FuncPtr)statesFxn, 10, &clkParams, NULL);
 
     /* Setup Semaphore */
     Semaphore_Params semParams;
