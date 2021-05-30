@@ -282,8 +282,18 @@ void statesFxn(UARg, arg0)
     if(motorRunning == true)
     {
         Event_post(evtHandle, Event_Id_00);
-        motorRunning == false;
+        //motorRunning = false;
     }
+
+    if(motorRunning == false)
+    {
+        Event_post(evtHandle, Event_Id_01);
+    }
+
+    //if(motorRunning == false )
+    //{
+    //    Event_post(evtHandle, Event_Id_01);
+    //}
 }
 
 
@@ -328,20 +338,32 @@ void motorFxn(UArg arg0, UArg arg1)
 
     UInt state;
 
-    motorRunning = true;
-
     while(1)
     {
+        state = Event_pend(evtHandle, Event_Id_NONE, (Event_Id_00 + Event_Id_01), BIOS_WAIT_FOREVER);
 
-        state = Event_pend(evtHandle, Event_Id_NONE, Event_Id_00, BIOS_WAIT_FOREVER);
-
+        /* Start the motor */
         if (state & Event_Id_00)
         {
             enableMotor();
-            setDuty(10);
+            //setDuty(5);
+            rpm_desired = 400;
             readABC();
             updateMotor(hA, hB, hC);
         }
+
+        /* Stop the motor */
+        if (state & Event_Id_01)
+        {
+            rpm_desired = 0;
+            if (rpm_avg < 100)
+            {
+                stopMotor(true);
+                error = 0;
+                integral_error = 0;
+            }
+        }
+
 
         /* START PHASE MOTOR */
         //Semaphore_pend(semHandle, BIOS_WAIT_FOREVER);

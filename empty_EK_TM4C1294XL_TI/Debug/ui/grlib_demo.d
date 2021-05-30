@@ -45,7 +45,7 @@ ui/grlib_demo.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/includ
 ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1/drivers/Kentec320x240x16_ssd2119_spi.h
 ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1/drivers/touch.h
 ui/grlib_demo.obj: D:/Working/empty_EK_TM4C1294XL_TI/images.h
-ui/grlib_demo.obj: D:/Working/empty_EK_TM4C1294XL_TI/motor/motorCode.h
+ui/grlib_demo.obj: D:/Working/empty_EK_TM4C1294XL_TI/motor/MotorCode.h
 ui/grlib_demo.obj: C:/ti/ccs1031/xdctools_3_32_00_06_core/packages/xdc/std.h
 ui/grlib_demo.obj: C:/ti/ccs1031/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stddef.h
 ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_01_14/products/bios_6_45_02_31/packages/ti/targets/arm/elf/std.h
@@ -142,7 +142,7 @@ C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s
 
 D:/Working/empty_EK_TM4C1294XL_TI/images.h:
 
-D:/Working/empty_EK_TM4C1294XL_TI/motor/motorCode.h:
+D:/Working/empty_EK_TM4C1294XL_TI/motor/MotorCode.h:
 
 C:/ti/ccs1031/xdctools_3_32_00_06_core/packages/xdc/std.h:
 
