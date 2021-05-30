@@ -78,15 +78,15 @@ bool BMI160Init(I2C_Handle i2c) {
     uint8_t highGInterruptEnable = 0x07;
     writeI2C(i2c, FOC_CONF, INT_EN+1, &highGInterruptEnable); // INT_EN + 1 = 0x50 + 1 = 0x51
 
-    // INT_OUT_CTRL (0x53)
+    // interrupt output control
     uint8_t output = 0x0F; // 0b1111 // Not sure on last bit
     writeI2C(i2c, FOC_CONF, INT_OUT_CTRL, &output);
 
-    // INT_LATCH (0x54)
+    // interrupt latch
     uint8_t latch = 0x1A; // 0b11010
     writeI2C(i2c, FOC_CONF, INT_LATCH, &latch);
 
-    // INT_MAP (0x55-0x57)
+    // interrupt mapping
     uint8_t mapping = 0x02; // 0b10
     writeI2C(i2c, FOC_CONF, INT_MAP, &mapping);
 
