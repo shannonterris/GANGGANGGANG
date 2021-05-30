@@ -38,7 +38,8 @@
 #include "drivers/Kentec320x240x16_ssd2119_spi.h"
 #include "drivers/touch.h"
 #include "images.h"
-
+#include "Board.h"
+#include "inc/hw_gpio.h"
 //*****************************************************************************
 //
 // Forward declarations for the globals required to define the widgets at

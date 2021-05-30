@@ -317,6 +317,7 @@ OnStartMotor(tWidget *psWidget)
     motorStartedUI = !motorStartedUI;
 
     startMotor(motorStartedUI);
+    GPIO_toggle(Board_LED0);
 
     if(motorStartedUI)
     {
@@ -629,6 +630,10 @@ void initUI(uint32_t systemClock, tContext * Context) {
     motorStartedUI = false;
     previousPoint = 0;
     // currentPoint = 0;
+
+    // Initialize LEDs
+    GPIO_write(Board_LED0, Board_LED_OFF);
+    GPIO_write(Board_LED1, Board_LED_OFF);
 }
 
 //*****************************************************************************
