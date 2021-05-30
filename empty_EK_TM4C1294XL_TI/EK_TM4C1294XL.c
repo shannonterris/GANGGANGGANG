@@ -307,7 +307,7 @@ GPIO_PinConfig gpioPinConfigs[] = {
 
     //--------- ADC //
     /* GPIO AIN 0 (channel 0) for ADC 0 */
-    GPIOTiva_PE_3 | GPIO_CFG_INPUT
+    //GPIOTiva_PE_3 | GPIO_CFG_INPUT
 
 
 };

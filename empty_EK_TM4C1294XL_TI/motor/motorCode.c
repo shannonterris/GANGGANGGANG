@@ -56,6 +56,8 @@
 #define ACCEL_SIZE 100
 #define MAXOUTPUT 24
 #define NUMSGS 50
+#define ADC_SEQ 1 // sequencer 1 -> 4 samples
+#define ADC_STEP 0
 
 Semaphore_Struct semStruct;
 Semaphore_Handle semHandle;
@@ -143,6 +145,8 @@ volatile bool e_stop; // scope limited to motorCode API
 
 volatile int dummy = 0;
 
+volatile int adc_test = 0;
+
 /*!
  *  @brief  ISR to read the Hall Effect lines, calculate RPM and update the motor
  */
@@ -188,7 +192,12 @@ void  HallFxn()
  */
 void ADCFxn()
 {
-    // fill here
+    uint32_t pui32ADC0Value[1];
+
+    //ADCProcessorTrigger(ADC0_BASE, ADC_SEQ);
+    //ADC
+    ADCIntClear(ADC0_BASE, ADC_SEQ);
+    adc_test++;
 }
 
 /*!
@@ -231,21 +240,24 @@ void initHallABC()
 
     //------- ADC! //
     // ISR vector number 20 for Port E -> AIN0 (channel 0) is port E3
-    adc0 = Hwi_create(INT_GPIOE_TM4C123, (Hwi_FuncPtr)ADCFxn, &hwiParams, NULL);
+    adc0 = Hwi_create(INT_ADC0SS0_TM4C123, (Hwi_FuncPtr)ADCFxn, &hwiParams, NULL);
 
     if (adc0 == NULL)
     {
         System_abort("ADC HWI creation failed...");
     }
 
-    GPIO_enableInt(ADC_0);
-    GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_3, GPIO_RISING_EDGE);
-    GPIODirModeSet(GPIO_PORTE_BASE, GPIO_PIN_3, GPIO_DIR_MODE_IN);
+    ADCIntEnable(ADC0_BASE, ADC_SEQ);
+
+    //GPIO_enableInt(ADC0_BASE);
+    //GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_3, GPIO_RISING_EDGE);
+    //GPIODirModeSet(GPIO_PORTE_BASE, GPIO_PIN_3, GPIO_DIR_MODE_IN);
 
     System_printf("Done initHallABC\n");
     System_flush();
     //Board_BUTTON0  User switch 1
 }
+
 
 /*!
  *  @brief  Read the current state of the hall effect sensors
@@ -348,19 +360,21 @@ void motorFxn(UArg arg0, UArg arg1)
         System_flush();
     }
 
-    //enableMotor();
-    //setDuty(10);
-    //readABC();
-    //updateMotor(hA, hB, hC);
+    enableMotor();
+    setDuty(15);
+    readABC();
+    updateMotor(hA, hB, hC);
 
     UInt state;
 
     while(1)
     {
+
+        /*
         state = Event_pend(evtHandle, Event_Id_NONE, (Event_Id_00 + Event_Id_01 + Event_Id_02 + Event_Id_03),
                            BIOS_WAIT_FOREVER);
 
-        /* IDLE - Start the motor */
+        // IDLE - Start the motor
         if (state & Event_Id_00)
         {
             running = true;
@@ -370,7 +384,7 @@ void motorFxn(UArg arg0, UArg arg1)
             updateMotor(hA, hB, hC);
         }
 
-        /* STOP - Speed = 0 */
+        // STOP - Speed = 0
         if (state & Event_Id_01)
         {
             running = false;
@@ -386,14 +400,14 @@ void motorFxn(UArg arg0, UArg arg1)
             }
         }
 
-        /* STARTING AND RUNNING - Speed > 0 */
+        // STARTING AND RUNNING - Speed > 0
         if (state & Event_Id_02)
         {
             //updateMotor(hA, hB, hC);
             rpm_desired = rpm_from_UI;
         }
 
-        /* E-STOP */
+        // E-STOP
         if (state & Event_Id_03)
         {
             // trigger local estop for the deceleration
@@ -404,19 +418,21 @@ void motorFxn(UArg arg0, UArg arg1)
             // the accelLimitFxn will decrement by 10RPM every 10ms.
             motorState = false;
         }
+        */
 
-        /*
+
         if (print_from_clock == true)
         {
-            sprintf(speed_buf, "Test: %d\n\r", dummy);
+            //System_printf("%d\n", adc_test);
+            sprintf(speed_buf, "Test: %d\n\r", adc_test);
             UART_write(uart, speed_buf, sizeof(speed_buf));
             //int32_t rpm_print = (int32_t)rpm_avg;
             //UART_write(uart, &rpm_avg, sizeof(rpm_avg));
             //int32_t rpm_print_act = (int32_t)rpm_actual;
-            //UART_write(uart, &rpm_actual, sizeof(rpm_actual))
-            print_from_clock = false;
+            //UART_write(uart, &adc_test, sizeof(adc_test));
+            //print_from_clock = false;
         }
-        */
+
     }
 }
 
@@ -505,7 +521,7 @@ void accelLimitFxn(UArg arg0)
         if (e_stop == true)
         {
             // if true, every 10ms, decrement by 10RPM (10RPM/0.01s = 1000RPM/s).
-            rpm_int = rpm_int - 30;
+            rpm_int = rpm_int - 100;
         }
         else
         {
@@ -526,13 +542,12 @@ void waitFxn(UArg arg0)
  * ADC
  */
 
-#define ADC_SEQ 1 // sequencer 1 -> 4 samples
-#define ADC_STEP 0
 
 void ADC0_Init() //ADC0 on PE3
 {
     SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+
 
      /*
      *  GPIOPinTypeADC configures Port E Pin 3 for use as an
@@ -551,7 +566,7 @@ void ADC0_Init() //ADC0 on PE3
      *  4. priority - relative priority of the sample sequence
      *                with other sample sequences
      */
-    ADCSequenceConfigure(ADC0_BASE, ADC_SEQ, ADC_TRIGGER_ALWAYS, 0);
+    ADCSequenceConfigure(ADC0_BASE, ADC_SEQ, ADC_TRIGGER_PROCESSOR, 0);
 
 
     /*
@@ -565,7 +580,7 @@ void ADC0_Init() //ADC0 on PE3
      *      - cause an interrupt when complete (ADC_CTL_IE)
      */
     ADCSequenceStepConfigure(ADC0_BASE, ADC_SEQ, ADC_STEP, ADC_CTL_IE |
-                             ADC_CTL_CH0 | ADC_CTL_END);
+                             ADC_CTL_CH4 | ADC_CTL_END);
 
     /*
      * Enable a sample sequence. Allow specified sample sequence
