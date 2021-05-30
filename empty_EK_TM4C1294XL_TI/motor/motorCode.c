@@ -135,8 +135,11 @@ volatile float rpm_from_UI;
 volatile float rpm_buf[5];
 
 volatile bool motorState;
-
 volatile bool running;
+
+
+volatile bool e_event; // retrieved from sensor APIs
+volatile bool e_stop; // scope limited to motorCode API
 
 volatile int dummy = 0;
 
@@ -277,6 +280,12 @@ void initUART(void)
 /*!
  *  @brief Clock SWI to check the states of the motor. Uses events
  *         to post the current state to the task thread.
+ *
+ *         Event_Id_00 ---> set the motor to IDLE
+ *         Event_Id_01 ---> set the motor to STOP
+ *         Event_Id_02 ---> set the motor to RUNNING (includes speed > 0 & at speed)
+ *         Event_Id_03 ---> set e-stop condition
+ *
  *  @params arg0
  */
 void statesFxn(UARg, arg0)
@@ -285,7 +294,6 @@ void statesFxn(UARg, arg0)
     if(motorState == true)
     {
         Event_post(evtHandle, Event_Id_00);
-        //motorRunning = false;
     }
 
     if(motorState == false)
@@ -296,6 +304,11 @@ void statesFxn(UARg, arg0)
     if(running == true)
     {
         Event_post(evtHandle, Event_Id_02);
+    }
+
+    if(e_event == true)
+    {
+        Event_post(evtHandle, Event_Id_03);
     }
 
 }
@@ -344,34 +357,33 @@ void motorFxn(UArg arg0, UArg arg1)
 
     while(1)
     {
-        state = Event_pend(evtHandle, Event_Id_NONE, (Event_Id_00 + Event_Id_01 + Event_Id_02), BIOS_WAIT_FOREVER);
+        state = Event_pend(evtHandle, Event_Id_NONE, (Event_Id_00 + Event_Id_01 + Event_Id_02 + Event_Id_03),
+                           BIOS_WAIT_FOREVER);
 
         /* IDLE - Start the motor */
         if (state & Event_Id_00)
         {
-            enableMotor();
-            //setDuty(5);
-            //rpm_desired = 1;
-            readABC();
             running = true;
+            //enableMotor();
+            rpm_desired = rpm_from_UI;
+            readABC();
             updateMotor(hA, hB, hC);
-            //error = 0;
-            //integral_error = 0;
-            //System_printf("START");
         }
 
         /* STOP - Speed = 0 */
         if (state & Event_Id_01)
         {
+            running = false;
             rpm_desired = 0;
+
             if (rpm_avg < 100)
             {
-                stopMotor(true);
+                e_stop = false;
+                e_event = false;
                 error = 0;
                 integral_error = 0;
+                stopMotor(true);
             }
-            running = false;
-            //System_printf("STOP");
         }
 
         /* STARTING AND RUNNING - Speed > 0 */
@@ -381,23 +393,17 @@ void motorFxn(UArg arg0, UArg arg1)
             rpm_desired = rpm_from_UI;
         }
 
-        /* START PHASE MOTOR */
-        //Semaphore_pend(semHandle, BIOS_WAIT_FOREVER);
-       /*
-       if (motorRunning == true)
-       {
-            enableMotor();
-            setDuty(25);
-            readABC();
-            updateMotor(hA, hB, hC);
-            //motorRunning = false;
-        }
-
-        if (motorRunning == false)
+        /* E-STOP */
+        if (state & Event_Id_03)
         {
-            stopMotor(true);
+            // trigger local estop for the deceleration
+            e_stop = true;
+
+            // set the motorState to false. In the statesFxn SWI, this will trigger a posting
+            // of Event_Id_01, which causes the motor to stop. With the above e-stop as true,
+            // the accelLimitFxn will decrement by 10RPM every 10ms.
+            motorState = false;
         }
-        */
 
         /*
         if (print_from_clock == true)
@@ -411,11 +417,8 @@ void motorFxn(UArg arg0, UArg arg1)
             print_from_clock = false;
         }
         */
-
     }
 }
-
-
 
 /*!
  *  @brief  Filter - Calculates the average RPM from the actual RPM calculated
@@ -484,6 +487,9 @@ void speedFxn(UArg arg0)
  *         frequency of 100Hz, and uses an intermediate RPM that increments at
  *         5RPM every 0.01s - results in an acceleration of 500RPM/s.
  *
+ *         The deceleration has a conditional to check if an e-stop is triggered
+ *         by the task thread.
+ *
  *  @params arg0
  */
 void accelLimitFxn(UArg arg0)
@@ -495,10 +501,18 @@ void accelLimitFxn(UArg arg0)
     }
     else if (rpm_int > rpm_desired)
     {
-        // every 10ms, decrement by 5rpm
-        rpm_int = rpm_int - 5;
+        // check if an e-stop condition has occured.
+        if (e_stop == true)
+        {
+            // if true, every 10ms, decrement by 10RPM (10RPM/0.01s = 1000RPM/s).
+            rpm_int = rpm_int - 30;
+        }
+        else
+        {
+            // if false, every 10ms, decrement by 5RPM as normal
+            rpm_int = rpm_int - 5;
+        }
     }
-
 }
 
 
@@ -578,6 +592,10 @@ bool getState(void)
     return running;
 }
 
+void set_estop(void)
+{
+    e_stop = true;
+}
 /*
  * @brief Once the motor has started, if user changes the speed then
  *
@@ -601,6 +619,12 @@ void setSpeed(uint32_t rpm_ui)
 void startMotor( bool UI_motorRun )
 {
     motorState = UI_motorRun;
+    dummy++;
+
+    if(dummy == 4)
+    {
+        e_event = true; // hit stop motor a second time
+    }
 }
 
 /*!

@@ -357,6 +357,8 @@ OnStartMotor(tWidget *psWidget)
     {
         PushButtonTextSet(&g_sMotorOption, "Start Motor");
         WidgetPaint((tWidget *)&g_sMotorOption);
+        //g_motorSpeed = 0;
+        //setSpeed(g_motorSpeed);
     }
 }
 
@@ -417,16 +419,17 @@ void OnIncrease() {
 
     else if (g_sCurrentPanel == SPEED) {
         // Motor speed increase in units of 100
-        if (getState() == true) {
-            if (g_motorSpeed <= 4400) { // Speed has a max limit of 4500
+
+        if (g_motorSpeed <= 4400) { // Speed has a max limit of 4500
+            if (getState() == true) {
                 g_motorSpeed = g_motorSpeed + 100;
                 drawSettingValue("RPM", g_motorSpeed);
                 setSpeed(g_motorSpeed);
+            } else {
+                g_motorSpeed = 0;
+                drawSettingValue("RPM", g_motorSpeed);
+                //setSpeed(g_motorSpeed);
             }
-        } else {
-            g_motorSpeed = 0;
-            drawSettingValue("RPM", g_motorSpeed);
-            setSpeed(g_motorSpeed);
         }
         // TODO api call to set new value
     }
@@ -451,16 +454,17 @@ void OnDecrease() {
 
     else if (g_sCurrentPanel == SPEED) {
         // Motor speed increase in units of 100
-        if (getState() == true) {
-            if (g_motorSpeed >= 100) {
+
+        if (g_motorSpeed >= 100) {
+            if (getState() == true) {
                 g_motorSpeed = g_motorSpeed - 100;
                 drawSettingValue("RPM", g_motorSpeed);
                 setSpeed(g_motorSpeed);
-            }
-        } else {
-            g_motorSpeed = 0;
-            drawSettingValue("RPM", g_motorSpeed);
-            setSpeed(g_motorSpeed);
+            } else {
+                g_motorSpeed = 0;
+                drawSettingValue("RPM", g_motorSpeed);
+                setSpeed(g_motorSpeed);
+             }
         }
         // TODO api call to set new value
     }
