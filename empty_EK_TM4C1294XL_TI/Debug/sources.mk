@@ -126,5 +126,7 @@ SUBDIRS := \
 . \
 drivers \
 motor \
+sensors/BMI160 \
+sensors \
 ui \
 

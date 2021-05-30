@@ -96,9 +96,8 @@ uint8_t motorStartStop = 1;
 
 #define TASKSTACKSIZE   1024
 
-Task_Struct task1Struct;
 
-Char task1Stack[TASKSTACKSIZE];
+Char task2Stack[TASKSTACKSIZE];
 
 //Task_Struct task0Struct;
 //Char task0Stack[TASKSTACKSIZE];
@@ -155,13 +154,6 @@ int main(void)
     //taskParams.priority = 0;
     //Task_construct(&task0Struct, (Task_FuncPtr)heartBeatFxn, &taskParams, NULL);
 
-    /* Construct bmiHeartBeat Task  thread */
-    Task_Params bmiTaskParams;
-    Task_Params_init(&bmiTaskParams);
-    taskParams.arg0 = 20;
-    taskParams.stackSize = TASKSTACKSIZE;
-    taskParams.stack = &task1Stack;
-    Task_construct(&task1Struct, (Task_FuncPtr)bmiHeartBeatFxn, &bmiTaskParams, NULL);
 
     // Turn on user LED
     GPIO_write(Board_LED0, Board_LED_ON);
