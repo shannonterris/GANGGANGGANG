@@ -1,44 +1,20 @@
 /*
- * Copyright (c) 2015, Texas Instruments Incorporated
- * All rights reserved.
+ * motorCode.c
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * *  Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- * *  Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * *  Neither the name of Texas Instruments Incorporated nor the names of
- *    its contributors may be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *  Author: Raj Silari
+ *  EGH456 Group 17
  */
-
 /*
  *  ======== empty.c ========
  */
-/* XDCtools Header files */
+
+/* Standard Libraries */
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+/* XDCtools Header files */
 #include <xdc/std.h>
 #include <xdc/runtime/System.h>
 #include <xdc/runtime/Types.h>
@@ -52,24 +28,15 @@
 #include <ti/sysbios/knl/Event.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <ti/sysbios/Knl/Clock.h>
-
 #include <ti/sysbios/knl/Swi.h>
-
-/* Include a mailbox for the buffer */
 #include <ti/sysbios/knl/Mailbox.h>
 #include <ti/sysbios/Hal/Timer.h>
 #include <ti/sysbios/knl/Queue.h>
 
-/* TI-RTOS Header files */
-// #include <ti/drivers/EMAC.h>
+/* TivaWare Driver files */
+
 #include <ti/drivers/GPIO.h>
-// #include <ti/drivers/I2C.h>
-// #include <ti/drivers/SDSPI.h>
-// #include <ti/drivers/SPI.h>
 #include <ti/drivers/UART.h>
-// #include <ti/drivers/USBMSCHFatFs.h>
-// #include <ti/drivers/Watchdog.h>
-// #include <ti/drivers/WiFi.h>
 
 #include "driverlib/rom.h"
 #include "driverlib/rom_map.h"
@@ -83,26 +50,13 @@
 #include "inc/hw_ints.h"
 #include "driverlib/gpio.h"
 
-//#define TASKSTACKSIZE   512
+
 #define TOTAL_POSITIONS 12
 #define SAMPLE_SIZE 100
 #define ACCEL_SIZE 100
 #define MAXOUTPUT 24
-
 #define NUMSGS 50
 
-typedef struct MsgObj {
-    Queue_Elem elem; // first field
-    //Int id; // writer task ID
-    float rpm; // message value (rpm_actual)
-} MsgObj;
-
-MsgObj msg_mem[NUMSGS]; // allocate initial message memory
-
-Queue_Handle queue;
-
-//Mailbox_Struct mbxStruct;
-//Mailbox_Handle mbxHandle;
 Semaphore_Struct semStruct;
 Semaphore_Handle semHandle;
 
@@ -111,46 +65,34 @@ Clock_Struct clkStruct;
 Clock_Handle clkHandle;
 
 Hwi_Handle hallA, hallB, hallC;
-
 Hwi_Handle adc0, adc1;
+
 
 Error_Block eb;
 Event_Struct evtStruct;
 Event_Handle evtHandle;
-//Error_init(&eb);
 
 UInt gateKey;
 GateHwi_Handle gateHwi;
 GateHwi_Params gHwiprms;
-
-Timer_Handle myTimer;
-Timer_Params timerParams;
-
-//Task_Struct task0Struct;
-//Char task0Stack[TASKSTACKSIZE];
-
-Swi_Handle SwiHandle;
-
-
 
 uint32_t g_ui32SysClock;
 
 UART_Handle uart;
 
 bool success, print_from_HWI, print_from_motor, print_from_clock;
-
 volatile int motor = 0;
 volatile int prevMotor = 0;
 volatile int prevSysTick = 0;
 volatile int delta_ticks, SysTicks;
 volatile int deltaPos = 0;
 volatile int current_motor;
-//volatile float clock_time = 0.00416667;
-//volatile float clock_time_mins = 0.000333333;
 volatile float clock_time_mins = 0.00016667;
-//volatile float clock_time_mins = 0.00016667/2;
 volatile float clock_time_secs = 0.01;
 //volatile float clock_time = 0.00166667;
+//volatile float clock_time = 0.00416667;
+//volatile float clock_time_mins = 0.000333333;
+//volatile float clock_time_mins = 0.00016667/2;
 
 volatile float rpm_actual = 0;
 volatile float delta_time;
@@ -164,7 +106,7 @@ volatile rpm_prev = 0;
 volatile int error;
 volatile float integral_error = 0;
 
-volatile float rpm_desired = 800;
+volatile float rpm_desired = 200;
 volatile float rpm_int = 0;
 volatile float jump = 5;
 
@@ -195,16 +137,14 @@ volatile bool motorRunning;
 
 volatile int dummy = 0;
 
-
-/**
- * !! HWI THREAD !!
- * Read hall-effect sensor lines and
- * update the motor
+/*!
+ *  @brief  ISR to read the Hall Effect lines, calculate RPM and update the motor
  */
 void  HallFxn()
 {
+    // Get current system ticks
     SysTicks = Clock_getTicks();
-    //GPIO_disableInt(Board_LED0);
+
     /* Clear all interrupt sources */
     GPIO_clearInt(HALL_A);
     GPIO_clearInt(HALL_B);
@@ -215,28 +155,39 @@ void  HallFxn()
     hB = GPIO_read(HALL_B);
     hC = GPIO_read(HALL_C);
 
-    //gateKey = GateHwi_enter(gateHwi);
-    motor++; // increment positional counter
-    //GateHwi_leave(gateHwi, gateKey);
+    // motor not required as the rpm is calculated in this HWI
+    // so positional change is always 1
+    motor++;
 
     // push motor again
     updateMotor(hA, hB, hC);
 
     /* feed values into updateMotor to drive the motor */
-    //SysTicks = Clock_getTicks();
-    delta_time = (min_per_sysTick*(SysTicks - prevSysTick)); // delta time is change in ticks * time (mins) for one tick
+
+    /* delta time is change in ticks * time (mins) for one tick */
+    delta_time = (min_per_sysTick*(SysTicks - prevSysTick));
+
+    /* RPM calculation for ONE positional change */
     rpm_actual = rotation/delta_time;
+
     prevSysTick = SysTicks;
-    //print_from_motor = true;
+
 }
 
+/*!
+ *  @brief  ISR to read buffer from ADC0
+ *
+ *  @pre ADC0_Init() is called in setup
+ *
+ */
 void ADCFxn()
 {
-
+    // fill here
 }
 
-/**
- * Setup GPIO interrupts (HWI) on hall effect sensor lines
+/*!
+ *  @brief  Setup all HWIs for each GPIO line, for Hall A/B/C, and enable interrupts
+ *
  */
 void initHallABC()
 {
@@ -290,8 +241,8 @@ void initHallABC()
     //Board_BUTTON0  User switch 1
 }
 
-/*
- * Reads the GPIO lines - positions of the hall effect sensors
+/*!
+ *  @brief  Read the current state of the hall effect sensors
  */
 void readABC()
 {
@@ -301,51 +252,66 @@ void readABC()
 }
 
 
-UInt32 time;
+/*!
+ *  @brief  initialise the UART. Only used during development, not required
+ *  during production.
+ */
+void initUART(void)
+{
+    /* UART used for printing purposes - not */
+      UART_Params uartParams;
+      UART_Params_init(&uartParams);
+      uartParams.readTimeout = BIOS_WAIT_FOREVER;
+      uartParams.writeTimeout = BIOS_WAIT_FOREVER;
+      uartParams.writeDataMode = UART_DATA_BINARY;
+      uartParams.readDataMode = UART_DATA_BINARY;
+      uartParams.readReturnMode = UART_RETURN_FULL;
+      uartParams.readEcho = UART_ECHO_OFF;
+      uartParams.baudRate = 115200;
+      uart = UART_open(Board_UART0, &uartParams);
+}
+
+/*!
+ *  @brief Clock SWI to check the states of the motor. Uses events
+ *         to post the current state to the task thread.
+ *  @params arg0
+ */
+void statesFxn(UARg, arg0)
+{
+    /* User has started the motor */
+    if(motorRunning == true)
+    {
+        Event_post(evtHandle, Event_Id_00);
+        motorRunning == false;
+    }
+}
 
 
-
-/*
- * !! TASK THREAD !!
- * Sets up UART for testing and printing purposes
- * initialises the motor library, sets initial PWM,
- * reads initial GPIO lines and updates the motor once
- * sets up HWI
+/*!
+ *  @brief  Task thread for the motor. Responsible for calling the HWI setup and driving the
+ *          initial updateMotor. A while loop is used to control the states of the system
+ *          (speed up, speed down, e-stop). UART was used during testing and is not required
+ *          for production.
+ *
+ *  @params arg0, arg1
  */
 void motorFxn(UArg arg0, UArg arg1)
 {
-
-    // -------------------------------------------
-
-    /* UART used for printing purposes */
-    UART_Params uartParams;
-    UART_Params_init(&uartParams);
-    uartParams.readTimeout = BIOS_WAIT_FOREVER;
-    uartParams.writeTimeout = BIOS_WAIT_FOREVER;
-    uartParams.writeDataMode = UART_DATA_BINARY;
-    uartParams.readDataMode = UART_DATA_BINARY;
-    uartParams.readReturnMode = UART_RETURN_FULL;
-    uartParams.readEcho = UART_ECHO_OFF;
-    uartParams.baudRate = 115200;
-
-    uart = UART_open(Board_UART0, &uartParams);
+    initUART();
 
     if (uart == NULL)
     {
         // test UART
         System_abort("Error opening the UART");
     }
-
-    //char input[200]; // buffer for UART
+    // buffer for UART
     char buf[20];
-    //char buf2[200];
     char speed_buf[60];
 
-    // --------------------------------------------
-
+    /* DO NOT CHANGE - Kp and Ki are tuned to a pwm period of 50us */
     int pwm_period = 50; // set PWM period
 
-    initHallABC(); // initialise ISRs
+    initHallABC();
     success = initMotorLib(pwm_period, &eb); // initialise MotorLib
 
     if(success)
@@ -355,10 +321,10 @@ void motorFxn(UArg arg0, UArg arg1)
         System_flush();
     }
 
-    enableMotor();
-    setDuty(15);
-    readABC();
-    updateMotor(hA, hB, hC);
+    //enableMotor();
+    //setDuty(10);
+    //readABC();
+    //updateMotor(hA, hB, hC);
 
     UInt state;
 
@@ -366,13 +332,38 @@ void motorFxn(UArg arg0, UArg arg1)
 
     while(1)
     {
-        // Wait
+
+        state = Event_pend(evtHandle, Event_Id_NONE, Event_Id_00, BIOS_WAIT_FOREVER);
+
+        if (state & Event_Id_00)
+        {
+            enableMotor();
+            setDuty(10);
+            readABC();
+            updateMotor(hA, hB, hC);
+        }
+
+        /* START PHASE MOTOR */
         //Semaphore_pend(semHandle, BIOS_WAIT_FOREVER);
+       /*
+       if (motorRunning == true)
+       {
+            enableMotor();
+            setDuty(25);
+            readABC();
+            updateMotor(hA, hB, hC);
+            //motorRunning = false;
+        }
+
+        if (motorRunning == false)
+        {
+            stopMotor(true);
+        }
+        */
+
+        /*
         if (print_from_clock == true)
         {
-            /*
-             * Motor state is controlled
-             */
             sprintf(speed_buf, "Test: %d\n\r", dummy);
             UART_write(uart, speed_buf, sizeof(speed_buf));
             //int32_t rpm_print = (int32_t)rpm_avg;
@@ -381,21 +372,21 @@ void motorFxn(UArg arg0, UArg arg1)
             //UART_write(uart, &rpm_actual, sizeof(rpm_actual))
             print_from_clock = false;
         }
+        */
 
     }
 }
 
 
 
-/**
- * !! Clock SWI THREAD !!
- * Calculates the speed of the motor in RPM
- *      - gets the change in position, deltaPos, from the
- *        Hardware interrupt. Calculates the rotations (sector
- *        of a full rotation) and divides this by clock_time
- *        (in minutes) for revolutions per minute. *
+/*!
+ *  @brief  Filter - Calculates the average RPM from the actual RPM calculated
+ *          by the HWI. Uses a sample of SAMPLE_SIZE at a frequency
+ *          of 100Hz (clock period 10ms).
+ *
+ *  @params arg0
  */
-Void clk0Fxn(UArg arg0)
+Void filterFxn(UArg arg0)
 {
     clock_count++;
 
@@ -406,15 +397,13 @@ Void clk0Fxn(UArg arg0)
     {
         rpm_avg = (float) rpm_sum/SAMPLE_SIZE;
         acceleration_avg = acceleration_sum/ACCEL_SIZE;
-        //rpm_avg_c = (float) rpm_sum_c/SAMPLE_SIZE;
 
         clock_count = 0;
         rpm_sum = 0;
         acceleration_sum = 0;
     }
 
-
-    /* Calculate Acceleration */
+    /* Calculate Acceleration -- for testing, not required for production */
     delta_rpm = rpm_avg - rpm_prev;
     acceleration = delta_rpm/clock_time_secs;
     rpm_prev = rpm_avg;
@@ -422,7 +411,12 @@ Void clk0Fxn(UArg arg0)
     print_from_clock = true;
 }
 
-Void clk1Fxn(UArg arg0)
+/*!
+ *  @brief  Proportional Integral Control for the speed, with a frequency of 100Hz.
+ *
+ *  @params arg0
+ */
+Void PIControlFxn(UArg arg0)
 {
     error = rpm_int - rpm_avg;
     integral_error = integral_error + error;
@@ -430,6 +424,12 @@ Void clk1Fxn(UArg arg0)
     setDuty((uint16_t)output);
 }
 
+/*!
+ *  @brief Simulates UI speed increase. Used for testing.
+ *
+ *  @params arg0
+ */
+/*
 void speedFxn(UArg arg0)
 {
     rpm_int = rpm_avg;
@@ -439,10 +439,17 @@ void speedFxn(UArg arg0)
         rpm_desired = 300;
     }
 }
+*/
 
-void accelFxn(UArg arg0)
+/*!
+ *  @brief Limits the acceleration of the motor to 500RPM/s. This Clock runs has a
+ *         frequency of 100Hz, and uses an intermediate RPM that increments at
+ *         5RPM every 0.01s - results in an acceleration of 500RPM/s.
+ *
+ *  @params arg0
+ */
+void accelLimitFxn(UArg arg0)
 {
-
     if (rpm_int < rpm_desired)
     {
         // every 10ms, increment by 5rpm ( == 5/0.01 = 500RPM/s)
@@ -459,8 +466,9 @@ void accelFxn(UArg arg0)
 
 void waitFxn(UArg arg0)
 {
-    //Semaphore_post(semHandle);
+    Semaphore_post(semHandle);
 }
+
 
 /**
  * ADC
@@ -519,24 +527,39 @@ void ADC0_Init() //ADC0 on PE3
     ADCIntClear(ADC0_BASE, ADC_SEQ);
 }
 
-
-
+/*!
+ *  @brief Gets the current speed of the motor
+ */
 int getSpeed( void )
 {
     return (int) rpm_avg;
 }
 
-void setSpeed( int rpm_ui )
+/*!
+ *  @brief Sets the desired RPM from the UI.
+ *
+ *  @params rpm_ui  the UI selected RPM
+ */
+void setSpeed(uint32_t rpm_ui)
 {
-    rpm_desired = rpm_ui;
+    rpm_desired = (float) rpm_ui;
 }
 
+/*!
+ *  @brief sets the motor start condition
+ *
+ *  @params UI      the boolean condition to start the motor
+ */
 void startMotor( bool UI_motorRun )
 {
     motorRunning = UI_motorRun;
 }
 
-
+/*!
+ *  @brief  Initialise the motorCode file.
+ *
+ *  @params arg0
+ */
 void initMotor( void )
 {
 
@@ -544,94 +567,68 @@ void initMotor( void )
 
     Error_init(&eb);
 
-       Board_initGeneral(); // calls SysCtlPeripheralEnable for all GPIO ports
-       Board_initGPIO();    // calls the GPIO_init function -> initialises
+    Board_initGeneral(); // calls SysCtlPeripheralEnable for all GPIO ports
+    Board_initGPIO();    // calls the GPIO_init function -> initialises
 
-       Board_initUART(); // initialise UART
+    Board_initUART(); // initialise UART
 
-       /* Setup TASK thread */
-       /*
-       Task_Params taskParams;
-       Task_Params_init(&taskParams);
-       taskParams.stackSize = TASKSTACKSIZE;
-       taskParams.arg0 = 1000;
-       taskParams.stack = &task0Stack;
-       //taskParams.instance->name = "task";
-       taskParams.priority = 1;
-       Task_construct(&task0Struct, (Task_FuncPtr)motorFxn, &taskParams, NULL);
-        */
+    Types_FreqHz cpuFreq;
+    BIOS_getCpuFreq(&cpuFreq);
 
-       Types_FreqHz cpuFreq;
-       BIOS_getCpuFreq(&cpuFreq);
+    /* Setup Clock SWI */
+    Clock_Params clkParams;
+    Clock_Params_init(&clkParams);
+    clkParams.period = 10;
+    clkParams.startFlag = TRUE;
 
-       /* Setup Clock SWI */
-       Clock_Params clkParams;
-       Clock_Params_init(&clkParams);
-       clkParams.period = 10;
-       clkParams.startFlag = TRUE;
+    /* Construct a periodic Clock Instance with period = 5 system time units */
+    Clock_create((Clock_FuncPtr)filterFxn, 10, &clkParams, NULL);
 
-       /* Construct a periodic Clock Instance with period = 5 system time units */
-       Clock_create((Clock_FuncPtr)clk0Fxn, 10, &clkParams, NULL);
+    clkParams.period = 10;
+    clkParams.startFlag = TRUE;
+    Clock_create((Clock_FuncPtr)PIControlFxn, 10, &clkParams, NULL);
 
-       clkParams.period = 10;
-       clkParams.startFlag = TRUE;
-       Clock_create((Clock_FuncPtr)clk1Fxn, 10, &clkParams, NULL);
+    //clkParams.period = 5000;
+    //clkParams.startFlag = TRUE;
+    //Clock_create((Clock_FuncPtr)speedFxn, 5000, &clkParams, NULL);
 
-       clkParams.period = 5000;
-       clkParams.startFlag = TRUE;
-       Clock_create((Clock_FuncPtr)speedFxn, 5000, &clkParams, NULL);
+    clkParams.period = 10;
+    clkParams.startFlag = TRUE;
+    Clock_create((Clock_FuncPtr)accelLimitFxn, 10, &clkParams, NULL);
 
-       clkParams.period = 10;
-       clkParams.startFlag = TRUE;
-       Clock_create((Clock_FuncPtr)accelFxn, 10, &clkParams, NULL);
+    clkParams.period = 10;
+    clkParams.startFlag = TRUE;
+    Clock_create((Clock_FuncPtr)waitFxn, 10, &clkParams, NULL);
 
-       clkParams.period = 10;
-       clkParams.startFlag = TRUE;
-       Clock_create((Clock_FuncPtr)waitFxn, 10, &clkParams, NULL);
+    clkParams.period = 10;
+    clkParams.startFlag = TRUE;
+    Clock_create((Clock_FuncPtr)statesFxn, 10, &clkParams, NULL);
 
-       //clkParams.period =
+    /* Setup Semaphore */
+    Semaphore_Params semParams;
+    Semaphore_Params_init(&semParams);
+    semParams.mode = Semaphore_Mode_BINARY;
+    Semaphore_construct(&semStruct, 0, &semParams);
 
-       /* Setup mailbox buffer for filtering */
+    semHandle = Semaphore_handle(&semStruct);
+    /* End Sem code */
 
-       /* Setup message box for filtering */
-       //Mailbox_Params mbxParams;
-       MsgObj *msg = msg_mem;
+    Event_construct(&evtStruct, NULL);
+    evtHandle = Event_handle(&evtStruct);
 
-       int i;
-       queue = Queue_create(NULL, NULL);
+    if (evtHandle == NULL)
+    {
+       System_abort("Event creation failed");
+    }
 
-       // increment the pointer (memory region)
-       // increment the counter
-       for(i = 0; i < NUMSGS; msg++, i++) {
-           Queue_put(queue, &(msg->elem));
-       }
-       /* End Msg code */
+    System_printf("Run------------------------------\n");
 
-       /* Setup Semaphore */
-       Semaphore_Params semParams;
-       Semaphore_Params_init(&semParams);
-       semParams.mode = Semaphore_Mode_BINARY;
-       Semaphore_construct(&semStruct, 0, &semParams);
+    /* Create GateHwi for critical section */
+    GateHwi_Params_init(&gHwiprms);
+    gateHwi = GateHwi_create(&gHwiprms, NULL);
 
-       semHandle = Semaphore_handle(&semStruct);
-       /* End Sem code */
-
-       Event_construct(&evtStruct, NULL);
-       evtHandle = Event_handle(&evtStruct);
-
-       if (evtHandle == NULL)
-       {
-           System_abort("Event creation failed");
-       }
-
-       System_printf("Run------------------------------\n");
-
-       /* Create GateHwi for critical section */
-       GateHwi_Params_init(&gHwiprms);
-       gateHwi = GateHwi_create(&gHwiprms, NULL);
-
-       if (gateHwi == NULL)
-       {
-           System_abort("Gate failed");
-       }
+    if (gateHwi == NULL)
+    {
+       System_abort("Gate failed");
+    }
 }

@@ -21,7 +21,6 @@
 // This is part of revision 2.1.4.178 of the EK-TM4C1294XL Firmware Package.
 //
 //*****************************************************************************
-
 #include "grlib_demo.h"
 #include "motor/MotorCode.h"
 
@@ -63,11 +62,21 @@ tDMAControlTable psDMAControlTable[64] __attribute__ ((aligned(1024)));
 # define LIGHT 5
 
 // Graph bounds
-#define X_GRAPH 20
+#define X_GRAPH 0
 #define Y_GRAPH 35
-#define WIDTH_GRAPH 280
-#define HEIGHT_GRAPH 140
-#define MAX_PLOT_SAMPLES 60 // If sampling at 2Hz (max of 30sec)
+#define WIDTH_GRAPH 320
+#define HEIGHT_GRAPH 135
+#define MAX_PLOT_SAMPLES 300 // If sampling at 10Hz (max of 30sec)
+
+int graphIntMax;
+int graphIntMin;
+
+int32_t x_graph_step = 1;
+int32_t x_graph_start = 10;
+float y_graph_step;
+int32_t y_graph_start = 45;
+int32_t y_graph_max = 50;
+int32_t y_graph_end = 180;
 
 //*****************************************************************************
 //
@@ -191,19 +200,19 @@ RectangularButton(g_sGraphBack, &g_sSettingsMainPage, 0, 0,
 //
 //*****************************************************************************
 RectangularButton(g_sSettingIncrease, &g_sSettingPage, 0, 0,
-                  &g_sKentec320x240x16_SSD2119, 250, 80, 60, 70,
+                  &g_sKentec320x240x16_SSD2119, 220, 80, 90, 70,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                     PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                     ClrGreen, ClrBlack, ClrWhite, ClrWhite,
                    g_psFontCmss18b, "+", 0, 0, 0, 0, OnIncrease);
 RectangularButton(g_sSettingDecrease, &g_sSettingPage, 0, 0,
-                  &g_sKentec320x240x16_SSD2119, 10, 80, 60, 70,
+                  &g_sKentec320x240x16_SSD2119, 10, 80, 90, 70,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                     PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                     ClrRed, ClrBlack, ClrWhite, ClrWhite,
                    g_psFontCmss18b, "-", 0, 0, 0, 0, OnDecrease);
 RectangularButton(g_sSettingValue, &g_sSettingPage, 0, 0,
-                  &g_sKentec320x240x16_SSD2119, 75, 80, 170, 70,
+                  &g_sKentec320x240x16_SSD2119, 105, 80, 110, 70,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                     PB_STYLE_FILL),
                     ClrBlack, ClrBlack, ClrWhite, ClrWhite,
@@ -236,7 +245,7 @@ RectangularButton(g_sGraphTitle, &g_sGraphPage, 0, 0,
                     ClrBlack, ClrBlack, ClrWhite, ClrWhite,
                    g_psFontCmss18b, "Graphing", 0, 0, 0, 0, 0);
 RectangularButton(g_sGraphExit, &g_sGraphPage, 0, 0,
-                  &g_sKentec320x240x16_SSD2119, 10, 200, 300, 40,
+                  &g_sKentec320x240x16_SSD2119, 10, 200, 300, 30,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                     PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                     ClrPowderBlue, ClrBlack, ClrWhite, ClrWhite,
@@ -316,6 +325,7 @@ OnGraphsMain(tWidget *psWidget)
     if (g_drawingGraph) {
         g_drawingGraph = 0;
         g_numPlotPoints = 0;
+        g_numPlotOverflow = 1;
     }
 
     //
@@ -334,9 +344,20 @@ OnGraphsMain(tWidget *psWidget)
 void
 OnStartMotor(tWidget *psWidget)
 {
+    motorStartedUI = !motorStartedUI;
 
-   // insert api functions here
+    startMotor(motorStartedUI);
 
+    if(motorStartedUI)
+    {
+        PushButtonTextSet(&g_sMotorOption, "Stop Motor");
+        WidgetPaint((tWidget *)&g_sMotorOption);
+    }
+    else
+    {
+        PushButtonTextSet(&g_sMotorOption, "Start Motor");
+        WidgetPaint((tWidget *)&g_sMotorOption);
+    }
 }
 
 
@@ -399,6 +420,7 @@ void OnIncrease() {
         if (g_motorSpeed <= 4400) { // Speed has a max limit of 4500
             g_motorSpeed = g_motorSpeed + 100;
             drawSettingValue("RPM", g_motorSpeed);
+            setSpeed(g_motorSpeed);
         }
         // TODO api call to set new value
     }
@@ -463,25 +485,74 @@ void OnSettingCurrent() {
 
 char graphMin[5];
 char graphMax[5];
-void drawGraph() {
-    // TODO
+// TODO remove just for testing
+float float_rand( float min, float max )
+{
+    float scale = rand() / (float) RAND_MAX; /* [0, 1.0] */
+    return min + scale * ( max - min );      /* [min, max] */
+}
+
+char maxTime[30];
+char minTime[30];
+void drawGraphPoint() {
     // Reset graph when maximum plot samples has been reached
     if (g_numPlotPoints == MAX_PLOT_SAMPLES) {
         g_numPlotPoints = 0;
-        g_numPlotOverflow++;
+        // Redraw Graph
         WidgetPaint((tWidget *) &g_sGraph);
         WidgetMessageQueueProcess();
-        sprintf(graphMin, "%d", g_numPlotOverflow*30); // Times by 30 (plot max)
-        GrStringDraw(&sContext, graphMin, -1, 10, 181, false);
+
+        // Draw Graph
+        GrStringDraw(&sContext, "Time", -1, 140, 181, false);
+        GrLineDrawV(&sContext, 10, 45, 180);
+        GrLineDrawH(&sContext, 10, 305, 180);
+        GrLineDraw(&sContext, 10, 45, 8,50);
+        GrLineDraw(&sContext, 10, 45, 12, 50);
+        GrLineDraw(&sContext, 305, 180, 303, 178);
+        GrLineDraw(&sContext, 305, 180, 303, 182);
+
+        GrStringDraw(&sContext, minTime, -1, 10, 181, false);
         GrStringDraw(&sContext, graphMax, -1, 5, 30, false);
+        sprintf(minTime, "%ds", g_numPlotOverflow*30); // Times by 30 as the overflow occurs at 30 seconds
+        g_numPlotOverflow++;
+        sprintf(maxTime, "%ds", g_numPlotOverflow*30); // Times by 30 as the overflow occurs at 30 seconds
+
+        GrStringDraw(&sContext, "           ", -1, 10, 181, true);
+        GrStringDraw(&sContext, "           ", -1, 290, 181, true);
+        GrStringDraw(&sContext, minTime, -1, 10, 181, false);
+        GrStringDraw(&sContext, maxTime, -1, 290, 181, false);
+        GrFlush(&sContext);
         return;
     }
 
-    // draw new plot
+    // somehow need to get the currentPoint to plot
+    // TODO using random float for testing remove later on
+    //float currentPoint = float_rand(graphIntMin, graphIntMax);
+      float currentPoint = (float) getSpeed();
+    // graphMax - graphMin is the space between
+    // the physical space between is 135
+    // graphMin should be 10 and graphMax should be 45
+    int32_t x1 = (g_numPlotPoints * x_graph_step) + x_graph_start;
+    int32_t x2 = (g_numPlotPoints + 1) * x_graph_step + x_graph_start;
+    int32_t y1 = (y_graph_start + HEIGHT_GRAPH) - (previousPoint - graphIntMin)*y_graph_step;
+    int32_t y2 = (y_graph_start + HEIGHT_GRAPH) - (currentPoint - graphIntMin)*y_graph_step;
+
+    // Draw Current Value
+    static char currentValue[30];
+    sprintf(currentValue, "%5.2f", currentPoint);
+    GrStringDrawCentered(&sContext, "Value:", -1, 210, 15, true);
+    GrStringDrawCentered(&sContext, "          ", -1, 270, 15, true);
+    GrStringDrawCentered(&sContext, currentValue, -1, 270, 15, true);
+    // Draw line
+    GrLineDraw(&sContext, x1, y1, x2, y2);
+    g_numPlotPoints++;
+
+    // Save position of previous sample
+    previousPoint = currentPoint;
+    // Set to false so you can continue to process the exit button
     updateGraph = false;
 
 }
-
 
 //*****************************************************************************
 // Function to create generic graphs page
@@ -490,7 +561,6 @@ void drawGraph() {
 void OnGraphsPage(char * title, int yMin, int yMax) {
     // Remove Graph Main Menu
     WidgetRemove((tWidget *) &g_sGraphsMainPage);
-
     //
     // Add and draw the new panel. Draw the title of the graph
     //
@@ -498,6 +568,15 @@ void OnGraphsPage(char * title, int yMin, int yMax) {
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sGraphPage);
     PushButtonTextSet((tPushButtonWidget *)&g_sGraphTitle, title);
     WidgetMessageQueueProcess();
+
+    graphIntMax = yMax;
+    graphIntMin = yMin;
+
+    // Draw the y-axis limits
+    sprintf(graphMin, "%d", yMin);
+    sprintf(graphMax, "%d", yMax);
+    // Set step scale for y-axis
+    y_graph_step = (float)HEIGHT_GRAPH/(float)(graphIntMax - graphIntMin);
 
     // Draw the graph
     GrStringDraw(&sContext, "Time", -1, 140, 181, false);
@@ -507,22 +586,21 @@ void OnGraphsPage(char * title, int yMin, int yMax) {
     GrLineDraw(&sContext, 10, 45, 12, 50);
     GrLineDraw(&sContext, 305, 180, 303, 178);
     GrLineDraw(&sContext, 305, 180, 303, 182);
+    GrStringDraw(&sContext, graphMax, -1, 5, 30, false);
 
+    GrStringDraw(&sContext, "0s", -1, 10, 181, false);
+    GrStringDraw(&sContext, "30s", -1, 290, 181, false);
+    // Set global pointer to data TODO
+    data_Graph = 10.000;
+    previousPoint = 0;
+    g_numPlotOverflow = 1;
 
-    // Draw the y-axis limits
-    sprintf(graphMin, "%d", yMin);
-    sprintf(graphMax, "%d", yMax);
-    GrStringDraw(&sContext, graphMin, -1, 10, 181, false);
-    GrStringDraw(&sContext, graphMax, -1, 5, 28, false);
-
-    // Start drawing graph
+    // Set global to start drawing graph
     g_drawingGraph = 1;
-    while(g_drawingGraph) {
-        // Would it be better to do this a different wayyy?
-        if (updateGraph) { // update graph periodically every 2Hz
-            drawGraph();
+    while (g_drawingGraph) {
+        if(updateGraph) { // Update graph at 10Hz
+            drawGraphPoint();
         }
-        // Process Messages
         WidgetMessageQueueProcess();
     }
 }
@@ -577,6 +655,10 @@ void initUI(uint32_t systemClock, tContext * Context) {
     g_numPlotOverflow = 0;
     // Global to be periodically set to update the graph
     updateGraph = false;
+    // Start motor on start up
+    motorStartedUI = false;
+    previousPoint = 0;
+    // currentPoint = 0;
 }
 
 //*****************************************************************************
