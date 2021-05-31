@@ -7,7 +7,11 @@
         <srcFile name="package/cfg/empty_pem4f.c"/>
     </sources>
     <configscripts>
+<<<<<<< HEAD
         <srcFile name="C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/empty.cfg"/>
+=======
+        <srcFile name="C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/empty.cfg"/>
+>>>>>>> Sensor-merge
     </configscripts>
     <makefiles>
         <srcFile name="package.mak" src="package.bld"/>
@@ -44,7 +48,11 @@
         isPartial="false"
         xCfgScript="package/cfg/empty_pem4f.cfg"
         xCfgPrefix="package/cfg/empty_pem4f"
+<<<<<<< HEAD
         cfgScript="C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/empty.cfg"
+=======
+        cfgScript="C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/empty.cfg"
+>>>>>>> Sensor-merge
         cfgArgs="null"
         />
     </configurations>
@@ -56,7 +64,11 @@
         profile="release"
         xCfgScript="package/cfg/empty_pem4f.cfg"
         xCfgPrefix="package/cfg/empty_pem4f"
+<<<<<<< HEAD
         cfgScript="C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/empty.cfg"
+=======
+        cfgScript="C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/empty.cfg"
+>>>>>>> Sensor-merge
         cfgArgs="null"
         />
     </executables>

@@ -11,7 +11,11 @@ var makeAssembly = false;
 var Executable = xdc.module('xdc.bld.Executable');
 
 var exeOpts = new Executable.Attrs({
+<<<<<<< HEAD
         cfgScript: 'C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/empty.cfg',
+=======
+        cfgScript: 'C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/empty.cfg',
+>>>>>>> Sensor-merge
         profile: 'release',
         cfgHome: 'configPkg',
 });
@@ -41,7 +45,11 @@ else {
 
 var thisObj = {
     cfg:        '../empty.cfg',
+<<<<<<< HEAD
     outputPath: 'C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Debug/configPkg',
+=======
+    outputPath: 'C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Debug/configPkg',
+>>>>>>> Sensor-merge
     exeName:    'empty' + suffix,
     exeIntName: 'empty' + suffix.replace('.', '_'),
     targ:       targ,

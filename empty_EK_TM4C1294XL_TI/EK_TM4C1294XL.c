@@ -291,6 +291,8 @@ GPIO_PinConfig gpioPinConfigs[] = {
     GPIOTiva_PJ_0 | GPIO_CFG_IN_PU | GPIO_CFG_IN_INT_RISING,
     /* EK_TM4C1294XL_USR_SW2 */
     GPIOTiva_PJ_1 | GPIO_CFG_IN_PU | GPIO_CFG_IN_INT_RISING,
+    /* BMI160 INT PIND4, PULL UP RESISTOR, INTTERUPT ON RISING EDGE */ // NEW
+    GPIOTiva_PD_4 | GPIO_CFG_IN_PU | GPIO_CFG_IN_INT_RISING,
 
     /* Output pins */
     /* EK_TM4C1294XL_USR_D1 */
@@ -321,7 +323,8 @@ GPIO_PinConfig gpioPinConfigs[] = {
  */
 GPIO_CallbackFxn gpioCallbackFunctions[] = {
     NULL,  /* EK_TM4C1294XL_USR_SW1 */
-    NULL   /* EK_TM4C1294XL_USR_SW2 */
+    NULL,  /* EK_TM4C1294XL_USR_SW2 */
+    NULL
 };
 
 /* The device-specific GPIO_config structure */
@@ -358,14 +361,14 @@ I2CTiva_Object i2cTivaObjects[EK_TM4C1294XL_I2CCOUNT];
 
 const I2CTiva_HWAttrs i2cTivaHWAttrs[EK_TM4C1294XL_I2CCOUNT] = {
     {
-        .baseAddr = I2C2_BASE,
+        .baseAddr = I2C2_BASE,                              // NEW: uses I2C2 instead of I2C 7 & 8
         .intNum = INT_I2C2,
         .intPriority = (~0)
     }
 };
 
 const I2C_Config I2C_config[] = {
-    {
+    {                                                       // NEW: uses config for I2C2 instead of I2C 7 & 8
         .fxnTablePtr = &I2CTiva_fxnTable,
         .object = &i2cTivaObjects[0],
         .hwAttrs = &i2cTivaHWAttrs[0]
@@ -378,7 +381,7 @@ const I2C_Config I2C_config[] = {
  */
 void EK_TM4C1294XL_initI2C(void)
 {
-    /* I2C7 Init */
+    /* I2C0 Init */
     /*
      * NOTE: TI-RTOS examples configure pins PD0 & PD1 for SSI2 or I2C7.  Thus,
      * a conflict occurs when the I2C & SPI drivers are used simultaneously in
@@ -386,13 +389,13 @@ void EK_TM4C1294XL_initI2C(void)
      * conflict before running your the application.
      */
     /* Enable the peripheral */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C2);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C2);             // NEW: enables Peripheral for I2C2 not 7
 
     /* Configure the appropriate pins to be I2C instead of GPIO. */
-    GPIOPinConfigure(GPIO_PN5_I2C2SCL);
-    GPIOPinConfigure(GPIO_PN4_I2C2SDA);
-    GPIOPinTypeI2CSCL(GPIO_PORTN_BASE, GPIO_PIN_5);
-    GPIOPinTypeI2C(GPIO_PORTN_BASE, GPIO_PIN_4);
+    GPIOPinConfigure(GPIO_PN5_I2C2SCL);                     // NEW: configs SCLA and SDA for 2 not 7
+    GPIOPinConfigure(GPIO_PN4_I2C2SDA);                     //
+    GPIOPinTypeI2CSCL(GPIO_PORTN_BASE, GPIO_PIN_5);         // Pin N5 instead of A2
+    GPIOPinTypeI2C(GPIO_PORTN_BASE, GPIO_PIN_4);            // Pin N4 instead of A3
 
     I2C_init();
 }
@@ -419,17 +422,14 @@ const PWMTiva_HWAttrs pwmTivaHWAttrs[EK_TM4C1294XL_PWMCOUNT] = {
     }
 };
 
-/*
-const PWM_Config PWM_config[] = {
-    {
-        .fxnTablePtr = &PWMTiva_fxnTable,
-        .object = &pwmTivaObjects[0],
-        .hwAttrs = &pwmTivaHWAttrs[0]
-    },
-    {NULL, NULL, NULL}
-};
-*/
-
+//const PWM_Config PWM_config[] = {
+//    {
+//        .fxnTablePtr = &PWMTiva_fxnTable,
+//        .object = &pwmTivaObjects[0],
+//        .hwAttrs = &pwmTivaHWAttrs[0]
+//    },
+//    {NULL, NULL, NULL}
+//};
 
 /*
  *  ======== EK_TM4C1294XL_initPWM ========
@@ -711,6 +711,14 @@ const UARTTiva_HWAttrs uartTivaHWAttrs[EK_TM4C1294XL_UARTCOUNT] = {
         .flowControl = UART_FLOWCONTROL_NONE,
         .ringBufPtr  = uartTivaRingBuffer[0],
         .ringBufSize = sizeof(uartTivaRingBuffer[0])
+    },
+    {                                       // NEW: Configs UART7
+        .baseAddr = UART7_BASE,
+        .intNum = INT_UART7,
+        .intPriority = (~0),
+        .flowControl = UART_FLOWCONTROL_NONE,
+        .ringBufPtr  = uartTivaRingBuffer[1],
+        .ringBufSize = sizeof(uartTivaRingBuffer[1])
     }
 };
 
@@ -719,6 +727,11 @@ const UART_Config UART_config[] = {
         .fxnTablePtr = &UARTTiva_fxnTable,
         .object = &uartTivaObjects[0],
         .hwAttrs = &uartTivaHWAttrs[0]
+    },
+    {                                       // NEW: Configs UART7
+        .fxnTablePtr = &UARTTiva_fxnTable,
+        .object = &uartTivaObjects[1],
+        .hwAttrs = &uartTivaHWAttrs[1]
     },
     {NULL, NULL, NULL}
 };
@@ -734,6 +747,13 @@ void EK_TM4C1294XL_initUART(void)
     GPIOPinConfigure(GPIO_PA0_U0RX);
     GPIOPinConfigure(GPIO_PA1_U0TX);
     GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+
+
+    /* Enable and configure the peripherals used by the uart. */
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART7);                // NEW: inits UART 7
+    GPIOPinConfigure(GPIO_PC4_U7RX);
+    GPIOPinConfigure(GPIO_PC5_U7TX);
+    GPIOPinTypeUART(GPIO_PORTC_BASE, GPIO_PIN_4 | GPIO_PIN_5);
 
     /* Initialize the UART driver */
 #if TI_DRIVERS_UART_DMA

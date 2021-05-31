@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright (c) 2015, Texas Instruments Incorporated
  * All rights reserved.
  *
@@ -62,22 +62,17 @@ extern "C" {
 #define Board_LED_OFF               EK_TM4C1294XL_LED_OFF
 #define Board_LED0                  EK_TM4C1294XL_D1
 #define Board_LED1                  EK_TM4C1294XL_D2
-#define Board_LED2                  EK_TM4C1294XL_D2
 #define Board_BUTTON0               EK_TM4C1294XL_USR_SW1
 #define Board_BUTTON1               EK_TM4C1294XL_USR_SW2
 
 /* Define Motor Hall Effect Sensors */
-#define HALL_A                      GPIO_HALL_A
-#define HALL_B                      GPIO_HALL_B
-#define HALL_C                      GPIO_HALL_C
+
 
 //#define ADC_0                       GPIO_ADC0
 
-#define Board_I2C0                  EK_TM4C1294XL_I2C7
-#define Board_I2C1                  EK_TM4C1294XL_I2C8
-#define Board_I2C_TMP               EK_TM4C1294XL_I2C7
-#define Board_I2C_NFC               EK_TM4C1294XL_I2C7
-#define Board_I2C_TPL0401           EK_TM4C1294XL_I2C7
+// For i2c bmi160 communication and threshold GPIO interrupt
+#define Board_BMI160_INT            EK_TM4C1294XL_BMI160_INT
+#define Board_I2C2                  EK_TM4C1294XL_I2C2
 
 #define Board_I2C2                  EK_TM4C1294XL_I2C2
 
@@ -96,6 +91,7 @@ extern "C" {
 #define Board_USBDEVICE             EK_TM4C1294XL_USBDEVICE
 
 #define Board_UART0                 EK_TM4C1294XL_UART0
+#define Board_UART7                 EK_TM4C1294XL_UART7
 
 #define Board_WATCHDOG0             EK_TM4C1294XL_WATCHDOG0
 
