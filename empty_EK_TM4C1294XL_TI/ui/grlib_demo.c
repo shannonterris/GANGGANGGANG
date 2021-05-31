@@ -356,9 +356,13 @@ OnGraphsMain(tWidget *psWidget)
 void
 DrawDayNight()
 {
-    // TODO add logic for night vs day
-    GrStringDraw(&sContext, "Day", -1, 10, 5, false);
-    // TODO if it has changed toggle led light
+    if(getLight()>5){
+        GrStringDraw(&sContext, "Day  ", -1, 10, 5, true);
+        GPIO_write(Board_LED1, Board_LED_OFF);
+    } else {
+        GrStringDraw(&sContext, "Night", -1, 10, 5, true);
+        GPIO_write(Board_LED1, Board_LED_ON);
+    }
 }
 
 //*****************************************************************************

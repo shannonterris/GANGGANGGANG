@@ -17,6 +17,9 @@ ui/grlib_demo.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/includ
 ui/grlib_demo.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/stdio.h
 ui/grlib_demo.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/stdarg.h
 ui/grlib_demo.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/stdlib.h
+ui/grlib_demo.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/time.h
+ui/grlib_demo.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/abi_prefix.h
+ui/grlib_demo.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/xlocale/_time.h
 ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/inc/hw_memmap.h
 ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/inc/hw_nvic.h
 ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/inc/hw_sysctl.h
@@ -39,12 +42,12 @@ ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/pushbutton.h
 ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/radiobutton.h
 ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/slider.h
 ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/utils/ustdlib.h
-ui/grlib_demo.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/time.h
-ui/grlib_demo.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/abi_prefix.h
-ui/grlib_demo.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/xlocale/_time.h
 ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1/drivers/Kentec320x240x16_ssd2119_spi.h
 ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1/drivers/touch.h
 ui/grlib_demo.obj: C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/images.h
+ui/grlib_demo.obj: C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Board.h
+ui/grlib_demo.obj: C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/EK_TM4C1294XL.h
+ui/grlib_demo.obj: C:/ti/tivaware_c_series_2_1_4_178/inc/hw_gpio.h
 ui/grlib_demo.obj: C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/motor/MotorCode.h
 ui/grlib_demo.obj: C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/std.h
 ui/grlib_demo.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/stddef.h
@@ -230,8 +233,6 @@ ui/grlib_demo.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/includ
 ui/grlib_demo.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/machine/_limits.h
 ui/grlib_demo.obj: C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h
 ui/grlib_demo.obj: C:/ti/tirtos_tivac_2_16_00_08/products/tidrivers_tivac_2_16_00_08/packages/ti/drivers/I2C.h
-ui/grlib_demo.obj: C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Board.h
-ui/grlib_demo.obj: C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/EK_TM4C1294XL.h
 
 ../ui/grlib_demo.c: 
 ../ui/grlib_demo.h: 
@@ -250,6 +251,9 @@ C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/string.h:
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/stdio.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/stdarg.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/stdlib.h: 
+C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/time.h: 
+C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/abi_prefix.h: 
+C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/xlocale/_time.h: 
 C:/ti/tivaware_c_series_2_1_4_178/inc/hw_memmap.h: 
 C:/ti/tivaware_c_series_2_1_4_178/inc/hw_nvic.h: 
 C:/ti/tivaware_c_series_2_1_4_178/inc/hw_sysctl.h: 
@@ -272,12 +276,12 @@ C:/ti/tivaware_c_series_2_1_4_178/grlib/pushbutton.h:
 C:/ti/tivaware_c_series_2_1_4_178/grlib/radiobutton.h: 
 C:/ti/tivaware_c_series_2_1_4_178/grlib/slider.h: 
 C:/ti/tivaware_c_series_2_1_4_178/utils/ustdlib.h: 
-C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/time.h: 
-C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/abi_prefix.h: 
-C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/xlocale/_time.h: 
 C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1/drivers/Kentec320x240x16_ssd2119_spi.h: 
 C:/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c1294xl-boostxl-kentec-s1/drivers/touch.h: 
 C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/images.h: 
+C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Board.h: 
+C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/EK_TM4C1294XL.h: 
+C:/ti/tivaware_c_series_2_1_4_178/inc/hw_gpio.h: 
 C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/motor/MotorCode.h: 
 C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/std.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/stddef.h: 
@@ -463,5 +467,3 @@ C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/_defs.h:
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/machine/_limits.h: 
 C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h: 
 C:/ti/tirtos_tivac_2_16_00_08/products/tidrivers_tivac_2_16_00_08/packages/ti/drivers/I2C.h: 
-C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Board.h: 
-C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/EK_TM4C1294XL.h: 
