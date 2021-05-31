@@ -120,8 +120,8 @@ Void heartBeatFxn(UArg arg0, UArg arg1)
 
 
 
-void bmiHeartBeatFxn(UArg arg0, UArg arg1) {
-    initSensors(arg0);
+void bmiHeartBeatFxn(UArg arg0) {
+    initSensors(20);
     System_flush();
 }
 
@@ -131,7 +131,6 @@ void bmiHeartBeatFxn(UArg arg0, UArg arg1) {
 int main(void)
 {
     initMotor();
-    Task_Params taskParams;
     Clock_Params clockParams;
 
     /* Call board init functions */
@@ -172,6 +171,8 @@ int main(void)
                   "Halt the target to view any SysMin contents in ROV.\n");
     /* SysMin will only print to the console when you call flush or exit */
     System_flush();
+
+
 
     /* Start BIOS */
 

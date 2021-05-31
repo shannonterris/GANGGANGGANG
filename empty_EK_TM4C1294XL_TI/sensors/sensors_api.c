@@ -13,7 +13,7 @@ Semaphore_Handle semAccelHandle;
 Clock_Params clkSensorParams;
 Clock_Struct clockCurrentStruct;
 Clock_Struct clockAccelerationStruct;
-Char taskAccelStack[512];
+Char taskAccelStack[TASKSTACKSIZE];
 I2C_Handle sensori2c;
 float accelerationBuffer[ACCEL_BUFFERSIZE];
 float accel_mag;
@@ -43,7 +43,7 @@ void taskAcceleration() {
 
         getAccelVector(sensori2c, &av);
 
-        // the absolute value of the acceleration magnitude
+//         the absolute value of the acceleration magnitude
         accel_mag = fabs(sqrt(
                 pow(av.x, 2) +
                 pow(av.y, 2) +
@@ -55,13 +55,13 @@ void taskAcceleration() {
         // wrap around to index first element after last element
         accel_pointer %= ACCEL_BUFFERSIZE;
 
-        float tempx = fabs(av.x);
-        float tempy = fabs(av.y);
-        float tempz = fabs(av.z);
-        UART_write(uart, &accel_mag, sizeof(float));
-        UART_write(uart, &tempx, sizeof(float));
-        UART_write(uart, &tempy, sizeof(float));
-        UART_write(uart, &tempz, sizeof(float));
+//        float tempx = fabs(av.x);
+//        float tempy = fabs(av.y);
+//        float tempz = fabs(av.z);
+//        UART_write(uart, &accel_mag, sizeof(float));
+//        UART_write(uart, &tempx, sizeof(float));
+//        UART_write(uart, &tempy, sizeof(float));
+//        UART_write(uart, &tempz, sizeof(float));
     }
 }
 
@@ -91,8 +91,8 @@ void setAccelThreshold(uint16_t thresh) {
 int triggerThreshold = 0;
 void accelEStopIntterupt(unsigned int index) {
     triggerThreshold++;
-    System_printf("THRESHOLD TRIGGER\n");
-    System_flush();
+    ///System_printf("THRESHOLD TRIGGER\n");
+    ///System_flush();
 }
 
 /*
@@ -140,7 +140,11 @@ bool initAcceleration(uint16_t thresholdAccel) {
     System_printf("Acceleration setup\n");
     return true;
 }
+void something() {
+    while(1) {
 
+    }
+}
 /*
  * INITIALISE SENSORS
  */

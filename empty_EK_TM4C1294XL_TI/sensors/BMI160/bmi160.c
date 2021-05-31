@@ -68,7 +68,7 @@ bool BMI160Init(I2C_Handle i2c) {
 
     // 100/(2^(val(acc_odr)) = 100/(2^(8-0b1001)) = 100/(2^(8-9)) = 200Hz (output data rate)
     uint8_t outputDataRate = 0x29;
-    writeI2C(i2c, FOC_CONF, CMD, &outputDataRate);
+    writeI2C(i2c, FOC_CONF, ACC_CONF, &outputDataRate);
 
     // Using +/-4g acceleration range
     uint8_t range = 0x05;
@@ -168,9 +168,8 @@ bool writeI2C(I2C_Handle i2c, uint8_t ui8Addr, uint8_t ui8Reg, uint8_t *data) {
     i2cTransaction.readBuf = NULL;
     i2cTransaction.readCount = 0;
 
-    if (!I2C_transfer(i2c, &i2cTransaction)) { // Send txBuffer over i2c to slave
-        System_printf("I2C Bus fault\n");
-    }
+    I2C_transfer(i2c, &i2cTransaction); // Send txBuffer over i2c to slave
+
     return true;
 }
 
@@ -184,9 +183,7 @@ bool readI2C(I2C_Handle i2c, uint8_t ui8Addr, uint8_t ui8Reg, uint8_t *data) {
     i2cTransaction.readBuf = data;
     i2cTransaction.readCount = 6;   // Used for reading x, y, z MSB and LSB data
 
-    if (!I2C_transfer(i2c, &i2cTransaction)) {
-        System_printf("I2C Bus fault\n");
-    }
+    I2C_transfer(i2c, &i2cTransaction);
     return true;
 
 }
