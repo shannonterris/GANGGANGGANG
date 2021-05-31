@@ -417,8 +417,8 @@ OnStartMotor(tWidget *psWidget)
     {
         PushButtonTextSet(&g_sMotorOption, "Start Motor");
         WidgetPaint((tWidget *)&g_sMotorOption);
-        //g_motorSpeed = 0;
-        //setSpeed(g_motorSpeed);
+        g_motorSpeed = 0;
+        setSpeed(g_motorSpeed);
     }
 }
 
