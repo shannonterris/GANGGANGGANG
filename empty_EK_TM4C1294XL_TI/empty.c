@@ -86,6 +86,7 @@
 #include "ui/grlib_demo.h"
 
 #include "motor/motorCode.h"
+#include "sensors/sensor_api.h"
 
 
 
@@ -98,6 +99,9 @@ uint8_t motorStartStop = 1;
 
 //Task_Struct task0Struct;
 //Char task0Stack[TASKSTACKSIZE];
+
+#define LIGHT_TASKSTACKSIZE 4096
+Char taskLightStack[LIGHT_TASKSTACKSIZE];
 
 Clock_Struct clockUpdateGraph;
 Clock_Struct clockUpdateTime;
@@ -121,12 +125,42 @@ Void heartBeatFxn(UArg arg0, UArg arg1)
     }
 }
 /*
+ * Initialise Light Sensor Function
+ * */
+void lightFxn() {
+    if (!initLightSensor()) {
+        System_abort("Failed sensor init");
+        System_flush();
+    }
+}
+
+/*
+ * Create Light Sensor Task
+ * */
+bool setupLightSensor() {
+
+    Task_Params taskParams;
+    Task_Params_init(&taskParams);
+    taskParams.stackSize = LIGHT_TASKSTACKSIZE;
+    taskParams.priority = 1; // Change priority when merged with everyone
+    taskParams.stack = &taskLightStack;
+
+    Task_Handle lightTask = Task_create((Task_FuncPtr)lightFxn, &taskParams, NULL);
+
+    if (lightTask == NULL) {
+        System_abort("Task - LIGHT SENSOR FAILED SETUP");
+    }
+
+    return 1;
+}
+
+/*
  *  ======== main ========
  */
 int main(void)
 {
     initMotor();
-    Task_Params taskParams;
+    //Task_Params taskParams;
     Clock_Params clockParams;
     Clock_Params clockParams1;
 
@@ -155,6 +189,8 @@ int main(void)
                                              SYSCTL_OSC_MAIN |
                                              SYSCTL_USE_PLL |
                                              SYSCTL_CFG_VCO_480), 120000000);
+    // Setup light sensor
+    setupLightSensor();
 
     initUI(g_ui32SysClock, &sContext);
 

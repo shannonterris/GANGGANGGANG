@@ -103,7 +103,7 @@ volatile float acceleration;
 volatile float acceleration_avg;
 volatile float acceleration_sum = 0;
 
-volatile rpm_prev = 0;
+volatile float rpm_prev = 0;
 
 volatile int error;
 volatile float integral_error = 0;
@@ -381,7 +381,7 @@ void motorFxn(UArg arg0, UArg arg1)
     while(1)
     {
 
-        /*
+
         state = Event_pend(evtHandle, Event_Id_NONE, (Event_Id_00 + Event_Id_01 + Event_Id_02 + Event_Id_03),
                            BIOS_WAIT_FOREVER);
 
@@ -429,7 +429,7 @@ void motorFxn(UArg arg0, UArg arg1)
             // the accelLimitFxn will decrement by 10RPM every 10ms.
             motorState = false;
         }
-        */
+
 
 
         if (print_from_clock == true)
@@ -454,7 +454,7 @@ void motorFxn(UArg arg0, UArg arg1)
  *
  *  @params arg0
  */
-Void filterFxn(UArg arg0)
+void filterFxn(UArg arg0)
 {
     clock_count++;
 
@@ -484,7 +484,7 @@ Void filterFxn(UArg arg0)
  *
  *  @params arg0
  */
-Void PIControlFxn(UArg arg0)
+void PIControlFxn(UArg arg0)
 {
     error = rpm_int - rpm_avg;
     integral_error = integral_error + error;

@@ -125,5 +125,8 @@ GEN_OPTS__QUOTED :=
 SUBDIRS := \
 . \
 drivers \
+motor \
+sensors/opt3001 \
+sensors \
 ui \
 

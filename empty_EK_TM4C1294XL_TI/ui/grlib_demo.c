@@ -23,6 +23,7 @@
 //*****************************************************************************
 #include "grlib_demo.h"
 #include "motor/MotorCode.h"
+#include "sensors/sensor_api.h"
 
 //
 //*****************************************************************************
@@ -595,12 +596,21 @@ void drawGraphPoint() {
         return;
     }
 
+    // somehow need to get the currentPoint to plot
+    // TODO using random float for testing remove later on
+    //float currentPoint = float_rand(graphIntMin, graphIntMax);
 
-    // TODO change get for different graphs
+    float currentPoint;
 
-    float currentPoint = (float) getSpeed();
+    if (g_sCurrentPanel == LIGHT) {
+        currentPoint = getLight();
+    } else {
+        currentPoint = (float) getSpeed();
+    }
 
-    // TODO double check this math :/
+    // graphMax - graphMin is the space between
+    // the physical space between is 135
+    // graphMin should be 10 and graphMax should be 45
     int32_t x1 = (g_numPlotPoints * x_graph_step) + x_graph_start;
     int32_t x2 = (g_numPlotPoints + 1) * x_graph_step + x_graph_start;
     int32_t y1 = (y_graph_start + HEIGHT_GRAPH) - (previousPoint - graphIntMin)*y_graph_step;
