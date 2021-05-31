@@ -52,7 +52,7 @@
 
 
 #define TOTAL_POSITIONS 12
-#define SAMPLE_SIZE 100
+#define SAMPLE_SIZE 25
 #define ACCEL_SIZE 100
 #define MAXOUTPUT 24
 #define NUMSGS 50
@@ -382,7 +382,8 @@ void motorFxn(UArg arg0, UArg arg1)
     {
 
 
-        state = Event_pend(evtHandle, Event_Id_NONE, (Event_Id_00 + Event_Id_01 + Event_Id_02 + Event_Id_03),
+        state = Event_pend(evtHandle, Event_Id_NONE,
+                           (Event_Id_00 + Event_Id_01 + Event_Id_02 + Event_Id_03),
                            BIOS_WAIT_FOREVER);
 
         // IDLE - Start the motor
@@ -390,10 +391,10 @@ void motorFxn(UArg arg0, UArg arg1)
         {
             running = true;
             //enableMotor();
+            setDuty(output);
             rpm_desired = rpm_from_UI;
             readABC();
             updateMotor(hA, hB, hC);
-            setDuty(output);
         }
 
         // STOP - Speed = 0
@@ -401,17 +402,16 @@ void motorFxn(UArg arg0, UArg arg1)
         {
             running = false;
             rpm_desired = 0;
-
             setDuty(output);
-
             if (rpm_avg < 100)
             {
                 e_stop = false;
                 e_event = false;
                 error = 0;
                 integral_error = 0;
+                stopMotor(false);
                 output = 0;
-                stopMotor(true);
+                rpm_avg = 0;
             }
         }
 
@@ -496,6 +496,10 @@ void PIControlFxn(UArg arg0)
     integral_error = integral_error + error;
     output = Kp*error + Ki*integral_error;
     //setDuty((uint16_t)output);
+    if(output < 0)
+    {
+        output = 0;
+    }
 }
 
 /*!
