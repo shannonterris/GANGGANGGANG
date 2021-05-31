@@ -74,6 +74,7 @@ void initUI(uint32_t systemClock, tContext * Context);
 void drawGraphPoint();
 void DrawDayNight();
 void DrawTime();
+void OnEstop();
 
 uint32_t g_ui32SysClock;
 tContext sContext;
