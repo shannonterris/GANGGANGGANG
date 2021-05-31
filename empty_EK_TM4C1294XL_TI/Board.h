@@ -79,6 +79,8 @@ extern "C" {
 #define Board_I2C_NFC               EK_TM4C1294XL_I2C7
 #define Board_I2C_TPL0401           EK_TM4C1294XL_I2C7
 
+// For i2c bmi160 communication and threshold GPIO interrupt
+#define Board_BMI160_INT            EK_TM4C1294XL_BMI160_INT
 #define Board_I2C2                  EK_TM4C1294XL_I2C2
 
 #define Board_PWM0                  EK_TM4C1294XL_PWM0

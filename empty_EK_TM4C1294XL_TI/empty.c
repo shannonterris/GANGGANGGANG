@@ -128,8 +128,8 @@ Void heartBeatFxn(UArg arg0, UArg arg1)
 /*
  * Initialise Light Sensor Function
  * */
-void lightFxn() {
-    if (!initLightSensor()) {
+void sensorsFxn() {
+    if (!initSensors(20)) {
         System_abort("Failed sensor init");
         System_flush();
     }
@@ -146,7 +146,7 @@ bool setupLightSensor() {
     taskParams.priority = 1; // Change priority when merged with everyone
     taskParams.stack = &taskLightStack;
 
-    Task_Handle lightTask = Task_create((Task_FuncPtr)lightFxn, &taskParams, NULL);
+    Task_Handle lightTask = Task_create((Task_FuncPtr)sensorsFxn, &taskParams, NULL);
 
     if (lightTask == NULL) {
         System_abort("Task - LIGHT SENSOR FAILED SETUP");

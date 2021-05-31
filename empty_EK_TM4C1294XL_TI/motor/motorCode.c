@@ -371,10 +371,10 @@ void motorFxn(UArg arg0, UArg arg1)
         System_flush();
     }
 
-    enableMotor();
+/*    enableMotor();
     setDuty(24);
     readABC();
-    updateMotor(hA, hB, hC);
+    updateMotor(hA, hB, hC);*/
 
     UInt state;
 
@@ -393,6 +393,7 @@ void motorFxn(UArg arg0, UArg arg1)
             rpm_desired = rpm_from_UI;
             readABC();
             updateMotor(hA, hB, hC);
+            setDuty(output);
         }
 
         // STOP - Speed = 0
@@ -401,12 +402,15 @@ void motorFxn(UArg arg0, UArg arg1)
             running = false;
             rpm_desired = 0;
 
+            setDuty(output);
+
             if (rpm_avg < 100)
             {
                 e_stop = false;
                 e_event = false;
                 error = 0;
                 integral_error = 0;
+                output = 0;
                 stopMotor(true);
             }
         }
@@ -432,6 +436,7 @@ void motorFxn(UArg arg0, UArg arg1)
 
 
 
+        /*
         if (print_from_clock == true)
         {
             //System_printf("%d\n", adc_test);
@@ -443,6 +448,7 @@ void motorFxn(UArg arg0, UArg arg1)
             //UART_write(uart, &adc_test, sizeof(adc_test));
             //print_from_clock = false;
         }
+        */
 
     }
 }
@@ -489,7 +495,7 @@ void PIControlFxn(UArg arg0)
     error = rpm_int - rpm_avg;
     integral_error = integral_error + error;
     output = Kp*error + Ki*integral_error;
-    setDuty((uint16_t)output);
+    //setDuty((uint16_t)output);
 }
 
 /*!
@@ -532,7 +538,7 @@ void accelLimitFxn(UArg arg0)
         if (e_stop == true)
         {
             // if true, every 10ms, decrement by 10RPM (10RPM/0.01s = 1000RPM/s).
-            rpm_int = rpm_int - 100;
+            rpm_int = rpm_int - 10;
         }
         else
         {
@@ -546,7 +552,7 @@ void accelLimitFxn(UArg arg0)
 void ADCTriggerFxn(UArg arg0)
 {
     //Semaphore_post(semHandle);
-    ADCProcessorTrigger(ADC0_BASE, ADC_SEQ);
+    //ADCProcessorTrigger(ADC0_BASE, ADC_SEQ);
     voltage = stepVoltage * pui32ADC0Value[0];
     current = ((vref/2) - voltage)/(gain * shunt);
 }

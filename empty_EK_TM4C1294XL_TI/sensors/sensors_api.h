@@ -32,6 +32,14 @@ bool initLightTask();
 // returns filtered light lux value
 float getLight();
 
-bool initLightSensor();
+//bool initLightSensor();
+
+void swiAcceleration();
+void taskAcceleration();
+float getAcceleration();
+void setAccelThreshold(uint16_t thresh);  // Use m/s^2
+void accelEStopIntterupt();
+bool initAcceleration(uint16_t thresholdAccel);
+bool initSensors(uint16_t thresholdAccel);
 
 #endif /* SENSORS_SENSORS_API_H_ */

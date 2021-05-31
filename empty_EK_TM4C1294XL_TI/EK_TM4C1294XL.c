@@ -291,6 +291,8 @@ GPIO_PinConfig gpioPinConfigs[] = {
     GPIOTiva_PJ_0 | GPIO_CFG_IN_PU | GPIO_CFG_IN_INT_RISING,
     /* EK_TM4C1294XL_USR_SW2 */
     GPIOTiva_PJ_1 | GPIO_CFG_IN_PU | GPIO_CFG_IN_INT_RISING,
+    /* BMI160 INT PIND4, PULL UP RESISTOR, INTTERUPT ON RISING EDGE */ // NEW
+    GPIOTiva_PD_4 | GPIO_CFG_IN_PU | GPIO_CFG_IN_INT_RISING,
 
     /* Output pins */
     /* EK_TM4C1294XL_USR_D1 */
@@ -711,7 +713,15 @@ const UARTTiva_HWAttrs uartTivaHWAttrs[EK_TM4C1294XL_UARTCOUNT] = {
         .flowControl = UART_FLOWCONTROL_NONE,
         .ringBufPtr  = uartTivaRingBuffer[0],
         .ringBufSize = sizeof(uartTivaRingBuffer[0])
-    }
+    },
+    {                                       // NEW: Configs UART7
+            .baseAddr = UART7_BASE,
+            .intNum = INT_UART7,
+            .intPriority = (~0),
+            .flowControl = UART_FLOWCONTROL_NONE,
+            .ringBufPtr  = uartTivaRingBuffer[1],
+            .ringBufSize = sizeof(uartTivaRingBuffer[1])
+     },
 };
 
 const UART_Config UART_config[] = {
@@ -719,6 +729,11 @@ const UART_Config UART_config[] = {
         .fxnTablePtr = &UARTTiva_fxnTable,
         .object = &uartTivaObjects[0],
         .hwAttrs = &uartTivaHWAttrs[0]
+    },
+    {                                       // NEW: Configs UART7
+            .fxnTablePtr = &UARTTiva_fxnTable,
+            .object = &uartTivaObjects[1],
+            .hwAttrs = &uartTivaHWAttrs[1]
     },
     {NULL, NULL, NULL}
 };
@@ -735,6 +750,11 @@ void EK_TM4C1294XL_initUART(void)
     GPIOPinConfigure(GPIO_PA1_U0TX);
     GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
+    /* Enable and configure the peripherals used by the uart. */
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART7);                // NEW: inits UART 7
+    GPIOPinConfigure(GPIO_PC4_U7RX);
+    GPIOPinConfigure(GPIO_PC5_U7TX);
+    GPIOPinTypeUART(GPIO_PORTC_BASE, GPIO_PIN_4 | GPIO_PIN_5);
     /* Initialize the UART driver */
 #if TI_DRIVERS_UART_DMA
     EK_TM4C1294XL_initDMA();
