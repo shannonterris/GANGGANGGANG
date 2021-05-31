@@ -136,23 +136,13 @@ int main(void)
     clockParams.startFlag = TRUE;
     Clock_construct(&clockUpdateGraph, (Clock_FuncPtr)updateGraphUI, 1, &clockParams);
 
-    /* Construct Clock for Updating of the Time Periodically (1Hz) */
+//    /* Construct Clock for Updating of the Time Periodically (1Hz) */
     Clock_Params_init(&clockParams1);
     clockParams1.period = 1000; // 1Hz
     clockParams1.startFlag = TRUE;
-    Clock_construct(&clockUpdateTime, (Clock_FuncPtr)DrawTime, 1, &clockParams1);
+    // Clock_construct(&clockUpdateTime, (Clock_FuncPtr)DrawTime, 1, &clockParams1);
 
-    /* Construct UI Task thread */
-    //Task_Params_init(&taskParams);
-    //taskParams.arg0 = 1000;
-    //taskParams.stackSize = TASKSTACKSIZE;
-    //taskParams.stack = &task0Stack;
-    //taskParams.priority = 0;
-    //Task_construct(&task0Struct, (Task_FuncPtr)heartBeatFxn, &taskParams, NULL);
-    // Turn on user LED
-    GPIO_write(Board_LED0, Board_LED_ON);
 
-    //
     // Run from the PLL at 120 MHz.
     //
     g_ui32SysClock = MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
