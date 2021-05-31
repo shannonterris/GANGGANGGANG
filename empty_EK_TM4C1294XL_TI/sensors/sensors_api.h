@@ -5,8 +5,8 @@
  *      Author: Annie
  */
 
-#ifndef SENSORS_SENSOR_API_H_
-#define SENSORS_SENSOR_API_H_
+#ifndef SENSORS_SENSORS_API_H_
+#define SENSORS_SENSORS_API_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -34,4 +34,4 @@ float getLight();
 
 bool initLightSensor();
 
-#endif /* SENSORS_SENSOR_API_H_ */
+#endif /* SENSORS_SENSORS_API_H_ */

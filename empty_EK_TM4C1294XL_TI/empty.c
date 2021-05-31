@@ -79,6 +79,7 @@
 #include <string.h>
 #include "inc/hw_memmap.h"
 #include <driverlib/gpio.h>
+#include <sensors/sensors_api.h>
 #include <ti/sysbios/hal/Seconds.h>
 #include <time.h>
 #include "driverlib/hibernate.h"
@@ -86,7 +87,6 @@
 #include "ui/grlib_demo.h"
 
 #include "motor/motorCode.h"
-#include "sensors/sensor_api.h"
 
 
 

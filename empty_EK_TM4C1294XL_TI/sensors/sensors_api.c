@@ -1,4 +1,4 @@
-#include "sensor_api.h"
+#include <sensors/sensors_api.h>
 
 #define WINDOW_SIZE         6       // sample buffer size
 #define SAMPLE_RATE         500     // sampled at 2Hz

@@ -21,9 +21,9 @@
 // This is part of revision 2.1.4.178 of the EK-TM4C1294XL Firmware Package.
 //
 //*****************************************************************************
+#include <sensors/sensors_api.h>
 #include "grlib_demo.h"
 #include "motor/MotorCode.h"
-#include "sensors/sensor_api.h"
 
 //
 //*****************************************************************************
