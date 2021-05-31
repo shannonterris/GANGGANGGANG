@@ -108,7 +108,7 @@ Clock_Struct clockUpdateTime;
 
 Void incrementTime() {
     t++;
-    DrawDayNight();
+    //DrawDayNight();
 }
 
 Void updateGraphUI()

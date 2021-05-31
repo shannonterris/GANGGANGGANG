@@ -1,7 +1,7 @@
 ******************************************************************************
                   TI ARM Linker PC v20.2.2                     
 ******************************************************************************
->> Linked Mon May 31 19:22:17 2021
+>> Linked Mon May 31 19:25:38 2021
 
 OUTPUT FILE NAME:   <empty_EK_TM4C1294XL_TI.out>
 ENTRY POINT SYMBOL: "_c_int00"  address: 0000b7d5
@@ -530,44 +530,45 @@ section   page    origin      length       input sections
                   0000e534    00000014     driverlib.lib : uart.obj (.text:UARTEnable)
                   0000e548    00000014     grlib.lib : widget.obj (.text:WidgetMutexGet)
                   0000e55c    00000014     motorCode.obj (.text:getSpeed)
-                  0000e570    00000014     empty.obj (.text:incrementTime)
-                  0000e584    00000014     rtsv7M4_T_le_v4SPD16_eabi.lib : strcpy.c.obj (.text:strcpy)
-                  0000e598    00000014                                   : strlen.c.obj (.text:strlen)
-                  0000e5ac    00000014     empty_pem4f.oem4f (.text:ti_sysbios_family_arm_m3_Hwi_Object__get__S)
-                  0000e5c0    00000014     sysbios.aem4f : BIOS.obj (.text:ti_sysbios_family_arm_m3_Hwi_switchFromBootStack__E)
-                  0000e5d4    00000014     empty_pem4f.oem4f (.text:ti_sysbios_heaps_HeapMem_Object__get__S)
-                  0000e5e8    00000014     sysbios.aem4f : BIOS.obj (.text:ti_sysbios_knl_Event_Instance_init__E)
-                  0000e5fc    00000014     empty_pem4f.oem4f (.text:ti_sysbios_knl_Swi_Object__get__S)
-                  0000e610    00000012     driverlib.lib : gpio.obj (.text:GPIOPinTypeADC)
-                  0000e622    00000012                   : gpio.obj (.text:GPIOPinTypeEthernetLED)
-                  0000e634    00000012                   : gpio.obj (.text:GPIOPinTypeGPIOInput)
-                  0000e646    00000012                   : gpio.obj (.text:GPIOPinTypeI2C)
-                  0000e658    00000012                   : gpio.obj (.text:GPIOPinTypeI2CSCL)
-                  0000e66a    00000012                   : gpio.obj (.text:GPIOPinTypePWM)
-                  0000e67c    00000012                   : gpio.obj (.text:GPIOPinTypeSSI)
-                  0000e68e    00000012                   : gpio.obj (.text:GPIOPinTypeTimer)
-                  0000e6a0    00000012                   : gpio.obj (.text:GPIOPinTypeUART)
-                  0000e6b2    00000012                   : gpio.obj (.text:GPIOPinTypeUSBAnalog)
-                  0000e6c4    00000012                   : gpio.obj (.text:GPIOPinTypeUSBDigital)
-                  0000e6d6    00000012                   : pwm.obj (.text:PWMGenPeriodGet)
-                  0000e6e8    00000012                   : pwm.obj (.text:PWMOutputInvert)
-                  0000e6fa    00000012                   : pwm.obj (.text:PWMOutputState)
-                  0000e70c    00000012     drivers_tivaware.aem4f : RingBuf.oem4f (.text:RingBuf_construct)
-                  0000e71e    00000012     driverlib.lib : ssi.obj (.text:SSIDataGetNonBlocking)
-                  0000e730    00000012                   : timer.obj (.text:TimerLoadSet)
-                  0000e742    00000012                   : timer.obj (.text:TimerMatchSet)
-                  0000e754    00000012                   : timer.obj (.text:TimerPrescaleMatchSet)
-                  0000e766    00000012                   : timer.obj (.text:TimerPrescaleSet)
-                  0000e778    00000012     sysbios.aem4f : BIOS.obj (.text:ti_sysbios_hal_Hwi_Module_startup__E)
-                  0000e78a    00000012     rtsv7M4_T_le_v4SPD16_eabi.lib : wcslen.c.obj (.text:wcslen)
-                  0000e79c    00000012     empty_pem4f.oem4f (.text:xdc_runtime_Startup_exec__I)
-                  0000e7ae    00000002     --HOLE-- [fill = 0]
-                  0000e7b0    00000010     empty_pem4f.oem4f (.text:.bootCodeSection:ti_catalog_arm_cortexm4_tiva_ce_Boot_init__I)
-                  0000e7c0    00000010     driverlib.lib : adc.obj (.text:ADCIntEnable)
-                  0000e7d0    00000010     drivers_tivaware.aem4f : I2C.oem4f (.text:I2C_Params_init)
-                  0000e7e0    00000010     driverlib.lib : pwm.obj (.text:PWMGenPeriodSet)
-                  0000e7f0    00000010     drivers_tivaware.aem4f : PWM.oem4f (.text:PWM_Params_init)
-                  0000e800    00000010                            : UARTTiva.oem4f (.text:readBlockingTimeout)
+                  0000e570    00000014     rtsv7M4_T_le_v4SPD16_eabi.lib : strcpy.c.obj (.text:strcpy)
+                  0000e584    00000014                                   : strlen.c.obj (.text:strlen)
+                  0000e598    00000014     empty_pem4f.oem4f (.text:ti_sysbios_family_arm_m3_Hwi_Object__get__S)
+                  0000e5ac    00000004     --HOLE-- [fill = 0]
+                  0000e5b0    00000014     sysbios.aem4f : BIOS.obj (.text:ti_sysbios_family_arm_m3_Hwi_switchFromBootStack__E)
+                  0000e5c4    00000014     empty_pem4f.oem4f (.text:ti_sysbios_heaps_HeapMem_Object__get__S)
+                  0000e5d8    00000014     sysbios.aem4f : BIOS.obj (.text:ti_sysbios_knl_Event_Instance_init__E)
+                  0000e5ec    00000014     empty_pem4f.oem4f (.text:ti_sysbios_knl_Swi_Object__get__S)
+                  0000e600    00000012     driverlib.lib : gpio.obj (.text:GPIOPinTypeADC)
+                  0000e612    00000012                   : gpio.obj (.text:GPIOPinTypeEthernetLED)
+                  0000e624    00000012                   : gpio.obj (.text:GPIOPinTypeGPIOInput)
+                  0000e636    00000012                   : gpio.obj (.text:GPIOPinTypeI2C)
+                  0000e648    00000012                   : gpio.obj (.text:GPIOPinTypeI2CSCL)
+                  0000e65a    00000012                   : gpio.obj (.text:GPIOPinTypePWM)
+                  0000e66c    00000012                   : gpio.obj (.text:GPIOPinTypeSSI)
+                  0000e67e    00000012                   : gpio.obj (.text:GPIOPinTypeTimer)
+                  0000e690    00000012                   : gpio.obj (.text:GPIOPinTypeUART)
+                  0000e6a2    00000012                   : gpio.obj (.text:GPIOPinTypeUSBAnalog)
+                  0000e6b4    00000012                   : gpio.obj (.text:GPIOPinTypeUSBDigital)
+                  0000e6c6    00000012                   : pwm.obj (.text:PWMGenPeriodGet)
+                  0000e6d8    00000012                   : pwm.obj (.text:PWMOutputInvert)
+                  0000e6ea    00000012                   : pwm.obj (.text:PWMOutputState)
+                  0000e6fc    00000012     drivers_tivaware.aem4f : RingBuf.oem4f (.text:RingBuf_construct)
+                  0000e70e    00000012     driverlib.lib : ssi.obj (.text:SSIDataGetNonBlocking)
+                  0000e720    00000012                   : timer.obj (.text:TimerLoadSet)
+                  0000e732    00000012                   : timer.obj (.text:TimerMatchSet)
+                  0000e744    00000012                   : timer.obj (.text:TimerPrescaleMatchSet)
+                  0000e756    00000012                   : timer.obj (.text:TimerPrescaleSet)
+                  0000e768    00000012     sysbios.aem4f : BIOS.obj (.text:ti_sysbios_hal_Hwi_Module_startup__E)
+                  0000e77a    00000012     rtsv7M4_T_le_v4SPD16_eabi.lib : wcslen.c.obj (.text:wcslen)
+                  0000e78c    00000012     empty_pem4f.oem4f (.text:xdc_runtime_Startup_exec__I)
+                  0000e79e    00000002     --HOLE-- [fill = 0]
+                  0000e7a0    00000010     empty_pem4f.oem4f (.text:.bootCodeSection:ti_catalog_arm_cortexm4_tiva_ce_Boot_init__I)
+                  0000e7b0    00000010     driverlib.lib : adc.obj (.text:ADCIntEnable)
+                  0000e7c0    00000010     drivers_tivaware.aem4f : I2C.oem4f (.text:I2C_Params_init)
+                  0000e7d0    00000010     driverlib.lib : pwm.obj (.text:PWMGenPeriodSet)
+                  0000e7e0    00000010     drivers_tivaware.aem4f : PWM.oem4f (.text:PWM_Params_init)
+                  0000e7f0    00000010     empty.obj (.text:incrementTime)
+                  0000e800    00000010     drivers_tivaware.aem4f : UARTTiva.oem4f (.text:readBlockingTimeout)
                   0000e810    00000010     sensor_api.obj (.text:swiLight)
                   0000e820    00000010     sysbios.aem4f : BIOS.obj (.text:ti_sysbios_BIOS_getCpuFreq__E)
                   0000e830    00000010                   : BIOS.obj (.text:ti_sysbios_BIOS_setThreadType__E)
@@ -1125,10 +1126,10 @@ MODULE SUMMARY
        Module                             code    ro data   rw data
        ------                             ----    -------   -------
     .\
-       empty.obj                          519     0         4254   
+       empty.obj                          515     0         4254   
        EK_TM4C1294XL.obj                  296     104       400    
     +--+----------------------------------+-------+---------+---------+
-       Total:                             815     104       4654   
+       Total:                             811     104       4654   
                                                                    
     .\drivers\
        Kentec320x240x16_ssd2119_spi.obj   1968    40        0      
@@ -1305,7 +1306,7 @@ MODULE SUMMARY
        Stack:                             0       0         768    
        Linker Generated:                  0       1078      0      
     +--+----------------------------------+-------+---------+---------+
-       Grand Total:                       60435   20465     18583  
+       Grand Total:                       60431   20465     18583  
 
 
 LINKER GENERATED COPY TABLES
@@ -1331,7 +1332,7 @@ address   name
 0000bb89  ADC0_Init                                                            
 0000dc6d  ADCFxn                                                               
 0000eb31  ADCIntClear                                                          
-0000e7c1  ADCIntEnable                                                         
+0000e7b1  ADCIntEnable                                                         
 0000e1df  ADCProcessorTrigger                                                  
 0000bbd9  ADCSequenceConfigure                                                 
 0000deb1  ADCSequenceDataGet                                                   
@@ -1355,18 +1356,18 @@ address   name
 000068e9  GPIOPadConfigSet                                                     
 0000c329  GPIOPinConfigure                                                     
 00007ddb  GPIOPinRead                                                          
-0000e611  GPIOPinTypeADC                                                       
-0000e623  GPIOPinTypeEthernetLED                                               
-0000e635  GPIOPinTypeGPIOInput                                                 
+0000e601  GPIOPinTypeADC                                                       
+0000e613  GPIOPinTypeEthernetLED                                               
+0000e625  GPIOPinTypeGPIOInput                                                 
 0000e1f7  GPIOPinTypeGPIOOutput                                                
-0000e647  GPIOPinTypeI2C                                                       
-0000e659  GPIOPinTypeI2CSCL                                                    
-0000e66b  GPIOPinTypePWM                                                       
-0000e67d  GPIOPinTypeSSI                                                       
-0000e68f  GPIOPinTypeTimer                                                     
-0000e6a1  GPIOPinTypeUART                                                      
-0000e6b3  GPIOPinTypeUSBAnalog                                                 
-0000e6c5  GPIOPinTypeUSBDigital                                                
+0000e637  GPIOPinTypeI2C                                                       
+0000e649  GPIOPinTypeI2CSCL                                                    
+0000e65b  GPIOPinTypePWM                                                       
+0000e66d  GPIOPinTypeSSI                                                       
+0000e67f  GPIOPinTypeTimer                                                     
+0000e691  GPIOPinTypeUART                                                      
+0000e6a3  GPIOPinTypeUSBAnalog                                                 
+0000e6b5  GPIOPinTypeUSBDigital                                                
 000097c3  GPIOPinWrite                                                         
 000135e8  GPIOTiva_config                                                      
 0000dc8d  GPIO_clearInt                                                        
@@ -1418,7 +1419,7 @@ address   name
 0000eb4f  I2CTiva_init                                                         
 00007fb5  I2CTiva_open                                                         
 00009f6f  I2CTiva_transfer                                                     
-0000e7d1  I2C_Params_init                                                      
+0000e7c1  I2C_Params_init                                                      
 00013540  I2C_config                                                           
 00013610  I2C_defaultParams                                                    
 0000cd29  I2C_init                                                             
@@ -1454,10 +1455,10 @@ address   name
 0000dbe3  PWMGenConfigure                                                      
 0000e9ab  PWMGenDisable                                                        
 0000e9b7  PWMGenEnable                                                         
-0000e6d7  PWMGenPeriodGet                                                      
-0000e7e1  PWMGenPeriodSet                                                      
-0000e6e9  PWMOutputInvert                                                      
-0000e6fb  PWMOutputState                                                       
+0000e6c7  PWMGenPeriodGet                                                      
+0000e7d1  PWMGenPeriodSet                                                      
+0000e6d9  PWMOutputInvert                                                      
+0000e6eb  PWMOutputState                                                       
 0000deed  PWMPulseWidthSet                                                     
 00013386  PWMTimerTiva_MAX_MATCH_VALUE                                         
 00013384  PWMTimerTiva_MAX_PRESCALAR_VALUE                                     
@@ -1479,7 +1480,7 @@ address   name
 0000d30d  PWMTiva_init                                                         
 00005be5  PWMTiva_open                                                         
 00007ceb  PWMTiva_setDuty                                                      
-0000e7f1  PWM_Params_init                                                      
+0000e7e1  PWM_Params_init                                                      
 00012e94  PWM_config                                                           
 00013650  PWM_defaultParams                                                    
 0000cd61  PWM_init                                                             
@@ -1487,7 +1488,7 @@ address   name
 0000eb77  PWM_setDuty                                                          
 000052d1  PinoutSet                                                            
 0000d781  RectangularButtonMsgProc                                             
-0000e70d  RingBuf_construct                                                    
+0000e6fd  RingBuf_construct                                                    
 0000c9fd  RingBuf_get                                                          
 0000e9c3  RingBuf_peek                                                         
 0000c683  RingBuf_put                                                          
@@ -1495,7 +1496,7 @@ UNDEFED   SHT$$INIT_ARRAY$$Base
 UNDEFED   SHT$$INIT_ARRAY$$Limit                                               
 0000ec1f  SSIBusy                                                              
 0000cbbd  SSIConfigSetExpClk                                                   
-0000e71f  SSIDataGetNonBlocking                                                
+0000e70f  SSIDataGetNonBlocking                                                
 0000eb81  SSIDataPut                                                           
 0000eb8b  SSIEnable                                                            
 00004015  SysCtlClockFreqSet                                                   
@@ -1509,10 +1510,10 @@ UNDEFED   SHT$$INIT_ARRAY$$Limit
 0000b885  TimerControlTrigger                                                  
 0000e229  TimerDisable                                                         
 0000e93b  TimerEnable                                                          
-0000e731  TimerLoadSet                                                         
-0000e743  TimerMatchSet                                                        
-0000e755  TimerPrescaleMatchSet                                                
-0000e767  TimerPrescaleSet                                                     
+0000e721  TimerLoadSet                                                         
+0000e733  TimerMatchSet                                                        
+0000e745  TimerPrescaleMatchSet                                                
+0000e757  TimerPrescaleSet                                                     
 0000e521  TouchScreenCallbackSet                                               
 00007401  TouchScreenInit                                                      
 00005785  TouchScreenIntHandler                                                
@@ -1735,7 +1736,7 @@ ffffffff  binit
 0000df9d  heartBeatFxn                                                         
 0001365c  i2cTivaHWAttrs                                                       
 2000347c  i2cTivaObjects                                                       
-0000e571  incrementTime                                                        
+0000e7f1  incrementTime                                                        
 0000616d  initHallABC                                                          
 000092f9  initLightSensor                                                      
 00008309  initLightTask                                                        
@@ -1808,8 +1809,8 @@ ffffffff  binit
 20003a50  stepVoltage                                                          
 00000c9f  stopMotor                                                            
 0000e38d  strchr                                                               
-0000e585  strcpy                                                               
-0000e599  strlen                                                               
+0000e571  strcpy                                                               
+0000e585  strlen                                                               
 2000388e  success                                                              
 0000e811  swiLight                                                             
 20003874  t                                                                    
@@ -1820,7 +1821,7 @@ ffffffff  binit
 0001369c  ti_catalog_arm_cortexm4_tiva_ce_Boot_Module__diagsIncluded__C        
 000136a0  ti_catalog_arm_cortexm4_tiva_ce_Boot_Module__diagsMask__C            
 0001062a  ti_catalog_arm_cortexm4_tiva_ce_Boot_Module__id__C                   
-0000e7b1  ti_catalog_arm_cortexm4_tiva_ce_Boot_init__I                         
+0000e7a1  ti_catalog_arm_cortexm4_tiva_ce_Boot_init__I                         
 00003e11  ti_catalog_arm_cortexm4_tiva_ce_Boot_sysCtlClockFreqSetI__I          
 00009601  ti_catalog_arm_cortexm4_tiva_ce_Boot_sysCtlClockFreqSet__E           
 200043dc  ti_sysbios_BIOS_Module__state__V                                     
@@ -1892,7 +1893,7 @@ ffffffff  binit
 0000a6a1  ti_sysbios_family_arm_m3_Hwi_Object__create__S                       
 0000dd6d  ti_sysbios_family_arm_m3_Hwi_Object__delete__S                       
 0000dfd5  ti_sysbios_family_arm_m3_Hwi_Object__destruct__S                     
-0000e5ad  ti_sysbios_family_arm_m3_Hwi_Object__get__S                          
+0000e599  ti_sysbios_family_arm_m3_Hwi_Object__get__S                          
 200042fc  ti_sysbios_family_arm_m3_Hwi_Object__table__V                        
 0000ea35  ti_sysbios_family_arm_m3_Hwi_Params__init__S                         
 000136e0  ti_sysbios_family_arm_m3_Hwi_ccr__C                                  
@@ -1936,7 +1937,7 @@ e000e000  ti_sysbios_family_arm_m3_Hwi_nvic
 0000eca9  ti_sysbios_family_arm_m3_Hwi_restoreFxn__E                           
 0000da4b  ti_sysbios_family_arm_m3_Hwi_return                                  
 0000ec59  ti_sysbios_family_arm_m3_Hwi_startup__E                              
-0000e5c1  ti_sysbios_family_arm_m3_Hwi_switchFromBootStack__E                  
+0000e5b1  ti_sysbios_family_arm_m3_Hwi_switchFromBootStack__E                  
 00008b0d  ti_sysbios_family_arm_m3_TaskSupport_Module__startupDone__S          
 00009b35  ti_sysbios_family_arm_m3_TaskSupport_buildTaskStack                  
 0000ea51  ti_sysbios_family_arm_m3_TaskSupport_checkStack__E                   
@@ -1993,12 +1994,12 @@ e000e000  ti_sysbios_family_arm_m3_Hwi_nvic
 0000c7e1  ti_sysbios_hal_Hwi_HwiProxy_getStackInfo__E                          
 0000eca9  ti_sysbios_hal_Hwi_HwiProxy_restore__E                               
 0000ec59  ti_sysbios_hal_Hwi_HwiProxy_startup__E                               
-0000e5c1  ti_sysbios_hal_Hwi_HwiProxy_switchFromBootStack__E                   
+0000e5b1  ti_sysbios_hal_Hwi_HwiProxy_switchFromBootStack__E                   
 0000ebd1  ti_sysbios_hal_Hwi_Instance_finalize__E                              
 0000d989  ti_sysbios_hal_Hwi_Instance_init__E                                  
 00013868  ti_sysbios_hal_Hwi_Module__id__C                                     
 2000450c  ti_sysbios_hal_Hwi_Module__root__V                                   
-0000e779  ti_sysbios_hal_Hwi_Module_startup__E                                 
+0000e769  ti_sysbios_hal_Hwi_Module_startup__E                                 
 00013408  ti_sysbios_hal_Hwi_Object__DESC__C                                   
 000131ec  ti_sysbios_hal_Hwi_Object__PARAMS__C                                 
 0000ea85  ti_sysbios_hal_Hwi_Params__init__S                                   
@@ -2009,7 +2010,7 @@ e000e000  ti_sysbios_family_arm_m3_Hwi_nvic
 0000c7e1  ti_sysbios_hal_Hwi_getStackInfo__E                                   
 0000d219  ti_sysbios_hal_Hwi_initStack                                         
 0000ec59  ti_sysbios_hal_Hwi_startup__E                                        
-0000e5c1  ti_sysbios_hal_Hwi_switchFromBootStack__E                            
+0000e5b1  ti_sysbios_hal_Hwi_switchFromBootStack__E                            
 00013710  ti_sysbios_heaps_HeapMem_A_align__C                                  
 00013714  ti_sysbios_heaps_HeapMem_A_heapSize__C                               
 00013718  ti_sysbios_heaps_HeapMem_A_invalidFree__C                            
@@ -2035,7 +2036,7 @@ e000e000  ti_sysbios_family_arm_m3_Hwi_nvic
 00013734  ti_sysbios_heaps_HeapMem_Object__count__C                            
 0000d521  ti_sysbios_heaps_HeapMem_Object__create__S                           
 0000ddf1  ti_sysbios_heaps_HeapMem_Object__delete__S                           
-0000e5d5  ti_sysbios_heaps_HeapMem_Object__get__S                              
+0000e5c5  ti_sysbios_heaps_HeapMem_Object__get__S                              
 20004490  ti_sysbios_heaps_HeapMem_Object__table__V                            
 00003571  ti_sysbios_heaps_HeapMem_alloc__E                                    
 00002e49  ti_sysbios_heaps_HeapMem_free__E                                     
@@ -2076,7 +2077,7 @@ e000e000  ti_sysbios_family_arm_m3_Hwi_nvic
 0001375c  ti_sysbios_knl_Event_A_nullEventMasks__C                             
 00013760  ti_sysbios_knl_Event_A_pendTaskDisabled__C                           
 00013764  ti_sysbios_knl_Event_Instance_State_pendQ__O                         
-0000e5e9  ti_sysbios_knl_Event_Instance_init__E                                
+0000e5d9  ti_sysbios_knl_Event_Instance_init__E                                
 00013768  ti_sysbios_knl_Event_Module__diagsEnabled__C                         
 0001376c  ti_sysbios_knl_Event_Module__diagsIncluded__C                        
 00013770  ti_sysbios_knl_Event_Module__diagsMask__C                            
@@ -2128,7 +2129,7 @@ e000e000  ti_sysbios_family_arm_m3_Hwi_nvic
 2000445c  ti_sysbios_knl_Swi_Module__state__V                                  
 0000d9b1  ti_sysbios_knl_Swi_Module_startup__E                                 
 00013798  ti_sysbios_knl_Swi_Object__count__C                                  
-0000e5fd  ti_sysbios_knl_Swi_Object__get__S                                    
+0000e5ed  ti_sysbios_knl_Swi_Object__get__S                                    
 2000432c  ti_sysbios_knl_Swi_Object__table__V                                  
 0000e891  ti_sysbios_knl_Swi_disable__E                                        
 0000c829  ti_sysbios_knl_Swi_post__E                                           
@@ -2201,7 +2202,7 @@ e000e000  ti_sysbios_family_arm_m3_Hwi_nvic
 20003790  valueText                                                            
 2000387c  voltage                                                              
 20003a4c  vref                                                                 
-0000e78b  wcslen                                                               
+0000e77b  wcslen                                                               
 200044ac  x_graph_start                                                        
 200044a8  x_graph_step                                                         
 000137d8  xdc_runtime_Assert_E_assertFailed__C                                 
@@ -2266,7 +2267,7 @@ e000e000  ti_sysbios_family_arm_m3_Hwi_nvic
 00000001  xdc_runtime_Startup__RESETFXN__C                                     
 00013824  xdc_runtime_Startup_execImpl__C                                      
 0000be59  xdc_runtime_Startup_exec__E                                          
-0000e79d  xdc_runtime_Startup_exec__I                                          
+0000e78d  xdc_runtime_Startup_exec__I                                          
 000135fc  xdc_runtime_Startup_firstFxns__A                                     
 00013688  xdc_runtime_Startup_firstFxns__C                                     
 00013690  xdc_runtime_Startup_lastFxns__C                                      
@@ -2823,44 +2824,44 @@ address   name
 0000e535  UARTEnable                                                           
 0000e549  WidgetMutexGet                                                       
 0000e55d  getSpeed                                                             
-0000e571  incrementTime                                                        
-0000e585  strcpy                                                               
-0000e599  strlen                                                               
-0000e5ad  ti_sysbios_family_arm_m3_Hwi_Object__get__S                          
-0000e5c1  ti_sysbios_family_arm_m3_Hwi_switchFromBootStack__E                  
-0000e5c1  ti_sysbios_hal_Hwi_HwiProxy_switchFromBootStack__E                   
-0000e5c1  ti_sysbios_hal_Hwi_switchFromBootStack__E                            
-0000e5d5  ti_sysbios_heaps_HeapMem_Object__get__S                              
-0000e5e9  ti_sysbios_knl_Event_Instance_init__E                                
-0000e5fd  ti_sysbios_knl_Swi_Object__get__S                                    
-0000e611  GPIOPinTypeADC                                                       
-0000e623  GPIOPinTypeEthernetLED                                               
-0000e635  GPIOPinTypeGPIOInput                                                 
-0000e647  GPIOPinTypeI2C                                                       
-0000e659  GPIOPinTypeI2CSCL                                                    
-0000e66b  GPIOPinTypePWM                                                       
-0000e67d  GPIOPinTypeSSI                                                       
-0000e68f  GPIOPinTypeTimer                                                     
-0000e6a1  GPIOPinTypeUART                                                      
-0000e6b3  GPIOPinTypeUSBAnalog                                                 
-0000e6c5  GPIOPinTypeUSBDigital                                                
-0000e6d7  PWMGenPeriodGet                                                      
-0000e6e9  PWMOutputInvert                                                      
-0000e6fb  PWMOutputState                                                       
-0000e70d  RingBuf_construct                                                    
-0000e71f  SSIDataGetNonBlocking                                                
-0000e731  TimerLoadSet                                                         
-0000e743  TimerMatchSet                                                        
-0000e755  TimerPrescaleMatchSet                                                
-0000e767  TimerPrescaleSet                                                     
-0000e779  ti_sysbios_hal_Hwi_Module_startup__E                                 
-0000e78b  wcslen                                                               
-0000e79d  xdc_runtime_Startup_exec__I                                          
-0000e7b1  ti_catalog_arm_cortexm4_tiva_ce_Boot_init__I                         
-0000e7c1  ADCIntEnable                                                         
-0000e7d1  I2C_Params_init                                                      
-0000e7e1  PWMGenPeriodSet                                                      
-0000e7f1  PWM_Params_init                                                      
+0000e571  strcpy                                                               
+0000e585  strlen                                                               
+0000e599  ti_sysbios_family_arm_m3_Hwi_Object__get__S                          
+0000e5b1  ti_sysbios_family_arm_m3_Hwi_switchFromBootStack__E                  
+0000e5b1  ti_sysbios_hal_Hwi_HwiProxy_switchFromBootStack__E                   
+0000e5b1  ti_sysbios_hal_Hwi_switchFromBootStack__E                            
+0000e5c5  ti_sysbios_heaps_HeapMem_Object__get__S                              
+0000e5d9  ti_sysbios_knl_Event_Instance_init__E                                
+0000e5ed  ti_sysbios_knl_Swi_Object__get__S                                    
+0000e601  GPIOPinTypeADC                                                       
+0000e613  GPIOPinTypeEthernetLED                                               
+0000e625  GPIOPinTypeGPIOInput                                                 
+0000e637  GPIOPinTypeI2C                                                       
+0000e649  GPIOPinTypeI2CSCL                                                    
+0000e65b  GPIOPinTypePWM                                                       
+0000e66d  GPIOPinTypeSSI                                                       
+0000e67f  GPIOPinTypeTimer                                                     
+0000e691  GPIOPinTypeUART                                                      
+0000e6a3  GPIOPinTypeUSBAnalog                                                 
+0000e6b5  GPIOPinTypeUSBDigital                                                
+0000e6c7  PWMGenPeriodGet                                                      
+0000e6d9  PWMOutputInvert                                                      
+0000e6eb  PWMOutputState                                                       
+0000e6fd  RingBuf_construct                                                    
+0000e70f  SSIDataGetNonBlocking                                                
+0000e721  TimerLoadSet                                                         
+0000e733  TimerMatchSet                                                        
+0000e745  TimerPrescaleMatchSet                                                
+0000e757  TimerPrescaleSet                                                     
+0000e769  ti_sysbios_hal_Hwi_Module_startup__E                                 
+0000e77b  wcslen                                                               
+0000e78d  xdc_runtime_Startup_exec__I                                          
+0000e7a1  ti_catalog_arm_cortexm4_tiva_ce_Boot_init__I                         
+0000e7b1  ADCIntEnable                                                         
+0000e7c1  I2C_Params_init                                                      
+0000e7d1  PWMGenPeriodSet                                                      
+0000e7e1  PWM_Params_init                                                      
+0000e7f1  incrementTime                                                        
 0000e811  swiLight                                                             
 0000e821  ti_sysbios_BIOS_getCpuFreq__E                                        
 0000e831  ti_sysbios_BIOS_setThreadType__E                                     
