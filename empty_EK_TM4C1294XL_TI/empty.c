@@ -85,8 +85,6 @@
 #include "driverlib/hibernate.h"
 
 #include "ui/grlib_demo.h"
-#include "sensors/BMI160/bmi160.h"
-#include "sensors/sensors_api.h"
 
 #include "motor/motorCode.h"
 
@@ -97,10 +95,7 @@ uint8_t motorStartStop = 1;
 /* Board Header file */
 #include "Board.h"
 
-#define TASKSTACKSIZE   1024
-
-
-Char task2Stack[TASKSTACKSIZE];
+//#define TASKSTACKSIZE   512
 
 //Task_Struct task0Struct;
 //Char task0Stack[TASKSTACKSIZE];
@@ -138,13 +133,6 @@ void lightFxn() {
         System_abort("Failed sensor init");
         System_flush();
     }
-}
-
-
-
-void bmiHeartBeatFxn(UArg arg0) {
-    initSensors(20);
-    System_flush();
 }
 
 /*
@@ -211,8 +199,6 @@ int main(void)
                   "Halt the target to view any SysMin contents in ROV.\n");
     /* SysMin will only print to the console when you call flush or exit */
     System_flush();
-
-
 
     /* Start BIOS */
 

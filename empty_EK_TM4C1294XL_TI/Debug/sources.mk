@@ -126,11 +126,7 @@ SUBDIRS := \
 . \
 drivers \
 motor \
-<<<<<<< HEAD
 sensors/opt3001 \
-=======
-sensors/BMI160 \
->>>>>>> Sensor-merge
 sensors \
 ui \
 

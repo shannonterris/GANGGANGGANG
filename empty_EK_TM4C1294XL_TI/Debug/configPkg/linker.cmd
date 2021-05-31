@@ -9,21 +9,13 @@
  */
 
 
-<<<<<<< HEAD
 -l"C:\Users\Annie\Desktop\repos\GANGGANGGANG\empty_EK_TM4C1294XL_TI\Debug\configPkg\package\cfg\empty_pem4f.oem4f"
-=======
--l"C:\Users\Jenay\EGH456_workspace\GANGGANGGANG\empty_EK_TM4C1294XL_TI\Debug\configPkg\package\cfg\empty_pem4f.oem4f"
->>>>>>> Sensor-merge
 -l"C:/ti/tirtos_tivac_2_16_00_08/products/tidrivers_tivac_2_16_00_08/packages/ti/mw/wifi/cc3x00/lib/cc3x00_host_driver.aem4f"
 -l"C:/ti/tirtos_tivac_2_16_00_08/products/tidrivers_tivac_2_16_00_08/packages/ti/drivers/lib/drivers_tivaware.aem4f"
 -l"C:/ti/tirtos_tivac_2_16_00_08/products/tidrivers_tivac_2_16_00_08/packages/ti/drivers/lib/drivers_wifi_tivaware.aem4f"
 -l"C:\ti\tirtos_tivac_2_16_00_08\products\tidrivers_tivac_2_16_00_08\packages\ti\mw\fatfs\lib\release\ti.mw.fatfs.aem4f"
 -l"C:/ti/tirtos_tivac_2_16_00_08/products/tidrivers_tivac_2_16_00_08/packages/ti/drivers/ports/lib/tirtosport.aem4f"
-<<<<<<< HEAD
 -l"C:\Users\Annie\Desktop\repos\GANGGANGGANG\empty_EK_TM4C1294XL_TI\src\sysbios\sysbios.aem4f"
-=======
--l"C:\Users\Jenay\EGH456_workspace\GANGGANGGANG\empty_EK_TM4C1294XL_TI\src\sysbios\sysbios.aem4f"
->>>>>>> Sensor-merge
 -l"C:\ti\tirtos_tivac_2_16_00_08\products\bios_6_45_01_29\packages\ti\catalog\arm\cortexm4\tiva\ce\lib\Boot.aem4f"
 -l"C:\ti\tirtos_tivac_2_16_00_08\products\bios_6_45_01_29\packages\ti\targets\arm\rtsarm\lib\ti.targets.arm.rtsarm.aem4f"
 -l"C:\ti\tirtos_tivac_2_16_00_08\products\bios_6_45_01_29\packages\ti\targets\arm\rtsarm\lib\boot.aem4f"
@@ -39,7 +31,7 @@
 
 --args 0x0
 -heap  0x0
--stack 0x800
+-stack 0x300
 
 /*
  * Linker command file contributions from all loaded packages:

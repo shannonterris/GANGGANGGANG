@@ -16,9 +16,6 @@ extern const ti_sysbios_knl_Task_Handle task0Struct;
 #include <ti/sysbios/knl/Task.h>
 extern const ti_sysbios_knl_Task_Handle task1Struct;
 
-#include <ti/sysbios/knl/Task.h>
-extern const ti_sysbios_knl_Task_Handle task2Struct;
-
 extern int xdc_runtime_Startup__EXECFXN__C;
 
 extern int xdc_runtime_Startup__RESETFXN__C;

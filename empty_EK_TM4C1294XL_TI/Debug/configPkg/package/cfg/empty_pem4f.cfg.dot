@@ -5,11 +5,7 @@ digraph configuration {
     concentrate=true;
     compound=true;
     label="\nConfiguration for configPkg/empty.xem4f"
-<<<<<<< HEAD
   node [font=Helvetica, fontsize=14, fontcolor=black];  subgraph cluster0 {label=""; __cfg [label="C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/empty.cfg", color=white, fontcolor=blue];
-=======
-  node [font=Helvetica, fontsize=14, fontcolor=black];  subgraph cluster0 {label=""; __cfg [label="C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/empty.cfg", color=white, fontcolor=blue];
->>>>>>> Sensor-merge
     node [font=Helvetica, fontsize=10];    subgraph cluster1 {
         label="";
         xdc_services_global__top [shape=box,label="xdc.services.global\n1,0,0,0", color=white];

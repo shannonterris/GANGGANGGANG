@@ -17,22 +17,13 @@ ORDERED_OBJS += \
 "./drivers/pinout.obj" \
 "./drivers/touch.obj" \
 "./motor/motorCode.obj" \
-<<<<<<< HEAD
 "./sensors/opt3001/opt3001.obj" \
 "./sensors/sensor_api.obj" \
-=======
-"./sensors/BMI160/bmi160.obj" \
-"./sensors/sensors_api.obj" \
->>>>>>> Sensor-merge
 "./ui/grlib_demo.obj" \
 "../EK_TM4C1294XL.cmd" \
 "../MotorLib.lib" \
 $(GEN_CMDS__FLAG) \
-<<<<<<< HEAD
 -l"C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/MotorLib.lib" \
-=======
--l"C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/MotorLib.lib" \
->>>>>>> Sensor-merge
 -l"C:/ti/tivaware_c_series_2_1_4_178/grlib/ccs/Debug/grlib.lib" \
 -l"C:/ti/tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib" \
 -l"C:/ti/tivaware_c_series_2_1_4_178/grlib/ccs/Debug/grlib.lib" \
@@ -51,21 +42,13 @@ RMDIR := RMDIR /S/Q
 -include subdir_vars.mk
 -include drivers/subdir_vars.mk
 -include motor/subdir_vars.mk
-<<<<<<< HEAD
 -include sensors/opt3001/subdir_vars.mk
-=======
--include sensors/BMI160/subdir_vars.mk
->>>>>>> Sensor-merge
 -include sensors/subdir_vars.mk
 -include ui/subdir_vars.mk
 -include subdir_rules.mk
 -include drivers/subdir_rules.mk
 -include motor/subdir_rules.mk
-<<<<<<< HEAD
 -include sensors/opt3001/subdir_rules.mk
-=======
--include sensors/BMI160/subdir_rules.mk
->>>>>>> Sensor-merge
 -include sensors/subdir_rules.mk
 -include ui/subdir_rules.mk
 -include objects.mk
@@ -183,22 +166,14 @@ all: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 # Tool invocations
 empty_EK_TM4C1294XL_TI.out: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
-<<<<<<< HEAD
 	@echo 'Invoking: ARM Linker'
-=======
-	@echo 'Invoking: Arm Linker'
->>>>>>> Sensor-merge
 	"C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --define=ccs="ccs" --define=PART_TM4C1294NCPDT --define=ccs --define=TIVAWARE -g --gcc --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi -z -m"empty_EK_TM4C1294XL_TI.map" --heap_size=0 --stack_size=512 -i"C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/lib" -i"C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="empty_EK_TM4C1294XL_TI_linkInfo.xml" --rom_model -o "empty_EK_TM4C1294XL_TI.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
 empty_EK_TM4C1294XL_TI.hex: $(EXE_OUTPUTS)
 	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
-<<<<<<< HEAD
 	@echo 'Invoking: ARM Hex Utility'
-=======
-	@echo 'Invoking: Arm Hex Utility'
->>>>>>> Sensor-merge
 	"C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/bin/armhex" --diag_wrap=off -o "empty_EK_TM4C1294XL_TI.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
@@ -206,13 +181,8 @@ empty_EK_TM4C1294XL_TI.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-<<<<<<< HEAD
 	-$(RM) "EK_TM4C1294XL.obj" "empty.obj" "images.obj" "drivers\Kentec320x240x16_ssd2119_spi.obj" "drivers\pinout.obj" "drivers\touch.obj" "motor\motorCode.obj" "sensors\opt3001\opt3001.obj" "sensors\sensor_api.obj" "ui\grlib_demo.obj" 
 	-$(RM) "EK_TM4C1294XL.d" "empty.d" "images.d" "drivers\Kentec320x240x16_ssd2119_spi.d" "drivers\pinout.d" "drivers\touch.d" "motor\motorCode.d" "sensors\opt3001\opt3001.d" "sensors\sensor_api.d" "ui\grlib_demo.d" 
-=======
-	-$(RM) "EK_TM4C1294XL.obj" "empty.obj" "images.obj" "drivers\Kentec320x240x16_ssd2119_spi.obj" "drivers\pinout.obj" "drivers\touch.obj" "motor\motorCode.obj" "sensors\BMI160\bmi160.obj" "sensors\sensors_api.obj" "ui\grlib_demo.obj" 
-	-$(RM) "EK_TM4C1294XL.d" "empty.d" "images.d" "drivers\Kentec320x240x16_ssd2119_spi.d" "drivers\pinout.d" "drivers\touch.d" "motor\motorCode.d" "sensors\BMI160\bmi160.d" "sensors\sensors_api.d" "ui\grlib_demo.d" 
->>>>>>> Sensor-merge
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
 	-@echo 'Finished clean'
 	-@echo ' '

@@ -71,7 +71,6 @@ typedef enum EK_TM4C1294XL_EMACName {
 typedef enum EK_TM4C1294XL_GPIOName {
     EK_TM4C1294XL_USR_SW1 = 0,
     EK_TM4C1294XL_USR_SW2,
-    EK_TM4C1294XL_BMI160_INT, // indexes into gpioPinConfigs[] in EK_TM4C1294XL.c
     EK_TM4C1294XL_D1,
     EK_TM4C1294XL_D2,
     GPIO_HALL_A,
@@ -87,7 +86,7 @@ typedef enum EK_TM4C1294XL_GPIOName {
  *  @brief  Enum of I2C names on the EK_TM4C1294XL dev board
  */
 typedef enum EK_TM4C1294XL_I2CName {
-    EK_TM4C1294XL_I2C2 = 0, // indexes into i2cTivaHWAttrs[EK_TM4C1294XL_I2CCOUNT] in EK_TM4C1294XL.c
+    EK_TM4C1294XL_I2C2 = 0,
 
     EK_TM4C1294XL_I2CCOUNT
 } EK_TM4C1294XL_I2CName;
@@ -130,7 +129,6 @@ typedef enum EK_TM4C1294XL_SPIName {
  */
 typedef enum EK_TM4C1294XL_UARTName {
     EK_TM4C1294XL_UART0 = 0,
-    EK_TM4C1294XL_UART7, // new
 
     EK_TM4C1294XL_UARTCOUNT
 } EK_TM4C1294XL_UARTName;
