@@ -65,7 +65,7 @@ tDMAControlTable psDMAControlTable[64] __attribute__ ((aligned(1024)));
 #define X_GRAPH 0
 #define Y_GRAPH 35
 #define WIDTH_GRAPH 320
-#define HEIGHT_GRAPH 135
+#define HEIGHT_GRAPH 145
 #define MAX_PLOT_SAMPLES 300 // If sampling at 10Hz (max of 30sec)
 
 int graphIntMax;
@@ -245,7 +245,7 @@ RectangularButton(g_sGraphTitle, &g_sGraphPage, 0, 0,
                     ClrBlack, ClrBlack, ClrWhite, ClrWhite,
                    g_psFontCmss18b, "Graphing", 0, 0, 0, 0, 0);
 RectangularButton(g_sGraphExit, &g_sGraphPage, 0, 0,
-                  &g_sKentec320x240x16_SSD2119, 10, 200, 300, 30,
+                  &g_sKentec320x240x16_SSD2119, 85, 200, 150, 30,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                     PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                     ClrPowderBlue, ClrBlack, ClrWhite, ClrWhite,
@@ -583,17 +583,28 @@ void drawGraphPoint() {
         return;
     }
 
-    // somehow need to get the currentPoint to plot
-    // TODO using random float for testing remove later on
-    //float currentPoint = float_rand(graphIntMin, graphIntMax);
-      float currentPoint = (float) getSpeed();
-    // graphMax - graphMin is the space between
-    // the physical space between is 135
-    // graphMin should be 10 and graphMax should be 45
+
+    // TODO change get for different graphs
+
+    float currentPoint = (float) getSpeed();
+
+    // TODO double check this math :/
     int32_t x1 = (g_numPlotPoints * x_graph_step) + x_graph_start;
     int32_t x2 = (g_numPlotPoints + 1) * x_graph_step + x_graph_start;
     int32_t y1 = (y_graph_start + HEIGHT_GRAPH) - (previousPoint - graphIntMin)*y_graph_step;
     int32_t y2 = (y_graph_start + HEIGHT_GRAPH) - (currentPoint - graphIntMin)*y_graph_step;
+    if (y2 < y_graph_start) {
+        y2 = y_graph_start;
+    }
+    if (y1 < y_graph_start) {
+            y1 = y_graph_start;
+    }
+    if(y1 > y_graph_end) {
+        y1 = y_graph_end;
+    }
+    if (y2 > y_graph_end) {
+        y2 = y_graph_end;
+    }
 
     // Draw Current Value
     static char currentValue[30];
