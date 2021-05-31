@@ -52,24 +52,23 @@
 
 
 #define TOTAL_POSITIONS 12
-#define SAMPLE_SIZE 100
+#define SAMPLE_SIZE 25
 #define ACCEL_SIZE 100
 #define MAXOUTPUT 24
 #define NUMSGS 50
 #define ADC0_SEQ 0 // sequencer 1 -> 4 samples
 #define ADC1_SEQ 1
-#define ADC_STEP 0
+#define ADC0_STEP 7
+#define ADC1_STEP 3
 
 Semaphore_Struct semStruct;
 Semaphore_Handle semHandle;
-
 
 Clock_Struct clkStruct;
 Clock_Handle clkHandle;
 
 Hwi_Handle hallA, hallB, hallC;
 Hwi_Handle adc0, adc1;
-
 
 Error_Block eb;
 Event_Struct evtStruct;
@@ -113,8 +112,6 @@ volatile float rpm_desired = 300;
 volatile float rpm_int = 0;
 volatile float jump = 5;
 
-//volatile float Kp = 0.5;
-//volatile float Ki = 0.02;
 volatile float Kp = 0.00085;
 volatile float Ki = 0.00005;
 
@@ -140,17 +137,15 @@ volatile float rpm_buf[5];
 volatile bool motorState;
 volatile bool running;
 
-
-volatile bool e_event; // retrieved from sensor APIs
-volatile bool e_stop; // scope limited to motorCode API
+volatile bool e_event;
+volatile bool e_stop;
 
 volatile int dummy = 0;
 
 volatile int adc_test = 0;
 
-uint32_t pui32ADC0Value[1];
-uint32_t pui32ADC1Value[1];
-
+uint32_t pui32ADC0Value[7];
+uint32_t pui32ADC1Value[3];
 
 volatile float vref = 3.3;
 volatile float voltageC, voltageB;
@@ -158,6 +153,9 @@ volatile float stepVoltage = 0.00089586;
 volatile float currentC, currentB;
 volatile float shunt = 0.007;
 volatile float gain = 10;
+
+volatile float total_samples0, total_samples1;
+volatile float average_step0, average_step1;
 
 /*!
  *  @brief  ISR to read the Hall Effect lines, calculate RPM and update the motor
@@ -197,24 +195,28 @@ void  HallFxn()
 }
 
 /*!
- *  @brief  ISR to read buffer from ADC0
+ *  @brief  ISR to read buffer from ADC0 and ADC1
  *
- *  @pre ADC0_Init() is called in setup
+ *  @pre ADC inits are called from setup
  *
  */
+
+/*
 void ADCFxn()
 {
 
-    //ADCProcessorTrigger(ADC0_BASE, ADC_SEQ);
-    //ADC
     ADCIntClear(ADC0_BASE, ADC0_SEQ);
+    ADCIntClear(ADC1_BASE, ADC1_SEQ);
     ADCSequenceDataGet(ADC0_BASE, ADC0_SEQ, pui32ADC0Value);
+    ADCSequenceDataGet(ADC1_BASE, ADC1_SEQ, pui32ADC1Value);
 
+}
+void ADC1Fxn()
+{
     ADCIntClear(ADC1_BASE, ADC1_SEQ);
     ADCSequenceDataGet(ADC1_BASE, ADC1_SEQ, pui32ADC1Value);
-    //adc_test++;
-    //System_printf("Hello");
 }
+*/
 
 /*!
  *  @brief  Setup all HWIs for each GPIO line, for Hall A/B/C, and enable interrupts
@@ -230,7 +232,7 @@ void initHallABC()
     // ISR vector number 88 for port M -> Hall_A is port M pin 3
     hallA = Hwi_create(INT_GPIOM_TM4C129, (Hwi_FuncPtr)HallFxn, &hwiParams, NULL);
     // ISR vector number 48 for port H -> Hall_B is port H pin 2
-    hallB = Hwi_create(INT_GPIOH_TM4C123, (Hwi_FuncPtr)HallFxn, &hwiParams, NULL);
+    hallB = Hwi_create(INT_GPIOH_TM4C129, (Hwi_FuncPtr)HallFxn, &hwiParams, NULL);
     // ISR vector number 89 for port N -> Hall_C is port N pin 2
     hallC = Hwi_create(INT_GPION_TM4C129, (Hwi_FuncPtr)HallFxn, &hwiParams, NULL);
 
@@ -256,10 +258,12 @@ void initHallABC()
 
     //------- ADC! //
     // ISR vector number 20 for Port E -> AIN0 (channel 0) is port E3
-    adc0 = Hwi_create(INT_ADC0SS0_TM4C123, (Hwi_FuncPtr)ADCFxn, &hwiParams, NULL);
-    adc1 = Hwi_create(INT_ADC0SS1_TM4C123, (Hwi_FuncPtr)ADCFxn, &hwiParams, NULL);
 
-    if (adc0 == NULL || adc1 == NULL)
+    /*
+    adc0 = Hwi_create(INT_ADC0SS0_TM4C129, (Hwi_FuncPtr)ADCFxn, &hwiParams, NULL);
+    adc1 = Hwi_create(INT_ADC0SS2_TM4C129, (Hwi_FuncPtr)ADCFxn, &hwiParams, NULL);
+
+    if (adc0 == NULL)
     {
         System_abort("ADC HWI creation failed...");
     }
@@ -270,6 +274,8 @@ void initHallABC()
     //GPIO_enableInt(ADC0_BASE);
     //GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_3, GPIO_RISING_EDGE);
     //GPIODirModeSet(GPIO_PORTE_BASE, GPIO_PIN_3, GPIO_DIR_MODE_IN);
+
+     */
 
     System_printf("Done initHallABC\n");
     System_flush();
@@ -350,6 +356,11 @@ void statesFxn(UARg, arg0)
  *          (speed up, speed down, e-stop). UART was used during testing and is not required
  *          for production.
  *
+ *         Event_Id_00 ---> set the motor to IDLE
+ *         Event_Id_01 ---> set the motor to STOP
+ *         Event_Id_02 ---> set the motor to RUNNING (includes speed > 0 & at speed)
+ *         Event_Id_03 ---> set e-stop condition
+ *
  *  @params arg0, arg1
  */
 void motorFxn(UArg arg0, UArg arg1)
@@ -378,18 +389,20 @@ void motorFxn(UArg arg0, UArg arg1)
         System_flush();
     }
 
+    /*
     enableMotor();
     setDuty(24);
     readABC();
     updateMotor(hA, hB, hC);
+    */
 
     UInt state;
 
     while(1)
     {
-
-        /*
-        state = Event_pend(evtHandle, Event_Id_NONE, (Event_Id_00 + Event_Id_01 + Event_Id_02 + Event_Id_03),
+        // TI-RTOS events map to different user events.
+        state = Event_pend(evtHandle, Event_Id_NONE,
+                           (Event_Id_00 + Event_Id_01 + Event_Id_02 + Event_Id_03),
                            BIOS_WAIT_FOREVER);
 
         // IDLE - Start the motor
@@ -397,6 +410,7 @@ void motorFxn(UArg arg0, UArg arg1)
         {
             running = true;
             //enableMotor();
+            setDuty(output);
             rpm_desired = rpm_from_UI;
             readABC();
             updateMotor(hA, hB, hC);
@@ -407,14 +421,16 @@ void motorFxn(UArg arg0, UArg arg1)
         {
             running = false;
             rpm_desired = 0;
-
+            setDuty(output);
             if (rpm_avg < 100)
             {
                 e_stop = false;
                 e_event = false;
                 error = 0;
                 integral_error = 0;
-                stopMotor(true);
+                stopMotor(false);
+                output = 0;
+                rpm_avg = 0;
             }
         }
 
@@ -436,7 +452,6 @@ void motorFxn(UArg arg0, UArg arg1)
             // the accelLimitFxn will decrement by 10RPM every 10ms.
             motorState = false;
         }
-        */
 
 
         if (print_from_clock == true)
@@ -444,16 +459,26 @@ void motorFxn(UArg arg0, UArg arg1)
             //System_printf("%d\n", adc_test);
             //sprintf(speed_buf, "Voltage: %f  Current: %f\n\r", voltage, current);
 
-            sprintf(speed_buf, "Current C: %f  Current B: %f\n\r", currentC, currentB);
-            UART_write(uart, speed_buf, sizeof(speed_buf));
+            //sprintf(speed_buf, "Current C: %f  Current B: %f\n\r", currentC, currentB);
+
+
+
+            //sprintf(speed_buf, "%d %d %d %d %d %d %d %d\n\r", pui32ADC0Value[0], pui32ADC0Value[1],
+            //                                pui32ADC0Value[2], pui32ADC0Value[3], pui32ADC0Value[4],
+            //                                pui32ADC0Value[5], pui32ADC0Value[6], pui32ADC0Value[7]);
+
+            //sprintf(speed_buf, "Avg Step 0: %f  1: %f \n\r", average_step0, average_step1);
+            //UART_write(uart, speed_buf, sizeof(speed_buf));
             //int32_t rpm_print = (int32_t)rpm_avg;
-            //UART_write(uart, &rpm_avg, sizeof(rpm_avg));
+            UART_write(uart, &rpm_avg, sizeof(rpm_avg));
             //int32_t rpm_print_act = (int32_t)rpm_actual;
             //UART_write(uart, &adc_test, sizeof(adc_test));
             //print_from_clock = false;
         }
 
+
     }
+
 }
 
 /*!
@@ -495,10 +520,14 @@ Void filterFxn(UArg arg0)
  */
 Void PIControlFxn(UArg arg0)
 {
-    error = rpm_int - rpm_avg;
-    integral_error = integral_error + error;
-    output = Kp*error + Ki*integral_error;
-    setDuty((uint16_t)output);
+        error = rpm_int - rpm_avg;
+        integral_error = integral_error + error;
+        output = Kp*error + Ki*integral_error;
+        //setDuty((uint16_t)output);
+        if (output < 0)
+        {
+            output = 0;
+        }
 }
 
 /*!
@@ -541,7 +570,7 @@ void accelLimitFxn(UArg arg0)
         if (e_stop == true)
         {
             // if true, every 10ms, decrement by 10RPM (10RPM/0.01s = 1000RPM/s).
-            rpm_int = rpm_int - 100;
+            rpm_int = rpm_int - 10;
         }
         else
         {
@@ -551,77 +580,97 @@ void accelLimitFxn(UArg arg0)
     }
 }
 
+/*!
+ * ADC initialisation for the current sensor.
+ */
 
+/*
 void ADCTriggerFxn(UArg arg0)
 {
     //Semaphore_post(semHandle);
-    ADCProcessorTrigger(ADC0_BASE, ADC0_SEQ);
-    ADCProcessorTrigger(ADC1_BASE, ADC1_SEQ);
+    //ADCProcessorTrigger(ADC0_BASE, ADC0_SEQ);
+    //ADCProcessorTrigger(ADC1_BASE, ADC1_SEQ);
+    int i;
 
-    voltageC = stepVoltage * pui32ADC0Value[0];
-    currentC = ((vref/2) - voltageC)/(gain * shunt);
+    total_samples0 = 0;
 
-    voltageB = stepVoltage * pui32ADC1Value[0];
-    currentB = ((vref/2) - voltageB)/(gain * shunt);
+    for (i = 0; i < ADC0_STEP; i++)
+    {
+        total_samples0 = total_samples0 + pui32ADC0Value[i];
+        //total_samples1 = total_samples1 + pui32ADC1Value[i];
+    }
+
+
+    average_step0 = total_samples0/ADC0_STEP;
+
+
+    //voltageC = stepVoltage * pui32ADC0Value[0];
+    //currentC = ((vref/2) - voltageC)/(gain * shunt);
+
+    //voltageB = stepVoltage * pui32ADC1Value[0];
+    //currentB = ((vref/2) - voltageB)/(gain * shunt);
 }
 
+void ADC1TriggerFxn(UArg arg0)
+{
+    ADCProcessorTrigger(ADC1_BASE, ADC1_SEQ);
+    total_samples1 = 0;
 
-/**
- * ADC
- */
+    int i;
 
+    for (i = 0; i < ADC1_STEP; i++)
+    {
+       total_samples1 = total_samples1 + pui32ADC1Value[i];
+    }
 
+    average_step1 = total_samples1/ADC1_STEP;
+}
 void ADC0_Init() //ADC0 on PE3
 {
     SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
 
+    // GPIOPinTypeADC configures Port E Pin 3 for use as an
+    // ADC converter input.
+    // Lecture - Makes GPIO an input and sets them to analog
 
-     /*
-     *  GPIOPinTypeADC configures Port E Pin 3 for use as an
-     *  ADC converter input.
-     *
-     *  Lecture - Makes GPIO an input and sets them to analog
-     */
     GPIOPinTypeADC(GPIO_PORTE_BASE, GPIO_PIN_3);
 
-    /*
-     *  Configures the trigger source and priority of a sample
-     *  sequence.
-     *  1. base: base address of the ADC module
-     *  2. sequenceNum: the sample sequence number
-     *  3. trigger source that initiates sample sequence
-     *  4. priority - relative priority of the sample sequence
-     *                with other sample sequences
-     */
-    ADCSequenceConfigure(ADC0_BASE, ADC0_SEQ, ADC_TRIGGER_PROCESSOR, 0);
+
+    // Configures the trigger source and priority of a sample
+    // sequence.
+    // 1. base: base address of the ADC module
+    // 2. sequenceNum: the sample sequence number
+    // 3. trigger source that initiates sample sequence
+    // 4. priority - relative priority of the sample sequence
+    //                with other sample sequences
+    //
+    ADCSequenceConfigure(ADC0_BASE, ADC0_SEQ, ADC_TRIGGER_PROCESSOR, 1);
 
 
-    /*
-     * Configure a step of the sample sequencer
-     * 1. Base address of the ADC module
-     * 2. Sample sequence number
-     * 3. Step to be configured
-     * 4. Configuration of this step:
-     *      - Select channel 0 (AIN0)
-     *      - Defined as the last in the sequence (ADC_CTL_END)
-     *      - cause an interrupt when complete (ADC_CTL_IE)
-     */
-    ADCSequenceStepConfigure(ADC0_BASE, ADC0_SEQ, ADC_STEP, ADC_CTL_IE |
+
+    // Configure a step of the sample sequencer
+    // 1. Base address of the ADC module
+    // 2. Sample sequence number
+    // 3. Step to be configured
+    // 4. Configuration of this step:
+    //      - Select channel 0 (AIN0)
+    //      - Defined as the last in the sequence (ADC_CTL_END)
+    //      - cause an interrupt when complete (ADC_CTL_IE)
+
+    ADCSequenceStepConfigure(ADC0_BASE, ADC0_SEQ, ADC0_STEP, ADC_CTL_IE |
                              ADC_CTL_CH3 | ADC_CTL_END);
 
-    /*
-     * Enable a sample sequence. Allow specified sample sequence
-     * to be captured when trigger is detected.
-     */
+
+    // Enable a sample sequence. Allow specified sample sequence
+    // to be captured when trigger is detected.
+    //
     ADCSequenceEnable(ADC0_BASE, ADC0_SEQ);
 
-    /*
-     * Clears sample sequence interrupt source.
-     */
+
+    // Clears sample sequence interrupt source.
     ADCIntClear(ADC0_BASE, ADC0_SEQ);
 }
-
 
 void ADC1_Init() //ADC0 on PE3
 {
@@ -631,12 +680,13 @@ void ADC1_Init() //ADC0 on PE3
     GPIOPinTypeADC(GPIO_PORTD_BASE, GPIO_PIN_7);
 
     ADCSequenceConfigure(ADC1_BASE, ADC1_SEQ, ADC_TRIGGER_PROCESSOR, 0); //--- priority may need to change //
-    ADCSequenceStepConfigure(ADC1_BASE, ADC1_SEQ, ADC_STEP, ADC_CTL_IE |
+    ADCSequenceStepConfigure(ADC1_BASE, ADC1_SEQ, ADC1_STEP, ADC_CTL_IE |
                                ADC_CTL_CH4 | ADC_CTL_END);
 
     ADCSequenceEnable(ADC1_BASE, ADC1_SEQ);
     ADCIntClear(ADC1_BASE, ADC1_SEQ);
 }
+*/
 
 
 /*!
@@ -679,12 +729,12 @@ void setSpeed(uint32_t rpm_ui)
 void startMotor( bool UI_motorRun )
 {
     motorState = UI_motorRun;
-    dummy++;
+    //dummy++;
 
-    if(dummy == 4)
-    {
-        e_event = true; // hit stop motor a second time
-    }
+    //if(dummy == 4)
+    //{
+    //    e_event = true; // hit stop motor a second time
+    //}
 }
 
 /*!
@@ -695,8 +745,8 @@ void startMotor( bool UI_motorRun )
 void initMotor( void )
 {
 
-    ADC0_Init();
-    ADC1_Init();
+    //ADC0_Init();
+    //ADC1_Init();
 
     Error_init(&eb);
 
@@ -729,13 +779,22 @@ void initMotor( void )
     clkParams.startFlag = TRUE;
     Clock_create((Clock_FuncPtr)accelLimitFxn, 10, &clkParams, NULL);
 
+
+    /*
     clkParams.period = 6;
     clkParams.startFlag = TRUE;
     Clock_create((Clock_FuncPtr)ADCTriggerFxn, 6, &clkParams, NULL);
 
+    clkParams.period = 6;
+    clkParams.startFlag = TRUE;
+    Clock_create((Clock_FuncPtr)ADC1TriggerFxn, 6, &clkParams, NULL);
+    */
+
+
     clkParams.period = 10;
     clkParams.startFlag = TRUE;
     Clock_create((Clock_FuncPtr)statesFxn, 10, &clkParams, NULL);
+
 
     /* Setup Semaphore */
     Semaphore_Params semParams;
