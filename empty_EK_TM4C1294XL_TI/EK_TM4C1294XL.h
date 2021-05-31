@@ -86,8 +86,7 @@ typedef enum EK_TM4C1294XL_GPIOName {
  *  @brief  Enum of I2C names on the EK_TM4C1294XL dev board
  */
 typedef enum EK_TM4C1294XL_I2CName {
-    EK_TM4C1294XL_I2C7 = 0,
-    EK_TM4C1294XL_I2C8,
+    EK_TM4C1294XL_I2C2 = 0,
 
     EK_TM4C1294XL_I2CCOUNT
 } EK_TM4C1294XL_I2CName;

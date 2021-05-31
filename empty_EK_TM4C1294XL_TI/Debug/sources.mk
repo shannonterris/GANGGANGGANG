@@ -126,5 +126,7 @@ SUBDIRS := \
 . \
 drivers \
 motor \
+sensors/opt3001 \
+sensors \
 ui \
 
