@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "inc/hw_memmap.h"
 #include "inc/hw_nvic.h"
 #include "inc/hw_sysctl.h"
@@ -38,7 +39,8 @@
 #include "drivers/Kentec320x240x16_ssd2119_spi.h"
 #include "drivers/touch.h"
 #include "images.h"
-
+#include "Board.h"
+#include "inc/hw_gpio.h"
 //*****************************************************************************
 //
 // Forward declarations for the globals required to define the widgets at
@@ -70,6 +72,8 @@ void OnGraphLight();
 void initWidgets(tContext * sContext);
 void initUI(uint32_t systemClock, tContext * Context);
 void drawGraphPoint();
+void DrawDayNight();
+void DrawTime();
 
 uint32_t g_ui32SysClock;
 tContext sContext;

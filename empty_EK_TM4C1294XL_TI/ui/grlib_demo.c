@@ -281,6 +281,9 @@ OnMainMenu(tWidget *psWidget)
     //
     WidgetPaint((tWidget *) &g_sMainPage);
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sMainPage);
+
+    WidgetMessageQueueProcess();
+    DrawDayNight();
 }
 
 
@@ -304,6 +307,9 @@ OnSettingsMain(tWidget *psWidget)
     //
     WidgetPaint((tWidget *) &g_sSettingsMainPage);
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sSettingsMainPage);
+
+    WidgetMessageQueueProcess();
+    DrawDayNight();
 }
 
 //*****************************************************************************
@@ -334,6 +340,37 @@ OnGraphsMain(tWidget *psWidget)
     WidgetPaint((tWidget *) &g_sGraphsMainPage);
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sGraphsMainPage);
 
+    WidgetMessageQueueProcess();
+    DrawDayNight();
+
+}
+
+
+//*****************************************************************************
+//
+// Handles presses of the start motor.
+//
+//*****************************************************************************
+void
+DrawDayNight()
+{
+    // TODO add logic for night vs day
+    GrStringDraw(&sContext, "Day", -1, 10, 5, false);
+    // TODO if it has changed toggle led light
+}
+
+//*****************************************************************************
+//
+// Handles updating of the clock every 1 second
+//
+//*****************************************************************************
+void
+DrawTime()
+{
+    if (!g_drawingGraph) {
+        GrStringDraw(&sContext, "Date and Time", -1, 50, 5, false);
+        // TODO if it has changed toggle led light
+    }
 }
 
 //*****************************************************************************
@@ -347,6 +384,7 @@ OnStartMotor(tWidget *psWidget)
     motorStartedUI = !motorStartedUI;
 
     startMotor(motorStartedUI);
+    GPIO_toggle(Board_LED0);
 
     if(motorStartedUI)
     {
@@ -403,6 +441,9 @@ void OnSettingsPage() {
         drawSettingValue("mA", g_currentLimit);
     }
     WidgetPaint((tWidget *) &g_sSettingTitle);
+
+    WidgetMessageQueueProcess();
+    DrawDayNight();
 }
 
 
@@ -676,6 +717,10 @@ void initUI(uint32_t systemClock, tContext * Context) {
     motorStartedUI = false;
     previousPoint = 0;
     // currentPoint = 0;
+
+    // Initialize LEDs
+    GPIO_write(Board_LED0, Board_LED_OFF);
+    GPIO_write(Board_LED1, Board_LED_OFF);
 }
 
 //*****************************************************************************
@@ -731,6 +776,9 @@ void initWidgets(tContext * sContext) {
     // Issue the initial paint request to the widgets.
     //
     WidgetPaint(WIDGET_ROOT);
+
+    WidgetMessageQueueProcess();
+    DrawDayNight();
 }
 
 
