@@ -81,10 +81,12 @@
 #include <driverlib/gpio.h>
 #include <ti/sysbios/hal/Seconds.h>
 #include <time.h>
+#include "driverlib/hibernate.h"
 
 #include "ui/grlib_demo.h"
 
 #include "motor/motorCode.h"
+
 
 
 uint8_t motorStartStop = 1;
@@ -100,6 +102,10 @@ uint8_t motorStartStop = 1;
 Clock_Struct clockUpdateGraph;
 Clock_Struct clockUpdateTime;
 
+Void incrementTime() {
+    t++;
+}
+
 Void updateGraphUI()
 {
     // TODO potentially change this to trigger events instead of using a bool?????
@@ -111,9 +117,9 @@ Void heartBeatFxn(UArg arg0, UArg arg1)
     initWidgets(&sContext);
     while (1) {
         WidgetMessageQueueProcess();
+        DrawTime();
     }
 }
-
 /*
  *  ======== main ========
  */
@@ -140,7 +146,7 @@ int main(void)
     Clock_Params_init(&clockParams1);
     clockParams1.period = 1000; // 1Hz
     clockParams1.startFlag = TRUE;
-    // Clock_construct(&clockUpdateTime, (Clock_FuncPtr)DrawTime, 1, &clockParams1);
+    Clock_construct(&clockUpdateTime, (Clock_FuncPtr)incrementTime, 1, &clockParams1);
 
 
     // Run from the PLL at 120 MHz.

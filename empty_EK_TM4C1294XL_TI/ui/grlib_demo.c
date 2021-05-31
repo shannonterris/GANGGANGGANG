@@ -78,6 +78,7 @@ int32_t y_graph_start = 45;
 int32_t y_graph_max = 50;
 int32_t y_graph_end = 180;
 
+
 //*****************************************************************************
 //
 // Canvas for main menus
@@ -364,12 +365,19 @@ DrawDayNight()
 // Handles updating of the clock every 1 second
 //
 //*****************************************************************************
-void
-DrawTime()
+void DrawTime()
 {
-    if (!g_drawingGraph) {
-        GrStringDraw(&sContext, "Date and Time", -1, 50, 5, false);
-        // TODO if it has changed toggle led light
+    if (!g_drawingGraph ) {
+        char timeString[30];
+        struct tm * timeinfo;
+        timeinfo = localtime (&t);
+        timeinfo->tm_hour += 16;
+        if (timeinfo->tm_hour > 24) {
+            timeinfo->tm_hour -= 24;
+            timeinfo->tm_mday +=1;
+        }
+        strcpy(timeString, asctime(timeinfo));
+        GrStringDraw(&sContext, timeString, -1, 50, 5, true);
     }
 }
 
@@ -543,12 +551,6 @@ void OnSettingCurrent() {
 
 char graphMin[5];
 char graphMax[5];
-// TODO remove just for testing
-float float_rand( float min, float max )
-{
-    float scale = rand() / (float) RAND_MAX; /* [0, 1.0] */
-    return min + scale * ( max - min );      /* [min, max] */
-}
 
 char maxTime[30];
 char minTime[30];
@@ -692,7 +694,7 @@ void OnGraphAcceleration(){
 }
 void OnGraphLight(){
     g_sCurrentPanel = LIGHT;
-    OnGraphsPage("Light (Lux)", 0, 100); //TODO
+    OnGraphsPage("Light (Lux)", 0, 500); //TODO
 
 }
 
@@ -732,6 +734,9 @@ void initUI(uint32_t systemClock, tContext * Context) {
     // Initialize LEDs
     GPIO_write(Board_LED0, Board_LED_OFF);
     GPIO_write(Board_LED1, Board_LED_OFF);
+
+    //Initalize time
+    t = time(NULL);
 }
 
 //*****************************************************************************

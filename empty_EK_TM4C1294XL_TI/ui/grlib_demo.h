@@ -96,6 +96,8 @@ bool motorStartedUI;
 float previousPoint;
 // Current data used for graphing
 float data_Graph;
+// Time variable
+time_t t;
 
 
 #endif /* GRLIB_DEMO_H_ */
