@@ -608,9 +608,11 @@ void drawGraphPoint() {
 
     if (g_sCurrentPanel == LIGHT) {
         currentPoint = getLight();
-    } else {
-        currentPoint = (float) getSpeed();
     }
+    else if (g_sCurrentPanel == ACCELERATION) {
+        currentPoint = getAcceleration();
+    }
+    else currentPoint = (float) getSpeed();
 
     // graphMax - graphMin is the space between
     // the physical space between is 135
