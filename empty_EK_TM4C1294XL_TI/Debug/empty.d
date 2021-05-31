@@ -248,6 +248,17 @@ empty.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/math.h
 empty.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/_defs.h
 empty.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/machine/_limits.h
 empty.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/string.h
+empty.obj: C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/sensors/sensors_api.h
+empty.obj: C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h
+empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/BIOS.h
+empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/knl/Clock.h
+empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/knl/Task.h
+empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/knl/Semaphore.h
+empty.obj: C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/sensors/opt3001/opt3001.h
+empty.obj: C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h
+empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/tidrivers_tivac_2_16_00_08/packages/ti/drivers/I2C.h
+empty.obj: C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Board.h
+empty.obj: C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/EK_TM4C1294XL.h
 empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/hal/Seconds.h
 empty.obj: C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/Types.h
 empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/interfaces/ISeconds.h
@@ -272,20 +283,9 @@ empty.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/checkbox.h
 empty.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/container.h
 empty.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/radiobutton.h
 empty.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/slider.h
-empty.obj: C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/images.h
-empty.obj: C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Board.h
-empty.obj: C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/EK_TM4C1294XL.h
+empty.obj: C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/images.h
 empty.obj: C:/ti/tivaware_c_series_2_1_4_178/inc/hw_gpio.h
 empty.obj: ../motor/motorCode.h
-empty.obj: ../sensors/sensor_api.h
-empty.obj: C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h
-empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/BIOS.h
-empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/knl/Clock.h
-empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/knl/Task.h
-empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/knl/Semaphore.h
-empty.obj: ../sensors/opt3001/opt3001.h
-empty.obj: C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h
-empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/tidrivers_tivac_2_16_00_08/packages/ti/drivers/I2C.h
 
 ../empty.c: 
 C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/std.h: 
@@ -535,6 +535,17 @@ C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/math.h:
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/_defs.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/machine/_limits.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.2.LTS/include/string.h: 
+C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/sensors/sensors_api.h: 
+C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h: 
+C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/BIOS.h: 
+C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/knl/Clock.h: 
+C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/knl/Task.h: 
+C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/knl/Semaphore.h: 
+C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/sensors/opt3001/opt3001.h: 
+C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h: 
+C:/ti/tirtos_tivac_2_16_00_08/products/tidrivers_tivac_2_16_00_08/packages/ti/drivers/I2C.h: 
+C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Board.h: 
+C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/EK_TM4C1294XL.h: 
 C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/hal/Seconds.h: 
 C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/Types.h: 
 C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/interfaces/ISeconds.h: 
@@ -559,17 +570,6 @@ C:/ti/tivaware_c_series_2_1_4_178/grlib/checkbox.h:
 C:/ti/tivaware_c_series_2_1_4_178/grlib/container.h: 
 C:/ti/tivaware_c_series_2_1_4_178/grlib/radiobutton.h: 
 C:/ti/tivaware_c_series_2_1_4_178/grlib/slider.h: 
-C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/images.h: 
-C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Board.h: 
-C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/EK_TM4C1294XL.h: 
+C:/Users/Jenay/EGH456_workspace/GANGGANGGANG/empty_EK_TM4C1294XL_TI/images.h: 
 C:/ti/tivaware_c_series_2_1_4_178/inc/hw_gpio.h: 
 ../motor/motorCode.h: 
-../sensors/sensor_api.h: 
-C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h: 
-C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/BIOS.h: 
-C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/knl/Clock.h: 
-C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/knl/Task.h: 
-C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/knl/Semaphore.h: 
-../sensors/opt3001/opt3001.h: 
-C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h: 
-C:/ti/tirtos_tivac_2_16_00_08/products/tidrivers_tivac_2_16_00_08/packages/ti/drivers/I2C.h: 

@@ -128,11 +128,9 @@ Void heartBeatFxn(UArg arg0, UArg arg1)
 /*
  * Initialise Light Sensor Function
  * */
-void sensorsFxn() {
-    if (!initSensors(20)) {
-        System_abort("Failed sensor init");
-        System_flush();
-    }
+void sensorsFxn(UArg arg0) {
+    initSensors(20);
+    System_flush();
 }
 
 /*
@@ -190,7 +188,7 @@ int main(void)
                                              SYSCTL_OSC_MAIN |
                                              SYSCTL_USE_PLL |
                                              SYSCTL_CFG_VCO_480), 120000000);
-    // Setup light sensor
+//     Setup light sensor
     setupLightSensor();
 
     initUI(g_ui32SysClock, &sContext);

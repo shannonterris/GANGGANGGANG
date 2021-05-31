@@ -2,6 +2,7 @@
 #include "BMI160/bmi160.h"
 #include <math.h>
 #include <ti/drivers/GPIO.h>
+#include <ti/drivers/UART.h>
 
 #define WINDOW_SIZE         6       // sample buffer size
 #define SAMPLE_RATE         500     // sampled at 2Hz
@@ -34,8 +35,8 @@ float accelerationBuffer[ACCEL_BUFFERSIZE];
 float accel_mag;
 
 accel_vector av;
-//UART_Handle uart;
-//UART_Params uartParams;
+UART_Handle uart;
+UART_Params uartParams;
 
 /*
  * Light SWI
@@ -84,7 +85,7 @@ void taskAcceleration() {
         // posts the semaphore again at next clockswi period (5ms)
         Semaphore_pend(semAccelHandle, BIOS_WAIT_FOREVER);
 
-        getAccelVector(sensori2c, &av);
+        getAccelVector(light_i2c, &av);
 
 //         the absolute value of the acceleration magnitude
         accel_mag = fabs(sqrt(
@@ -124,7 +125,7 @@ bool initLightTask() {
     Task_Params taskParams;
     Task_Params_init(&taskParams);
     taskParams.stackSize = 512;
-    taskParams.priority = 2;
+    taskParams.priority = 1;
     taskParams.stack = &taskLightStack;
     Task_Handle lightTask = Task_create((Task_FuncPtr)taskLight, &taskParams, NULL);
     if (lightTask == NULL) {
@@ -141,15 +142,15 @@ bool initLightTask() {
  */
 bool initAcceleration(uint16_t thresholdAccel) {
     /* Create a UART with data processing off. */
-/*    UART_Params_init(&uartParams);
+    UART_Params_init(&uartParams);
     uartParams.writeDataMode = UART_DATA_BINARY;
     uartParams.readDataMode = UART_DATA_BINARY;
     uartParams.readReturnMode = UART_RETURN_FULL;
     uartParams.readEcho = UART_ECHO_OFF;
     uartParams.baudRate = 115200;
-    uart = UART_open(Board_UART0, &uartParams);*/
+    uart = UART_open(Board_UART0, &uartParams);
 
-    BMI160Init(sensori2c);
+    BMI160Init(light_i2c);
     setAccelThreshold(thresholdAccel);
 
     // Create D4 GPIO interrupt
@@ -169,7 +170,7 @@ bool initAcceleration(uint16_t thresholdAccel) {
     Task_Params taskParams;
     Task_Params_init(&taskParams);
     taskParams.stackSize = TASKSTACKSIZE;
-    taskParams.priority = 2;
+    taskParams.priority = 1;
     taskParams.stack = &taskAccelStack;
      Task_Handle accelTask = Task_create((Task_FuncPtr)taskAcceleration, &taskParams, NULL);
      if (accelTask == NULL) {
@@ -213,7 +214,7 @@ float getAcceleration() {
  */
 void setAccelThreshold(uint16_t thresh) {
     ThresholdAccel = thresh;
-    accelThreshold(sensori2c, thresh);
+    accelThreshold(light_i2c, thresh);
 }
 
 
@@ -242,8 +243,8 @@ bool initSensors(uint16_t thresholdAccel) {
     }
 
     // INIT ACCELERATION //
+    initAcceleration(thresholdAccel);
     initLightTask();
-    //initAcceleration(thresholdAccel);
     System_flush();
 
     // Used by separate init functions to create recurring SWIs. Period size is 1ms.
@@ -251,8 +252,11 @@ bool initSensors(uint16_t thresholdAccel) {
     clkSensorParams.startFlag = TRUE;
 
     // creates light SWI recurring at 2Hz
+    clkSensorParams.period = 5;
+    Clock_construct(&clockAccelerationStruct, (Clock_FuncPtr)swiAcceleration, 1, &clkSensorParams);
+
     clkSensorParams.period = SAMPLE_RATE;
-    Clock_construct(&clockLightStruct, (Clock_FuncPtr)swiLight, 1, &clkSensorParams);
+    Clock_construct(&clockLightStruct, (Clock_FuncPtr)swiLight, 100, &clkSensorParams);
 
     return true;
 }

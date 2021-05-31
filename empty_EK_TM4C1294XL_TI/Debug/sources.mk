@@ -126,6 +126,7 @@ SUBDIRS := \
 . \
 drivers \
 motor \
+sensors/BMI160 \
 sensors/opt3001 \
 sensors \
 ui \
