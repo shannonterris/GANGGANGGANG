@@ -17,6 +17,8 @@ ORDERED_OBJS += \
 "./drivers/pinout.obj" \
 "./drivers/touch.obj" \
 "./motor/motorCode.obj" \
+"./sensors/opt3001/opt3001.obj" \
+"./sensors/sensor_api.obj" \
 "./ui/grlib_demo.obj" \
 "../EK_TM4C1294XL.cmd" \
 "../MotorLib.lib" \
@@ -36,10 +38,14 @@ RMDIR := RMDIR /S/Q
 -include subdir_vars.mk
 -include drivers/subdir_vars.mk
 -include motor/subdir_vars.mk
+-include sensors/opt3001/subdir_vars.mk
+-include sensors/subdir_vars.mk
 -include ui/subdir_vars.mk
 -include subdir_rules.mk
 -include drivers/subdir_rules.mk
 -include motor/subdir_rules.mk
+-include sensors/opt3001/subdir_rules.mk
+-include sensors/subdir_rules.mk
 -include ui/subdir_rules.mk
 -include objects.mk
 
@@ -171,8 +177,8 @@ empty_EK_TM4C1294XL_TI.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "EK_TM4C1294XL.obj" "empty.obj" "images.obj" "drivers\Kentec320x240x16_ssd2119_spi.obj" "drivers\pinout.obj" "drivers\touch.obj" "motor\motorCode.obj" "ui\grlib_demo.obj" 
-	-$(RM) "EK_TM4C1294XL.d" "empty.d" "images.d" "drivers\Kentec320x240x16_ssd2119_spi.d" "drivers\pinout.d" "drivers\touch.d" "motor\motorCode.d" "ui\grlib_demo.d" 
+	-$(RM) "EK_TM4C1294XL.obj" "empty.obj" "images.obj" "drivers\Kentec320x240x16_ssd2119_spi.obj" "drivers\pinout.obj" "drivers\touch.obj" "motor\motorCode.obj" "sensors\opt3001\opt3001.obj" "sensors\sensor_api.obj" "ui\grlib_demo.obj" 
+	-$(RM) "EK_TM4C1294XL.d" "empty.d" "images.d" "drivers\Kentec320x240x16_ssd2119_spi.d" "drivers\pinout.d" "drivers\touch.d" "motor\motorCode.d" "sensors\opt3001\opt3001.d" "sensors\sensor_api.d" "ui\grlib_demo.d" 
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
 	-@echo 'Finished clean'
 	-@echo ' '

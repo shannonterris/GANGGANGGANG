@@ -23,7 +23,7 @@ ORDERED_OBJS += \
 "../EK_TM4C1294XL.cmd" \
 "../MotorLib.lib" \
 $(GEN_CMDS__FLAG) \
--l"C:/Users/Annie/Desktop/repos/egh456/GANGGANGGANG/empty_EK_TM4C1294XL_TI/MotorLib.lib" \
+-l"C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/MotorLib.lib" \
 -l"C:/ti/tivaware_c_series_2_1_4_178/grlib/ccs/Debug/grlib.lib" \
 -l"C:/ti/tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib" \
 -l"C:/ti/tivaware_c_series_2_1_4_178/grlib/ccs/Debug/grlib.lib" \

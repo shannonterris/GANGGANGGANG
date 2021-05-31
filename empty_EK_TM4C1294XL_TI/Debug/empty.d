@@ -271,7 +271,7 @@ empty.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/checkbox.h
 empty.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/container.h
 empty.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/radiobutton.h
 empty.obj: C:/ti/tivaware_c_series_2_1_4_178/grlib/slider.h
-empty.obj: C:/Users/Annie/Desktop/repos/egh456/GANGGANGGANG/empty_EK_TM4C1294XL_TI/images.h
+empty.obj: C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/images.h
 empty.obj: ../motor/motorCode.h
 empty.obj: ../sensors/sensor_api.h
 empty.obj: C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h
@@ -282,8 +282,8 @@ empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sy
 empty.obj: ../sensors/opt3001/opt3001.h
 empty.obj: C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h
 empty.obj: C:/ti/tirtos_tivac_2_16_00_08/products/tidrivers_tivac_2_16_00_08/packages/ti/drivers/I2C.h
-empty.obj: C:/Users/Annie/Desktop/repos/egh456/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Board.h
-empty.obj: C:/Users/Annie/Desktop/repos/egh456/GANGGANGGANG/empty_EK_TM4C1294XL_TI/EK_TM4C1294XL.h
+empty.obj: C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Board.h
+empty.obj: C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/EK_TM4C1294XL.h
 
 ../empty.c: 
 C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/std.h: 
@@ -556,7 +556,7 @@ C:/ti/tivaware_c_series_2_1_4_178/grlib/checkbox.h:
 C:/ti/tivaware_c_series_2_1_4_178/grlib/container.h: 
 C:/ti/tivaware_c_series_2_1_4_178/grlib/radiobutton.h: 
 C:/ti/tivaware_c_series_2_1_4_178/grlib/slider.h: 
-C:/Users/Annie/Desktop/repos/egh456/GANGGANGGANG/empty_EK_TM4C1294XL_TI/images.h: 
+C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/images.h: 
 ../motor/motorCode.h: 
 ../sensors/sensor_api.h: 
 C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h: 
@@ -567,5 +567,5 @@ C:/ti/tirtos_tivac_2_16_00_08/products/bios_6_45_01_29/packages/ti/sysbios/knl/S
 ../sensors/opt3001/opt3001.h: 
 C:/ti/ccs1020/xdctools_3_32_00_06_core/packages/xdc/runtime/System.h: 
 C:/ti/tirtos_tivac_2_16_00_08/products/tidrivers_tivac_2_16_00_08/packages/ti/drivers/I2C.h: 
-C:/Users/Annie/Desktop/repos/egh456/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Board.h: 
-C:/Users/Annie/Desktop/repos/egh456/GANGGANGGANG/empty_EK_TM4C1294XL_TI/EK_TM4C1294XL.h: 
+C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/Board.h: 
+C:/Users/Annie/Desktop/repos/GANGGANGGANG/empty_EK_TM4C1294XL_TI/EK_TM4C1294XL.h: 

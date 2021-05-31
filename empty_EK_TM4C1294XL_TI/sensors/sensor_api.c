@@ -1,22 +1,18 @@
 #include "sensor_api.h"
 
-// constants
-#define WINDOW_LIGHT        6
-#define RATE_LIGHT          500 // 2Hz
+#define WINDOW_SIZE         6       // sample buffer size
+#define SAMPLE_RATE         500     // sampled at 2Hz
 
-// Buffer that holds the light data
-float lightBuffer[WINDOW_LIGHT];
+float lightBuffer[WINDOW_SIZE];     // buffer for light data stream
 
-// i2c handle
-I2C_Handle sensori2c;
+I2C_Handle light_i2c;               // i2c handle for light sensor
 
-// Setup light semaphore and SWI
-Char taskLightStack[512];
-Semaphore_Struct semLightStruct;
+Char taskLightStack[512];           // light task stack size
+
+Semaphore_Struct semLightStruct;    // Setup for light semaphore
 Semaphore_Handle semLightHandle;
 
-// Setup clock SWI
-Clock_Params clkSensorParams;
+Clock_Params clkSensorParams;       // Setup for clock SWI
 Clock_Struct clockLightStruct;
 
 /*
@@ -33,21 +29,17 @@ void taskLight() {
     while(1) {
         Semaphore_pend(semLightHandle, BIOS_WAIT_FOREVER);
 
-        // Variables for the ring buffer (not quite a ring buffer though)
-        static uint8_t light_head = 0;
-        uint16_t rawData = 0;
+        // ring buffer to handle stream of light data with 6 samples
+        uint16_t lightData = 0;
         float convertedLux;
+        static uint8_t bufferHead = 0;
 
-        if (OPT3001ReadLight(sensori2c, &rawData)) {
+        if (OPT3001Read(light_i2c, &lightData)) {
 
-            OPT3001Convert(rawData, &convertedLux);
+            OPT3001Convert(lightData, &convertedLux);
 
-            // system print light value
-            System_printf("light: %f\n", getLight());
-            System_flush();
-
-            lightBuffer[light_head++] = convertedLux;
-            light_head %= WINDOW_LIGHT;
+            lightBuffer[bufferHead++] = convertedLux;   // add lux val to position of buffer head
+            bufferHead %= WINDOW_SIZE;                  // resets buffer head when > 7
         }
     }
 }
@@ -56,8 +48,8 @@ void taskLight() {
  * Initialise Semaphore for Light Task
  * */
 bool initLightTask() {
-    bool success = OPT3001Test(sensori2c);
-    OPT3001Enable(sensori2c, true);
+    bool success = OPT3001Test(light_i2c);
+    OPT3001Enable(light_i2c, true);
 
     Semaphore_Params semParams;
     Semaphore_Params_init(&semParams);
@@ -73,40 +65,39 @@ bool initLightTask() {
     Task_Handle lightTask = Task_create((Task_FuncPtr)taskLight, &taskParams, NULL);
     if (lightTask == NULL) {
         System_printf("Task - LIGHT FAILED SETUP");
+        System_flush();
     }
 
-    System_printf("Light setup\n");
+    System_printf("Light successfully setup\n");
     return success;
 }
 
 /*
- * Light Getter
+ * Light Getter - filters for average light over the 6 samples
  * */
-
 float getLight() {
-    float sum = 0;
+    float lightSum = 0;
     uint8_t i;
 
-    // This is fine since window is the size of the buffer
-    for (i = 0; i < WINDOW_LIGHT; i++) {
-        sum += lightBuffer[i];
+    for (i = 0; i < WINDOW_SIZE; i++) {
+        lightSum += lightBuffer[i];
     }
 
-    return (sum / (float)WINDOW_LIGHT);
+    return (lightSum / (float)WINDOW_SIZE);
 }
 
 /*
  * Create Light i2c and SWI
  * */
 bool initLightSensor() {
-    // I2C used by both OPT3001 and BMI160
+
     I2C_Params i2cParams;
     I2C_Params_init(&i2cParams);
     i2cParams.bitRate = I2C_400kHz;
     i2cParams.transferMode = I2C_MODE_BLOCKING;
     i2cParams.transferCallbackFxn = NULL;
-    sensori2c = I2C_open(Board_I2C2, &i2cParams);
-    if (!sensori2c) {
+    light_i2c = I2C_open(Board_I2C2, &i2cParams);
+    if (!light_i2c) {
         System_printf("Sensor I2C did not open\n");
         System_flush();
     }
@@ -114,12 +105,12 @@ bool initLightSensor() {
     initLightTask();
     System_flush();
 
-    // Used by separate init functions to create recurring SWIs. Period size is 1ms.
+    // clock to create SWI, period is 1ms
     Clock_Params_init(&clkSensorParams);
     clkSensorParams.startFlag = TRUE;
 
-    // Create a recurring 2Hz SWI swiLight to post semaphore for task
-    clkSensorParams.period = RATE_LIGHT;
+    // creates light SWI recurring at 2Hz
+    clkSensorParams.period = SAMPLE_RATE;
     Clock_construct(&clockLightStruct, (Clock_FuncPtr)swiLight, 1, &clkSensorParams);
 
     return true;

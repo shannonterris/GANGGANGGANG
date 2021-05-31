@@ -546,7 +546,15 @@ void drawGraphPoint() {
     // somehow need to get the currentPoint to plot
     // TODO using random float for testing remove later on
     //float currentPoint = float_rand(graphIntMin, graphIntMax);
-      float currentPoint = (float) getSpeed();
+
+    float currentPoint;
+
+    if (g_sCurrentPanel == LIGHT) {
+        currentPoint = getLight();
+    } else {
+        currentPoint = (float) getSpeed();
+    }
+
     // graphMax - graphMin is the space between
     // the physical space between is 135
     // graphMin should be 10 and graphMax should be 45

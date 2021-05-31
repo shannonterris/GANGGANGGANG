@@ -22,17 +22,16 @@
 
 #include "opt3001/opt3001.h"
 #include "Board.h"
-//
+
 void swiLight();
-//
+
 void taskLight();
-//
+
 bool initLightTask();
 
-// Filters the light lux value
+// returns filtered light lux value
 float getLight();
 
-// Initilises the light sensor
 bool initLightSensor();
 
 #endif /* SENSORS_SENSOR_API_H_ */
