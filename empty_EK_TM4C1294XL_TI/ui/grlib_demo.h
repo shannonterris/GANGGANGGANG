@@ -81,7 +81,8 @@ tContext sContext;
 
 // Globals for the settings TODO need to set initials properly
 uint32_t g_currentLimit;
-uint32_t g_accelerationLimit;
+//uint32_t g_accelerationLimit;
+volatile int8_t g_accelerationLimit;
 uint32_t g_motorSpeed;
 
 // Global for indicating if graph should be drawing

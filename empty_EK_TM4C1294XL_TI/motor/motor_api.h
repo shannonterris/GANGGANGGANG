@@ -6,6 +6,7 @@
  */
 
 #include <xdc/std.h>
+#include "stdbool.h"
 
 #ifndef MOTORCODE_H_
 #define MOTORCODE_H_
@@ -79,6 +80,8 @@ void ADC0_Init();
 
 void userStart(void);
 bool getState(void);
+
+void set_eStop(void);
 
 /*!
  *  @brief Gets the current speed of the motor

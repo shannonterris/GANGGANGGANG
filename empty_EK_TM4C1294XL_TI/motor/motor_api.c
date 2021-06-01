@@ -52,7 +52,7 @@
 
 
 #define TOTAL_POSITIONS 12
-#define SAMPLE_SIZE 100
+#define SAMPLE_SIZE 50
 #define ACCEL_SIZE 100
 #define MAXOUTPUT 24
 #define NUMSGS 50
@@ -114,8 +114,11 @@ volatile float jump = 5;
 
 //volatile float Kp = 0.5;
 //volatile float Ki = 0.02;
-volatile float Kp = 0.00085;
-volatile float Ki = 0.00005;
+//volatile float Kp = 0.00085;
+//volatile float Ki = 0.00005;
+
+volatile float Kp = 0.000425;
+volatile float Ki = 0.000025;
 
 volatile float output;
 
@@ -176,7 +179,7 @@ void  HallFxn()
 
     // motor not required as the rpm is calculated in this HWI
     // so positional change is always 1
-    motor++;
+    //motor++;
 
     // push motor again
     updateMotor(hA, hB, hC);
@@ -185,7 +188,6 @@ void  HallFxn()
 
     /* delta time is change in ticks * time (mins) for one tick */
     delta_time = (min_per_sysTick*(SysTicks - prevSysTick));
-
     /* RPM calculation for ONE positional change */
     rpm_actual = rotation/delta_time;
 
@@ -319,16 +321,19 @@ void statesFxn(UARg, arg0)
         Event_post(evtHandle, Event_Id_00);
     }
 
+    /* Stop the motor */
     if(motorState == false)
     {
         Event_post(evtHandle, Event_Id_01);
     }
 
+    /* User sets the desired speed */
     if(running == true)
     {
         Event_post(evtHandle, Event_Id_02);
     }
 
+    /* E-stop condition has occured */
     if(e_event == true)
     {
         Event_post(evtHandle, Event_Id_03);
@@ -382,7 +387,8 @@ void motorFxn(UArg arg0, UArg arg1)
     {
 
 
-        state = Event_pend(evtHandle, Event_Id_NONE, (Event_Id_00 + Event_Id_01 + Event_Id_02 + Event_Id_03),
+        state = Event_pend(evtHandle, Event_Id_NONE,
+                           (Event_Id_00 + Event_Id_01 + Event_Id_02 + Event_Id_03),
                            BIOS_WAIT_FOREVER);
 
         // IDLE - Start the motor
@@ -390,10 +396,10 @@ void motorFxn(UArg arg0, UArg arg1)
         {
             running = true;
             //enableMotor();
+            setDuty(output);
             rpm_desired = rpm_from_UI;
             readABC();
             updateMotor(hA, hB, hC);
-            setDuty(output);
         }
 
         // STOP - Speed = 0
@@ -401,7 +407,6 @@ void motorFxn(UArg arg0, UArg arg1)
         {
             running = false;
             rpm_desired = 0;
-
             setDuty(output);
 
             if (rpm_avg < 100)
@@ -410,8 +415,9 @@ void motorFxn(UArg arg0, UArg arg1)
                 e_event = false;
                 error = 0;
                 integral_error = 0;
+                stopMotor(false);
                 output = 0;
-                stopMotor(true);
+                rpm_avg = 0;
             }
         }
 
@@ -464,6 +470,8 @@ void filterFxn(UArg arg0)
 {
     clock_count++;
 
+
+
     rpm_sum = rpm_actual + rpm_sum;
     acceleration_sum = acceleration + acceleration_sum;
 
@@ -496,6 +504,8 @@ void PIControlFxn(UArg arg0)
     integral_error = integral_error + error;
     output = Kp*error + Ki*integral_error;
     //setDuty((uint16_t)output);
+    if (output < 0) output = 0;
+    if (integral_error < 0) integral_error = 0;
 }
 
 /*!
@@ -530,7 +540,7 @@ void accelLimitFxn(UArg arg0)
     if (rpm_int < rpm_desired)
     {
         // every 10ms, increment by 5rpm ( == 5/0.01 = 500RPM/s)
-        rpm_int = rpm_int + 5;
+        rpm_int = rpm_int + 2;
     }
     else if (rpm_int > rpm_desired)
     {
@@ -543,7 +553,7 @@ void accelLimitFxn(UArg arg0)
         else
         {
             // if false, every 10ms, decrement by 5RPM as normal
-            rpm_int = rpm_int - 5;
+            rpm_int = rpm_int - 2;
         }
     }
 }
@@ -631,7 +641,7 @@ bool getState(void)
 
 void set_estop(void)
 {
-    e_stop = true;
+    e_event = true;
 }
 /*
  * @brief Once the motor has started, if user changes the speed then

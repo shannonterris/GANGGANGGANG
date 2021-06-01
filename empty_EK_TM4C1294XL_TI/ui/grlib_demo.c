@@ -21,9 +21,9 @@
 // This is part of revision 2.1.4.178 of the EK-TM4C1294XL Firmware Package.
 //
 //*****************************************************************************
-#include <sensors/sensors_api.h>
+#include <motor/motor_api.h>
+#include "sensors/sensors_api.h"
 #include "grlib_demo.h"
-#include "motor/MotorCode.h"
 
 //
 //*****************************************************************************
@@ -418,8 +418,8 @@ OnStartMotor(tWidget *psWidget)
     {
         PushButtonTextSet(&g_sMotorOption, "Start Motor");
         WidgetPaint((tWidget *)&g_sMotorOption);
-        //g_motorSpeed = 0;
-        //setSpeed(g_motorSpeed);
+        g_motorSpeed = 0;
+        setSpeed(g_motorSpeed);
     }
 }
 
@@ -477,6 +477,7 @@ void OnIncrease() {
         if (g_accelerationLimit <= 39) {  // Acceleration has a max limit of 40
             g_accelerationLimit++;
             drawSettingValue("m/s^2", g_accelerationLimit);
+            setAccelThreshold( (uint16_t) g_accelerationLimit);
         }
         // TODO api call to set new value
     }
@@ -512,6 +513,7 @@ void OnDecrease() {
         if (g_accelerationLimit >= 11) { // Acceleration has a minimum of 10
             g_accelerationLimit--;
             drawSettingValue("m/s^2", g_accelerationLimit);
+            setAccelThreshold( (uint16_t) g_accelerationLimit);
         }
         // TODO api call to set new value
     }

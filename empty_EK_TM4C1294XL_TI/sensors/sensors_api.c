@@ -4,6 +4,7 @@
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/UART.h>
 
+
 #define WINDOW_SIZE         6       // sample buffer size
 #define SAMPLE_RATE         500     // sampled at 2Hz
 
@@ -221,6 +222,7 @@ void setAccelThreshold(uint16_t thresh) {
 int triggerThreshold = 0;
 void accelEStopIntterupt(unsigned int index) {
     triggerThreshold++;
+    set_estop();
     ///System_printf("THRESHOLD TRIGGER\n");
     ///System_flush();
 }
