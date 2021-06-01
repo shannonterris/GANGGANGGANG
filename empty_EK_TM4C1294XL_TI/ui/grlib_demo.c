@@ -475,7 +475,7 @@ void OnIncrease() {
         if (g_accelerationLimit <= 39) {  // Acceleration has a max limit of 40
             g_accelerationLimit++;
             drawSettingValue("m/s^2", g_accelerationLimit);
-            setAccelThreshold( (uint16_t) g_accelerationLimit);
+            // setAccelThreshold( (uint16_t) g_accelerationLimit);
         }
         // TODO api call to set new value
     }
@@ -511,7 +511,7 @@ void OnDecrease() {
         if (g_accelerationLimit >= 11) { // Acceleration has a minimum of 10
             g_accelerationLimit--;
             drawSettingValue("m/s^2", g_accelerationLimit);
-            setAccelThreshold( (uint16_t) g_accelerationLimit);
+            //setAccelThreshold( (uint16_t) g_accelerationLimit);
         }
         // TODO api call to set new value
     }
