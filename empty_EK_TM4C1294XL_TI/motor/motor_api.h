@@ -76,7 +76,7 @@ void speedFxn(UArg arg0);
  */
 void accelLimitFxn(UArg arg0);
 void waitFxn(UArg arg0);
-//void ADC0_Init();
+void ADC0_Init();
 
 void userStart(void);
 bool getState(void);
