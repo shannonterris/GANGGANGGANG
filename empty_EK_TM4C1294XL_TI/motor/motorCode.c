@@ -117,6 +117,9 @@ volatile float jump = 5;
 volatile float Kp = 0.00085;
 volatile float Ki = 0.00005;
 
+//volatile float Kp = 0.0017;
+//volatile float Ki = 0.0001;
+
 volatile float output;
 
 volatile int clock_count = 0;
@@ -499,6 +502,11 @@ void PIControlFxn(UArg arg0)
     if(output < 0)
     {
         output = 0;
+    }
+
+    if (integral_error < 0)
+    {
+        integral_error = 0;
     }
 }
 
