@@ -563,70 +563,86 @@ void accelLimitFxn(UArg arg0)
 }
 
 
+/*!
+ * ADC initialisation for the current sensor.
+ */
+
+/*
 void ADCTriggerFxn(UArg arg0)
 {
     //Semaphore_post(semHandle);
-    //ADCProcessorTrigger(ADC0_BASE, ADC_SEQ);
-    voltage = stepVoltage * pui32ADC0Value[0];
-    current = ((vref/2) - voltage)/(gain * shunt);
+    //ADCProcessorTrigger(ADC0_BASE, ADC0_SEQ);
+    //ADCProcessorTrigger(ADC1_BASE, ADC1_SEQ);
+    int i;
+    total_samples0 = 0;
+    for (i = 0; i < ADC0_STEP; i++)
+    {
+        total_samples0 = total_samples0 + pui32ADC0Value[i];
+        //total_samples1 = total_samples1 + pui32ADC1Value[i];
+    }
+    average_step0 = total_samples0/ADC0_STEP;
+    //voltageC = stepVoltage * pui32ADC0Value[0];
+    //currentC = ((vref/2) - voltageC)/(gain * shunt);
+    //voltageB = stepVoltage * pui32ADC1Value[0];
+    //currentB = ((vref/2) - voltageB)/(gain * shunt);
 }
-
-
-/**
- * ADC
- */
-
-
+void ADC1TriggerFxn(UArg arg0)
+{
+    ADCProcessorTrigger(ADC1_BASE, ADC1_SEQ);
+    total_samples1 = 0;
+    int i;
+    for (i = 0; i < ADC1_STEP; i++)
+    {
+       total_samples1 = total_samples1 + pui32ADC1Value[i];
+    }
+    average_step1 = total_samples1/ADC1_STEP;
+}
 void ADC0_Init() //ADC0 on PE3
 {
     SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
-
-
-     /*
-     *  GPIOPinTypeADC configures Port E Pin 3 for use as an
-     *  ADC converter input.
-     *
-     *  Lecture - Makes GPIO an input and sets them to analog
-     */
+    // GPIOPinTypeADC configures Port E Pin 3 for use as an
+    // ADC converter input.
+    // Lecture - Makes GPIO an input and sets them to analog
     GPIOPinTypeADC(GPIO_PORTE_BASE, GPIO_PIN_3);
-
-    /*
-     *  Configures the trigger source and priority of a sample
-     *  sequence.
-     *  1. base: base address of the ADC module
-     *  2. sequenceNum: the sample sequence number
-     *  3. trigger source that initiates sample sequence
-     *  4. priority - relative priority of the sample sequence
-     *                with other sample sequences
-     */
-    ADCSequenceConfigure(ADC0_BASE, ADC_SEQ, ADC_TRIGGER_PROCESSOR, 0);
-
-
-    /*
-     * Configure a step of the sample sequencer
-     * 1. Base address of the ADC module
-     * 2. Sample sequence number
-     * 3. Step to be configured
-     * 4. Configuration of this step:
-     *      - Select channel 0 (AIN0)
-     *      - Defined as the last in the sequence (ADC_CTL_END)
-     *      - cause an interrupt when complete (ADC_CTL_IE)
-     */
-    ADCSequenceStepConfigure(ADC0_BASE, ADC_SEQ, ADC_STEP, ADC_CTL_IE |
-                             ADC_CTL_CH0 | ADC_CTL_END);
-
-    /*
-     * Enable a sample sequence. Allow specified sample sequence
-     * to be captured when trigger is detected.
-     */
-    ADCSequenceEnable(ADC0_BASE, ADC_SEQ);
-
-    /*
-     * Clears sample sequence interrupt source.
-     */
-    ADCIntClear(ADC0_BASE, ADC_SEQ);
+    // Configures the trigger source and priority of a sample
+    // sequence.
+    // 1. base: base address of the ADC module
+    // 2. sequenceNum: the sample sequence number
+    // 3. trigger source that initiates sample sequence
+    // 4. priority - relative priority of the sample sequence
+    //                with other sample sequences
+    //
+    ADCSequenceConfigure(ADC0_BASE, ADC0_SEQ, ADC_TRIGGER_PROCESSOR, 1);
+    // Configure a step of the sample sequencer
+    // 1. Base address of the ADC module
+    // 2. Sample sequence number
+    // 3. Step to be configured
+    // 4. Configuration of this step:
+    //      - Select channel 0 (AIN0)
+    //      - Defined as the last in the sequence (ADC_CTL_END)
+    //      - cause an interrupt when complete (ADC_CTL_IE)
+    ADCSequenceStepConfigure(ADC0_BASE, ADC0_SEQ, ADC0_STEP, ADC_CTL_IE |
+                             ADC_CTL_CH3 | ADC_CTL_END);
+    // Enable a sample sequence. Allow specified sample sequence
+    // to be captured when trigger is detected.
+    //
+    ADCSequenceEnable(ADC0_BASE, ADC0_SEQ);
+    // Clears sample sequence interrupt source.
+    ADCIntClear(ADC0_BASE, ADC0_SEQ);
 }
+void ADC1_Init() //ADC0 on PE3
+{
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC1);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    GPIOPinTypeADC(GPIO_PORTD_BASE, GPIO_PIN_7);
+    ADCSequenceConfigure(ADC1_BASE, ADC1_SEQ, ADC_TRIGGER_PROCESSOR, 0); //--- priority may need to change //
+    ADCSequenceStepConfigure(ADC1_BASE, ADC1_SEQ, ADC1_STEP, ADC_CTL_IE |
+                               ADC_CTL_CH4 | ADC_CTL_END);
+    ADCSequenceEnable(ADC1_BASE, ADC1_SEQ);
+    ADCIntClear(ADC1_BASE, ADC1_SEQ);
+}
+*/
 
 
 
@@ -686,7 +702,7 @@ void startMotor( bool UI_motorRun )
 void initMotor( void )
 {
 
-    ADC0_Init();
+    //ADC0_Init();
 
     Error_init(&eb);
 
@@ -721,7 +737,7 @@ void initMotor( void )
 
     clkParams.period = 6;
     clkParams.startFlag = TRUE;
-    Clock_create((Clock_FuncPtr)ADCTriggerFxn, 6, &clkParams, NULL);
+    //Clock_create((Clock_FuncPtr)ADCTriggerFxn, 6, &clkParams, NULL);
 
     clkParams.period = 10;
     clkParams.startFlag = TRUE;
