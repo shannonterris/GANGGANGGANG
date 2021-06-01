@@ -50,6 +50,8 @@
 #include "inc/hw_ints.h"
 #include "driverlib/gpio.h"
 
+#include "ui/grlib_demo.h"
+
 
 #define TOTAL_POSITIONS 12
 #define SAMPLE_SIZE 50
@@ -433,6 +435,8 @@ void motorFxn(UArg arg0, UArg arg1)
         {
             // trigger local estop for the deceleration
             e_stop = true;
+
+            OnEstop();
 
             // set the motorState to false. In the statesFxn SWI, this will trigger a posting
             // of Event_Id_01, which causes the motor to stop. With the above e-stop as true,

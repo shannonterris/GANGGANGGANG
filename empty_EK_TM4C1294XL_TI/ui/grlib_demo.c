@@ -79,6 +79,8 @@ int32_t y_graph_start = 45;
 int32_t y_graph_max = 50;
 int32_t y_graph_end = 180;
 
+bool onHomePage = true;
+
 
 //*****************************************************************************
 //
@@ -284,6 +286,8 @@ OnMainMenu(tWidget *psWidget)
     WidgetPaint((tWidget *) &g_sMainPage);
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sMainPage);
 
+    onHomePage = true;
+
     WidgetMessageQueueProcess();
 }
 
@@ -308,6 +312,8 @@ OnSettingsMain(tWidget *psWidget)
     //
     WidgetPaint((tWidget *) &g_sSettingsMainPage);
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sSettingsMainPage);
+
+    onHomePage = false;
 
     WidgetMessageQueueProcess();
 }
@@ -339,6 +345,8 @@ OnGraphsMain(tWidget *psWidget)
     //
     WidgetPaint((tWidget *) &g_sGraphsMainPage);
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sGraphsMainPage);
+
+    onHomePage = false;
 
     WidgetMessageQueueProcess();
 
@@ -393,6 +401,14 @@ void DrawTime()
 void
 OnEstop() {
     PushButtonTextSet(&g_sMotorOption, "E-Stop: Restart Motor");
+    if (onHomePage) {
+        // Paint
+        WidgetPaint((tWidget *)&g_sMotorOption);
+    }
+    // set motorStartedUI to off
+    motorStartedUI = false;
+    // Turn LED OFF
+    GPIO_write(Board_LED0, Board_LED_OFF);
 }
 
 //*****************************************************************************
