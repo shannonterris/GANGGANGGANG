@@ -285,7 +285,6 @@ OnMainMenu(tWidget *psWidget)
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sMainPage);
 
     WidgetMessageQueueProcess();
-    DrawDayNight();
 }
 
 
@@ -311,7 +310,6 @@ OnSettingsMain(tWidget *psWidget)
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sSettingsMainPage);
 
     WidgetMessageQueueProcess();
-    DrawDayNight();
 }
 
 //*****************************************************************************
@@ -343,7 +341,6 @@ OnGraphsMain(tWidget *psWidget)
     WidgetAdd(WIDGET_ROOT, (tWidget *) &g_sGraphsMainPage);
 
     WidgetMessageQueueProcess();
-    DrawDayNight();
 
 }
 
@@ -383,6 +380,8 @@ void DrawTime()
         }
         strcpy(timeString, asctime(timeinfo));
         GrStringDraw(&sContext, timeString, -1, 50, 5, true);
+        DrawDayNight();
+        GrFlush(&sContext);
     }
 }
 
@@ -466,7 +465,6 @@ void OnSettingsPage() {
     WidgetPaint((tWidget *) &g_sSettingTitle);
 
     WidgetMessageQueueProcess();
-    DrawDayNight();
 }
 
 
@@ -722,7 +720,7 @@ void OnGraphAcceleration(){
 }
 void OnGraphLight(){
     g_sCurrentPanel = LIGHT;
-    OnGraphsPage("Light (Lux)", 0, 500); //TODO
+    OnGraphsPage("Light (Lux)", 0, 400); //TODO
 
 }
 
@@ -822,7 +820,6 @@ void initWidgets(tContext * sContext) {
     WidgetPaint(WIDGET_ROOT);
 
     WidgetMessageQueueProcess();
-    DrawDayNight();
 }
 
 
