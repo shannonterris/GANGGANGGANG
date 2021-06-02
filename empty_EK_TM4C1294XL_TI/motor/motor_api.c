@@ -116,11 +116,11 @@ volatile float jump = 5;
 
 //volatile float Kp = 0.5;
 //volatile float Ki = 0.02;
-//volatile float Kp = 0.00085;
-//volatile float Ki = 0.00005;
+volatile float Kp = 0.00085;
+volatile float Ki = 0.00005;
 
-volatile float Kp = 0.000425;
-volatile float Ki = 0.000025;
+//volatile float Kp = 0.000425;
+//volatile float Ki = 0.000025;
 
 volatile float output;
 
@@ -436,7 +436,7 @@ void motorFxn(UArg arg0, UArg arg1)
             // trigger local estop for the deceleration
             e_stop = true;
 
-            OnEstop();
+            // OnEstop();
 
             // set the motorState to false. In the statesFxn SWI, this will trigger a posting
             // of Event_Id_01, which causes the motor to stop. With the above e-stop as true,
